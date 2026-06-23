@@ -1,0 +1,82 @@
+name: Web Validate
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/web-checks-reusable.yml'
+      - '.github/workflows/web-validate.yml'
+      - 'code/app/shared/**'
+      - 'code/app/web/**'
+      - 'knip.json'
+      - 'package-lock.json'
+      - 'package.json'
+      - 'vite.shared.js'
+      - 'vitest.config.js'
+
+jobs:
+  validate-web:
+    uses: ./.github/workflows/web-checks-reusable.yml
+    secrets: inherit
+    with:
+      upload_test_report: true
+
+  preview-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      deployments: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+
+      - name: Setup node.js
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          cache: npm
+          cache-dependency-path: package-lock.json
+          node-version: 26
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build app
+        working-directory: code/app/web
+        run: npm run build
+
+      - name: Comment deploy start
+        uses: mshick/add-pr-comment@ec328af66588ab8f77cdeb2c264f14aba45bbf59 # v3.12.0
+        with:
+          message: |
+            ### Deploy Preview building...
+
+            | Name | Link |
+            | --- | --- |
+            | Latest commit | ${{ github.sha }} |
+            | Deploy log | ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} |
+          message-id: cloudflare-deploy
+
+      - name: Deploy to Cloudflare Pages
+        id: deploy
+        uses: cloudflare/wrangler-action@ebbaa1584979971c8614a24965b4405ff95890e0 # v4.0.0
+        with:
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          command: pages deploy code/app/web/dist --project-name=mysayo-web
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+          wranglerVersion: '4.104.0'
+
+      - name: Comment deploy url
+        uses: mshick/add-pr-comment@ec328af66588ab8f77cdeb2c264f14aba45bbf59 # v3.12.0
+        with:
+          message: |
+            ### Deploy Preview ready
+
+            | Name | Link |
+            | --- | --- |
+            | Latest commit | ${{ github.sha }} |
+            | Deploy log | ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} |
+            | Preview URL | [${{ steps.deploy.outputs.deployment-url }}](${{ steps.deploy.outputs.deployment-url }}) |
+          message-id: cloudflare-deploy

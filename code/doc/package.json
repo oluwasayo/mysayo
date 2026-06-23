@@ -1,0 +1,18 @@
+{
+  "description": "Documentation and notes (placeholder)",
+  "devDependencies": {
+    "@types/node": "26.0.0",
+    "typescript": "7.0.1-rc"
+  },
+  "name": "doc",
+  "private": true,
+  "scripts": {
+    "clean": "rm -rf dist && find src -type f -name \"*.js\" -delete 2>/dev/null || true",
+    "fix": "npm run clean && tsc && npm run lint:fix",
+    "lint": "biome check .",
+    "lint:fix": "biome check . --write",
+    "tsc": "tsc"
+  },
+  "type": "module",
+  "version": "0.0.1"
+}

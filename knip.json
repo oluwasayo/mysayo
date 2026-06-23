@@ -1,0 +1,51 @@
+{
+  "$schema": "https://unpkg.com/knip@6/schema.json",
+  "ignoreBinaries": ["terraform"],
+  "ignoreDependencies": [
+    "react-compiler-runtime"
+  ],
+  "ignoreExportsUsedInFile": true,
+  "ignoreWorkspaces": ["infrastructure"],
+  "treatConfigHintsAsErrors": false,
+  "workspaces": {
+    "code/app/shared": {
+      "entry": ["src/lib/**/*.ts", "!src/lib/**/*.test.ts"],
+      "paths": {
+        "@shared/*": ["./src/*"]
+      },
+      "project": ["src/**/*.ts"],
+      "vitest": {
+        "config": ["vitest.config.js"]
+      }
+    },
+    "code/app/web": {
+      "entry": ["src/pages/**/*.astro", "src/layout/**/*.astro"],
+      "paths": {
+        "@/*": ["./src/*"],
+        "@shared/*": ["../shared/src/*"]
+      },
+      "project": ["src/**/*.{ts,tsx,astro}"],
+      "vite": {
+        "config": ["astro.config.mjs", "vitest.config.js"]
+      },
+      "vitest": {
+        "config": ["vitest.config.js"]
+      }
+    },
+    "code/bin": {
+      "paths": {
+        "@/*": ["./src/*"]
+      },
+      "project": ["src/**/*.ts"],
+      "vite": {
+        "config": ["vite.config.js"]
+      }
+    },
+    "code/doc": {
+      "paths": {
+        "@/*": ["./src/*"]
+      },
+      "project": ["src/**/*.ts"]
+    }
+  }
+}

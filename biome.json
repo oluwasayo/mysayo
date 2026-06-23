@@ -1,0 +1,189 @@
+{
+  "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+  "assist": {
+    "actions": {
+      "source": {
+        "organizeImports": "on",
+        "useSortedKeys": "on"
+      }
+    },
+    "enabled": true
+  },
+  "files": {
+    "ignoreUnknown": false,
+    "includes": [
+      "**",
+      "!**/*.module.css",
+      "!.cursor",
+      "!!**/dist",
+      "!!.out",
+      "!!**/coverage",
+      "!!**/test-results",
+      "!code/app/web/.astro",
+      "!code/app/web/**/*.astro",
+      "!infrastructure"
+    ]
+  },
+  "formatter": {
+    "enabled": true,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineWidth": 80
+  },
+  "javascript": {
+    "formatter": {
+      "arrowParentheses": "asNeeded",
+      "jsxQuoteStyle": "double",
+      "lineWidth": 80,
+      "quoteStyle": "single",
+      "semicolons": "asNeeded"
+    },
+    "globals": ["React"]
+  },
+  "linter": {
+    "domains": {
+      "react": "recommended",
+      "types": "recommended"
+    },
+    "enabled": true,
+    "rules": {
+      "a11y": {
+        "useButtonType": "off"
+      },
+      "complexity": {
+        "noUselessFragments": "off",
+        "recommended": true
+      },
+      "correctness": {
+        "noUnusedImports": "error",
+        "noUnusedVariables": "error",
+        "recommended": true,
+        "useExhaustiveDependencies": "error"
+      },
+      "nursery": {
+        "noFloatingPromises": "error",
+        "noMisusedPromises": "error"
+      },
+      "recommended": true,
+      "style": {
+        "noDefaultExport": "off",
+        "noNonNullAssertion": "error",
+        "recommended": true,
+        "useArrayLiterals": "error",
+        "useBlockStatements": "error",
+        "useComponentExportOnlyModules": {
+          "level": "error",
+          "options": {
+            "allowConstantExport": true
+          }
+        },
+        "useConsistentTypeDefinitions": {
+          "level": "error",
+          "options": { "style": "type" }
+        },
+        "useExportType": "error",
+        "useImportType": "error",
+        "useShorthandFunctionType": "error"
+      },
+      "suspicious": {
+        "noConsole": {
+          "level": "error",
+          "options": { "allow": ["warn", "error"] }
+        },
+        "noDoubleEquals": {
+          "level": "error",
+          "options": { "ignoreNull": false }
+        },
+        "noShadow": "error",
+        "recommended": true
+      }
+    }
+  },
+  "overrides": [
+    {
+      "includes": [
+        "code/app/server/src/**/*.test.ts",
+        "code/app/web/src/**/*.test.ts",
+        "code/app/web/src/**/*.test.tsx",
+        "code/app/shared/src/**/*.test.ts",
+        "code/doc/src/**/*.test.ts"
+      ],
+      "linter": {
+        "rules": {
+          "style": {
+            "noNonNullAssertion": "off",
+            "useComponentExportOnlyModules": "off"
+          },
+          "suspicious": {
+            "noConsole": "off",
+            "noShadow": "off"
+          }
+        }
+      }
+    },
+    {
+      "includes": ["code/bin/src/**/*.ts", "code/doc/src/cli.ts"],
+      "linter": {
+        "rules": {
+          "suspicious": {
+            "noConsole": "off"
+          }
+        }
+      }
+    },
+    {
+      "includes": [
+        "code/app/web/src/**/*.ts",
+        "code/app/web/src/**/*.tsx",
+        "!code/app/web/src/**/*.test.ts",
+        "!code/app/web/src/**/*.test.tsx"
+      ],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "patterns": [
+                  {
+                    "group": ["./*", "./**", "../*", "../**"],
+                    "message": "Use workspace aliases (`@/` or `@shared/`) instead of relative imports."
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "includes": [
+        "code/app/shared/src/**/*.ts",
+        "!code/app/shared/src/**/*.test.ts"
+      ],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "patterns": [
+                  {
+                    "group": ["./*", "./**", "../*", "../**"],
+                    "message": "Use the `@shared/` alias instead of relative imports."
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "root": true,
+  "vcs": {
+    "clientKind": "git",
+    "enabled": true,
+    "useIgnoreFile": true
+  }
+}
