@@ -31,7 +31,7 @@ const validOptions = {
 
 function filterPlan(planOutput: string) {
   const cfPagesStart =
-    '# module.cloudflare_pages.cloudflare_pages_project.web will be updated in-place'
+    '# module.cloudflare_pages[0].cloudflare_pages_project.web will be updated in-place'
   const startIndex = planOutput.indexOf(cfPagesStart)
 
   if (startIndex === -1) {
@@ -41,7 +41,7 @@ function filterPlan(planOutput: string) {
   const searchStart = startIndex + cfPagesStart.length
   const nextModuleIndex = planOutput.indexOf('# module', searchStart)
   const filterPlaceholder =
-    '# module.cloudflare_pages.cloudflare_pages_project.web will be updated in-place (hidden by filter)\n\n'
+    '# module.cloudflare_pages[0].cloudflare_pages_project.web will be updated in-place (hidden by filter)\n\n'
 
   if (nextModuleIndex !== -1) {
     return (
