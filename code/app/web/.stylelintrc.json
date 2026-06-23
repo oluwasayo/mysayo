@@ -1,0 +1,18 @@
+{
+  "extends": ["stylelint-config-standard", "stylelint-config-css-modules"],
+  "ignoreFiles": ["**/dist/**", "**/node_modules/**"],
+  "plugins": ["stylelint-order", "stylelint-no-unsupported-browser-features"],
+  "rules": {
+    "custom-property-empty-line-before": null,
+    "declaration-empty-line-before": null,
+    "media-query-no-invalid": null,
+    "order/properties-order": [],
+    "plugin/no-unsupported-browser-features": [
+      true,
+      {
+        "severity": "error"
+      }
+    ],
+    "value-keyword-case": null
+  }
+}

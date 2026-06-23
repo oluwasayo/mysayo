@@ -1,0 +1,111 @@
+name: Infrastructure Validate
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+concurrency:
+  cancel-in-progress: false
+  group: terraform-production
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/infrastructure-validate.yml'
+      - 'infrastructure/**'
+
+env:
+  ENVIRONMENT: production
+  PROJECT: mysayo
+  TF_STATE_BUCKET: mysayo-production-terraform-state
+
+jobs:
+  validate-infrastructure:
+    runs-on: ubuntu-latest
+    env:
+      # Terraform's R2 backend uses S3-compatible API env var names.
+      AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          cache: npm
+          cache-dependency-path: package-lock.json
+          node-version: 26
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@dfe3c3f87815947d99a8997f908cb6525fc44e9e # v4.0.1
+        with:
+          terraform_version: '1.15.5'
+
+      - name: Terraform init
+        working-directory: infrastructure
+        run: |
+          terraform init \
+            -backend-config="bucket=${{ env.TF_STATE_BUCKET }}" \
+            -backend-config="endpoint=https://${{ secrets.CLOUDFLARE_ACCOUNT_ID }}.r2.cloudflarestorage.com"
+
+      - name: Terraform format check
+        working-directory: infrastructure
+        run: terraform fmt -check -recursive
+
+      - name: Terraform validate
+        working-directory: infrastructure
+        run: terraform validate
+
+      - name: Terraform plan
+        working-directory: infrastructure
+        run: |
+          terraform plan -no-color \
+            -var="cloudflare_account_id=${{ secrets.CLOUDFLARE_ACCOUNT_ID }}" \
+            -var="cloudflare_api_token=${{ secrets.CLOUDFLARE_API_TOKEN }}" \
+            -var="cloudflare_zone_id=${{ secrets.CLOUDFLARE_ZONE_ID }}" \
+            -out=tfplan
+
+      - name: Upload Terraform plan
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: tfplan
+          path: infrastructure/tfplan
+
+      - name: Generate plan summary
+        working-directory: infrastructure
+        run: terraform show -no-color tfplan > plan.txt
+
+      - name: Filter plan output
+        run: npm run filter-terraform-plan -- --input infrastructure/plan.txt --output infrastructure/plan-filtered.txt --ci
+
+      - name: Comment PR with plan
+        uses: actions/github-script@d746ffe35508b1917358783b479e04febd2b8f71 # v9.0.0
+        with:
+          script: |
+            const fs = require('fs');
+            const planOutput = fs.readFileSync('infrastructure/plan-filtered.txt', 'utf8');
+            if (/No changes\. Infrastructure is up-to-date\./.test(planOutput)) {
+              console.log('No infrastructure changes detected; skipping PR comment.');
+              return;
+            }
+            const comment = `## Infrastructure Validation Complete
+
+            ### Terraform Plan Summary
+            \`\`\`hcl
+            ${planOutput}
+            \`\`\`
+
+            Changes are validated and will deploy automatically when merged to main.`;
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });

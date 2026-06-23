@@ -1,0 +1,5 @@
+# Used with ./tf.sh init -backend-config=backend.hcl
+# R2 credentials come from infrastructure/.env (R2_ACCESS_KEY_ID / R2_SECRET_ACCESS_KEY).
+
+bucket   = "mysayo-production-terraform-state"
+endpoint = "https://<CLOUDFLARE_ACCOUNT_ID>.r2.cloudflarestorage.com"

@@ -1,0 +1,22 @@
+{
+  "description": "Utilities shared between the server and web app",
+  "devDependencies": {
+    "@types/node": "26.0.0",
+    "typescript": "7.0.1-rc",
+    "vitest": "4.1.9"
+  },
+  "name": "shared",
+  "private": true,
+  "scripts": {
+    "clean": "find src -type f -name \"*.js\" -delete 2>/dev/null || true",
+    "fix": "npm run clean && tsc && npm run lint:fix",
+    "lint": "biome check .",
+    "lint:fix": "biome check . --write",
+    "test": "vitest run",
+    "test:ci": "vitest run --silent --reporter=junit --outputFile=./test-results/junit.xml",
+    "test:coverage": "vitest run --coverage",
+    "tsc": "tsc"
+  },
+  "type": "module",
+  "version": "0.0.1"
+}
