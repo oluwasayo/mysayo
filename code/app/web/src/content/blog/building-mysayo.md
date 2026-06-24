@@ -4,7 +4,7 @@ description: How I built this site — a static Astro front-end, a React Compile
 pubDate: 2026-06-24
 ---
 
-I rebuilt my personal site from an empty directory, and I wanted the first post to be the obvious one: how the thing you're reading was actually made. Not a tutorial — a record of the decisions, the trade-offs, and the one platform surprise that cost me an afternoon.
+I'd always loved the idea of having a personal website but never gotten around to building on. So I created an empty directory, ran `git init` and got to business. I wanted the first post to be the obvious one: how the thing you're reading was actually made. Not a tutorial — a record of the decisions, the trade-offs, and the one platform surprise that had me scratching my head. This all took about 2 hours to put together, while the England vs Ghana world cup match played in the background.
 
 The short version: it's a static [Astro](https://astro.build/) site with a single React island, compiled and bundled by Vite, deployed to Cloudflare Pages, with every piece of infrastructure — DNS, the Pages project, zone settings, even the Terraform state bucket — managed in Terraform against Cloudflare. No AWS. Secrets live in 1Password and are mounted at runtime; none of them are in the repository.
 
@@ -20,23 +20,38 @@ The short version: it's a static [Astro](https://astro.build/) site with a singl
 - **npm workspaces** holding it together as a monorepo.
 - **Node 26**, pinned to match CI exactly.
 
-## A monorepo, even for one site
+## A monorepo, even for one simple site?
 
 A single static site doesn't need a monorepo. I used one anyway, because I'd rather grow into structure than retrofit it later.
 
 ```
-code/app/web/      the Astro site — where the work happens
-code/app/shared/   cross-package constants and types
-code/app/server/   placeholder for future Cloudflare Workers
-code/bin/          small ops CLIs (a Terraform plan filter for CI)
-infrastructure/    Terraform — Cloudflare only
+.
+├── code/
+│   ├── app/
+│   │   ├── web/           Astro site — where the work happens
+│   │   ├── shared/        cross-package constants and types
+│   │   └── server/        placeholder for future Cloudflare Workers
+│   └── bin/               ops CLIs (Terraform plan filter for CI)
+└── infrastructure/        Terraform — Cloudflare only
 ```
 
 The root orchestrates everything through npm workspace scripts, and Vitest runs the `shared` and `web` projects together. The shared package already earns its keep: site metadata (name, URL, nav, social links) lives in one typed module that both the build and the tests import.
 
+<figure>
+  <img
+    src="/blog/expanding-brain.webp"
+    alt="Expanding brain meme: a single index.html file, npm workspaces, Vitest with Playwright and Chromium, then Terraform and 1Password for a one-page static site."
+    width="480"
+    height="672"
+    loading="lazy"
+    decoding="async"
+  />
+  <figcaption>The inevitable trajectory.</figcaption>
+</figure>
+
 ## Astro, React islands, and a build-only compiler
 
-Astro's model fits a content site perfectly: ship HTML, hydrate only what needs to be interactive. On this site, exactly one thing needs JavaScript — the light/dark theme toggle — so exactly one thing is a React island. Everything else is static markup generated at build time.
+Astro's model fits a content site perfectly: ship HTML, hydrate only what needs to be interactive. On this site, exactly one thing needs JavaScript, for now — the light/dark theme toggle — so exactly one thing is a [React island](https://docs.astro.build/en/concepts/islands/). Everything else is static markup generated at build time.
 
 The interesting wrinkle is the **React Compiler**. I wanted its automatic memoization in production, but it has no business running inside the test bundle. So it lives only in the Astro/Vite build, wired in through Babel:
 

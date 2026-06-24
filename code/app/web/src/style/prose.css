@@ -102,6 +102,10 @@
   margin: 2em 0;
 }
 
+.prose figure img {
+  margin-inline: auto;
+}
+
 .prose figcaption {
   margin-top: 0.6em;
   color: var(--text-muted);
