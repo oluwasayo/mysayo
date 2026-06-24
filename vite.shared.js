@@ -13,9 +13,12 @@ const generatedAndBoilerplateCoverageExcludes = [
 
 export const sharedTestConfig = {
   coverage: {
+    excludeAfterRemap: true,
+    include: ['src/**/*.{ts,tsx}'],
     exclude: [
       ...coverageConfigDefaults.exclude,
       ...generatedAndBoilerplateCoverageExcludes,
+      '**/node_modules/**',
     ],
     provider: 'v8',
     reporter: ['text', 'json-summary', 'json'],
