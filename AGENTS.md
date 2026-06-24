@@ -22,7 +22,7 @@ Human-oriented onboarding lives in [README.md](./README.md).
 ## Monorepo layout
 
 ```
-code/app/web/       Astro + React islands + Mantine — SHIP HERE for site work
+code/app/web/       Astro + React islands + hand-rolled CSS — SHIP HERE for site work
 code/app/shared/    Cross-package constants (minimal today)
 code/app/server/    Placeholder — future Workers/DO; no runtime yet
 code/bin/           filter-terraform-plan CLI for CI
@@ -121,7 +121,7 @@ This is a known pre-bundle/interop issue. Test component **behavior**, not compi
 
 - **Vitest browser mode** + **Playwright Chromium** (headless)
 - **Not jsdom** — removed intentionally
-- Setup: `vitest.setup.ts` — Mantine CSS, `@testing-library/jest-dom`, RTL `cleanup`, `ResizeObserver` rAF shim, console error filtering
+- Setup: `vitest.setup.ts` — `@testing-library/jest-dom`, RTL `cleanup`, `ResizeObserver` rAF shim, console error filtering
 - CI caches Playwright binaries keyed on lockfile version; installs Chromium before tests
 
 Do not reintroduce jsdom without an explicit user request and a documented reason.
@@ -254,7 +254,7 @@ Wrangler version in CI: `4.104.0` (keep in sync with `code/app/web` devDependenc
 
 ```typescript
 // web — always alias
-import Welcome from '@/component/Welcome'
+import ThemeToggle from '@/component/ThemeToggle'
 import { siteName } from '@shared/lib/site'
 
 // shared — always @shared/ for internal paths (when applicable)
@@ -269,15 +269,24 @@ import { siteName } from '@shared/lib/site'
 
 ### CSS
 
-- Mantine: `@mantine/core/styles.css` in pages or test setup
-- Global styles: `code/app/web/src/style/global.css`
-- PostCSS: Mantine preset in `postcss.config.cjs`
+- **Hand-rolled design system** — no component/UI library. Flat (no border radius), editorial, mobile-first.
+- Design tokens + base/layout/components: `code/app/web/src/style/global.css`
+- Long-form article typography: `code/app/web/src/style/prose.css`
+- Theming: light/dark driven by `data-theme` on `<html>`, set before paint by an inline script in `BaseHead.astro`, with a `prefers-color-scheme` fallback for no-JS visitors
+- No PostCSS config; Astro/Vite handle CSS. Stylelint uses **modern color notation** (`rgb(... / ..%)`), kebab-case classes
 
 ### New files
 
 - Tests colocated: `Component.test.tsx` next to `Component.tsx`
 - Shared logic → `code/app/shared` if used by more than one workspace
 - Do not add AWS/Terraform for non-Cloudflare resources without explicit request
+
+### Content (blog)
+
+- Blog posts are Markdown in `code/app/web/src/content/blog/*.md`
+- Schema in `code/app/web/src/content.config.ts` (Astro content layer, `glob` loader)
+- **Every post must have `pubDate`** (plus `title`, `description`); `updatedDate` and `draft` are optional
+- After adding/changing collections, `npm run tsc` runs `astro sync` first to regenerate `astro:content` types
 
 ---
 
@@ -333,7 +342,7 @@ After major upgrades, verify:
 3. React Compiler still works in dev/build (not tests)
 4. CI wrangler version if wrangler major changed
 
-Recent stack (as scaffolded): Astro 7, Vite 8, `@astrojs/react` 6, `@vitejs/plugin-react` 6, TypeScript 7 RC, Vitest 4, Mantine 9, Wrangler 4.
+Recent stack: Astro 7, Vite 8, `@astrojs/react` 6, `@vitejs/plugin-react` 6, TypeScript 7 RC, Vitest 4, Wrangler 4. UI is a hand-rolled CSS design system (no component library).
 
 ---
 

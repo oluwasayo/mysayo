@@ -1,0 +1,49 @@
+---
+import Layout from '@/layout/Layout.astro'
+import { formatDate, toISODate } from '@/lib/date'
+import { getPublishedPosts } from '@/lib/posts'
+import '@/style/prose.css'
+import { render } from 'astro:content'
+
+export async function getStaticPaths() {
+  const posts = await getPublishedPosts()
+  return posts.map(post => ({ params: { slug: post.id }, props: { post } }))
+}
+
+const { post } = Astro.props
+const { Content } = await render(post)
+const { description, pubDate, title, updatedDate } = post.data
+---
+
+<Layout
+  title={title}
+  description={description}
+  ogType="article"
+  publishedTime={pubDate.toISOString()}
+>
+
+  <article class="wrap wrap-text">
+    <header class="article__header">
+      <p class="eyebrow">Writing</p>
+      <h1 class="article__title">{title}</h1>
+      <div class="article__meta">
+        <time class="post-date" datetime={toISODate(pubDate)}>
+          {formatDate(pubDate)}
+        </time>
+        {
+          updatedDate && (
+            <span class="post-date muted">
+              Updated {formatDate(updatedDate)}
+            </span>
+          )
+        }
+      </div>
+    </header>
+
+    <div class="prose">
+      <Content />
+    </div>
+
+    <a class="back-link" href="/blog">← All writing</a>
+  </article>
+</Layout>

@@ -1,0 +1,28 @@
+---
+import { formatDate, toISODate } from '@/lib/date'
+import type { CollectionEntry } from 'astro:content'
+
+type Props = {
+  posts: CollectionEntry<'blog'>[]
+}
+
+const { posts } = Astro.props
+---
+
+<ul class="post-list">
+  {
+    posts.map(post => (
+      <li class="post-item">
+        <a class="post-link" href={`/blog/${post.id}`}>
+          <time class="post-date" datetime={toISODate(post.data.pubDate)}>
+            {formatDate(post.data.pubDate)}
+          </time>
+          <span class="post-link__body">
+            <span class="post-link__title">{post.data.title}</span>
+            <span class="post-link__desc">{post.data.description}</span>
+          </span>
+        </a>
+      </li>
+    ))
+  }
+</ul>

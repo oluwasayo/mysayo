@@ -84,7 +84,7 @@ mysayo/
 | Layer | Choice |
 | --- | --- |
 | Site framework | [Astro 7](https://astro.build/) (static output) |
-| UI islands | React 19 + [Mantine 9](https://mantine.dev/) |
+| UI | Hand-rolled flat CSS design system (no component library); React 19 islands only where interactive |
 | React Compiler | `@rolldown/plugin-babel` + `reactCompilerPreset()` in `astro.config.mjs` (build/dev only) |
 | Bundler | Vite 8 (via Astro) |
 | Language | TypeScript 7 RC (`tsc`, not `tsgo`) |
@@ -188,7 +188,7 @@ npm run test:coverage    # with v8 coverage
 
 **React Compiler in tests:** intentionally **off**. Vitest uses plain `@vitejs/plugin-react`. The compiler runs only in `astro.config.mjs` for dev/build. Enabling the compiler in browser tests breaks on `react-compiler-runtime` pre-bundling.
 
-Web test setup (`vitest.setup.ts`): Mantine CSS import, RTL cleanup, `ResizeObserver` shim, filtered console noise.
+Web test setup (`vitest.setup.ts`): RTL cleanup, `ResizeObserver` shim, filtered console noise.
 
 ---
 

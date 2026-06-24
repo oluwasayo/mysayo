@@ -1,0 +1,61 @@
+---
+import { siteDescription, siteName, siteUrl } from '@shared/lib/site'
+import '@/style/global.css'
+
+type Props = {
+  title: string
+  description?: string
+  ogType?: 'website' | 'article'
+  publishedTime?: string
+}
+
+const {
+  title,
+  description = siteDescription,
+  ogType = 'website',
+  publishedTime,
+} = Astro.props
+const canonical = new URL(Astro.url.pathname, siteUrl).href
+---
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="generator" content={Astro.generator} />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="canonical" href={canonical} />
+
+<title>{title}</title>
+<meta name="description" content={description} />
+
+<meta property="og:type" content={ogType} />
+<meta property="og:site_name" content={siteName} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+{
+  ogType === 'article' && publishedTime && (
+    <meta property="article:published_time" content={publishedTime} />
+  )
+}
+<meta name="twitter:card" content="summary" />
+
+<script is:inline>
+  ;(() => {
+    let stored = null
+    try {
+      stored = localStorage.getItem('theme')
+    } catch {
+      stored = null
+    }
+    const prefersDark =
+      typeof window.matchMedia === 'function' &&
+      window.matchMedia('(prefers-color-scheme: dark)').matches
+    const theme =
+      stored === 'light' || stored === 'dark'
+        ? stored
+        : prefersDark
+          ? 'dark'
+          : 'light'
+    document.documentElement.dataset.theme = theme
+  })()
+</script>
