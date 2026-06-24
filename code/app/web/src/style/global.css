@@ -8,6 +8,7 @@
   --font-sans:
     ui-sans-serif, system-ui, -apple-system, "Segoe UI", roboto, helvetica,
     arial, sans-serif;
+  --font-serif: "Source Serif 4", georgia, "Times New Roman", serif;
   --font-mono:
     ui-monospace, sfmono-regular, "SF Mono", menlo, consolas, "Liberation Mono",
     monospace;
@@ -25,13 +26,31 @@
   --radius: 0;
   --border-thin: 1px solid var(--border);
   --width-wide: 60rem;
-  --width-text: 42rem;
+  --width-text: 50rem;
   --gutter: clamp(1.25rem, 5vw, 2.5rem);
   --step-0: 1.0625rem;
+  --step-prose: 1.125rem;
   --step-1: 1.25rem;
   --step-2: 1.5rem;
   --step-3: clamp(1.75rem, 1.4rem + 1.6vw, 2.25rem);
   --step-4: clamp(2.25rem, 1.7rem + 2.6vw, 3.25rem);
+
+  /*
+   * Code highlighting — Shiki "css-variables" theme.
+   * Duotone: neutral text/grays + the orange accent. Values reference the theme
+   * tokens above, so they adapt to light/dark automatically.
+   */
+  --astro-code-foreground: var(--text);
+  --astro-code-background: var(--bg-subtle);
+  --astro-code-token-comment: var(--text-muted);
+  --astro-code-token-punctuation: var(--text-muted);
+  --astro-code-token-parameter: var(--text);
+  --astro-code-token-function: var(--accent);
+  --astro-code-token-keyword: var(--accent);
+  --astro-code-token-constant: var(--accent);
+  --astro-code-token-link: var(--accent);
+  --astro-code-token-string: var(--accent-strong);
+  --astro-code-token-string-expression: var(--accent-strong);
 
   color-scheme: light;
 }
@@ -363,8 +382,17 @@ img {
 
 /* Home */
 
+.hero h1,
+.article__title,
+.prose h2,
+.prose h3 {
+  font-family: var(--font-serif);
+  letter-spacing: -0.02em;
+}
+
 .hero h1 {
   max-width: 18ch;
+  letter-spacing: -0.025em;
 }
 
 .hero__lead {
@@ -464,6 +492,34 @@ img {
   flex-wrap: wrap;
   gap: 0.5rem 1rem;
   margin-top: 1rem;
+}
+
+.article__source {
+  color: var(--accent);
+  text-decoration-color: var(--accent);
+}
+
+.article__source:hover {
+  text-decoration-thickness: 2px;
+}
+
+.post-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.post-tag {
+  display: inline-block;
+  padding: 0.2em 0.55em;
+  border: var(--border-thin);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
 }
 
 .back-link {

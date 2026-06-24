@@ -270,6 +270,7 @@ import { siteName } from '@shared/lib/site'
 ### CSS
 
 - **Hand-rolled design system** — no component/UI library. Flat (no border radius), editorial, mobile-first.
+- **Typography** — Source Serif 4 for display headings (hero, article titles, essay h2/h3); system sans for body and UI; mono for meta/dates/code
 - Design tokens + base/layout/components: `code/app/web/src/style/global.css`
 - Long-form article typography: `code/app/web/src/style/prose.css`
 - Theming: light/dark driven by `data-theme` on `<html>`, set before paint by an inline script in `BaseHead.astro`, with a `prefers-color-scheme` fallback for no-JS visitors
@@ -284,8 +285,13 @@ import { siteName } from '@shared/lib/site'
 ### Content (blog)
 
 - Blog posts are Markdown in `code/app/web/src/content/blog/*.md`
-- Schema in `code/app/web/src/content.config.ts` (Astro content layer, `glob` loader)
-- **Every post must have `pubDate`** (plus `title`, `description`); `updatedDate` and `draft` are optional
+- Schema in `code/app/web/src/content.config.ts` (Astro content layer, `glob` loader with flat `*.md` pattern)
+- **Every post must have `slug`, `title`, `description`, and `pubDate`**; `updatedDate`, `draft`, and `tags` are optional
+- **`slug` is the permanent permalink** — lowercase kebab-case, set at publish time, used in URLs as `/blog/{slug}`. It is independent of the filename (`post.id`), though matching them is fine for editor convenience
+- **Never change a published `slug`** without adding a 301 redirect in `code/app/web/public/_redirects` (Cloudflare Pages). Title and body edits are safe; slug changes break inbound links
+- **Tags** — optional array of values from `Tag` in `code/app/web/src/lib/tags.ts`. Add new tags only in that file (`Tag` const, `tagLabels`, `tagSlugs`). Never rename a tag value after publish; display uses `tagLabels`, future archive URLs use `tagSlugs`
+- Use `getPostSlug()` from `@/lib/posts` for hrefs and routes; use `post.id` only for source-file links (`blogPostSourceUrl(post.id)`)
+- `getPublishedPosts()` throws at build time on duplicate slugs
 - After adding/changing collections, `npm run tsc` runs `astro sync` first to regenerate `astro:content` types
 
 ---

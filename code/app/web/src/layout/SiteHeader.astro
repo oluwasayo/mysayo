@@ -20,7 +20,11 @@ const isActive = (href: string) =>
             <a
               class="site-nav__link"
               href={item.href}
-              aria-current={isActive(item.href) ? 'page' : undefined}
+              aria-current={
+                item.external ? undefined : isActive(item.href) ? 'page' : undefined
+              }
+              rel={item.external ? 'noopener noreferrer' : undefined}
+              target={item.external ? '_blank' : undefined}
             >
               {item.label}
             </a>

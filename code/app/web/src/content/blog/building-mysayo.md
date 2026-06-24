@@ -1,7 +1,16 @@
 ---
 title: Building mysayo.com
 description: How I built this site — a static Astro front-end, a React Compiler island, and a Cloudflare-only stack managed entirely in Terraform, with secrets that never touch the repo.
+slug: building-mysayo
 pubDate: 2026-06-24
+tags:
+  - VIBE_CODING
+  - ARCHITECTURE
+  - ASTRO
+  - CLOUDFLARE
+  - TERRAFORM
+  - TESTING
+  - CURSOR
 ---
 
 I'd always loved the idea of having a personal website but never gotten around to building on. So I created an empty directory, ran `git init` and got to business. I wanted the first post to be the obvious one: how the thing you're reading was actually made. Not a tutorial — a record of the decisions, the trade-offs, and the one platform surprise that had me scratching my head. This all took about 2 hours to put together, while the England vs Ghana world cup match played in the background.
@@ -37,16 +46,18 @@ A single static site doesn't need a monorepo. I used one anyway, because I'd rat
 
 The root orchestrates everything through npm workspace scripts, and Vitest runs the `shared` and `web` projects together. The shared package already earns its keep: site metadata (name, URL, nav, social links) lives in one typed module that both the build and the tests import.
 
-<figure>
-  <img
-    src="/blog/expanding-brain.webp"
-    alt="Expanding brain meme: a single index.html file, npm workspaces, Vitest with Playwright and Chromium, then Terraform and 1Password for a one-page static site."
-    width="480"
-    height="672"
-    loading="lazy"
-    decoding="async"
-  />
-  <figcaption>The inevitable trajectory.</figcaption>
+<figure class="brain-meme">
+  <div class="brain-meme__grid">
+    <div class="brain-meme__cell brain-meme__text" data-level="1"><span class="brain-meme__step">01</span><span class="brain-meme__label">Create a single <code>index.html</code> file</span></div>
+    <div class="brain-meme__cell brain-meme__mind" data-level="1"><img class="brain-meme__brain" src="/blog/brain-1.webp" alt="" width="420" height="305" loading="lazy" decoding="async" /></div>
+    <div class="brain-meme__cell brain-meme__text" data-level="2"><span class="brain-meme__step">02</span><span class="brain-meme__label">Initialize npm workspaces</span></div>
+    <div class="brain-meme__cell brain-meme__mind" data-level="2"><img class="brain-meme__brain" src="/blog/brain-2.webp" alt="" width="420" height="309" loading="lazy" decoding="async" /></div>
+    <div class="brain-meme__cell brain-meme__text" data-level="3"><span class="brain-meme__step">03</span><span class="brain-meme__label">Add Vitest, Playwright, and Chromium</span></div>
+    <div class="brain-meme__cell brain-meme__mind" data-level="3"><img class="brain-meme__brain" src="/blog/brain-3.webp" alt="" width="420" height="281" loading="lazy" decoding="async" /></div>
+    <div class="brain-meme__cell brain-meme__text" data-level="4"><span class="brain-meme__step">04</span><span class="brain-meme__label">Manage secrets and infrastructure with Terraform and 1Password… for a one-page static site</span></div>
+    <div class="brain-meme__cell brain-meme__mind" data-level="4"><img class="brain-meme__brain" src="/blog/brain-4.webp" alt="" width="420" height="266" loading="lazy" decoding="async" /></div>
+  </div>
+  <figcaption class="brain-meme__caption">At least no Kubernetes. Yet.</figcaption>
 </figure>
 
 ## Astro, React islands, and a build-only compiler

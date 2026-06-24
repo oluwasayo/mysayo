@@ -1,18 +1,25 @@
 ---
 import Layout from '@/layout/Layout.astro'
+import PostTags from '@/component/PostTags.astro'
 import { formatDate, toISODate } from '@/lib/date'
-import { getPublishedPosts } from '@/lib/posts'
+import { getPostSlug, getPublishedPosts } from '@/lib/posts'
+import { blogPostSourceUrl, siteUrl, xDiscussUrl } from '@shared/lib/site'
 import '@/style/prose.css'
+import '@/style/expanding-brain.css'
 import { render } from 'astro:content'
 
 export async function getStaticPaths() {
   const posts = await getPublishedPosts()
-  return posts.map(post => ({ params: { slug: post.id }, props: { post } }))
+  return posts.map(post => ({
+    params: { slug: getPostSlug(post) },
+    props: { post },
+  }))
 }
 
 const { post } = Astro.props
 const { Content } = await render(post)
-const { description, pubDate, title, updatedDate } = post.data
+const { description, pubDate, tags, title, updatedDate } = post.data
+const postUrl = new URL(Astro.url.pathname, siteUrl).href
 ---
 
 <Layout
@@ -37,7 +44,24 @@ const { description, pubDate, title, updatedDate } = post.data
             </span>
           )
         }
+        <a
+          class="post-date article__source"
+          href={xDiscussUrl(postUrl)}
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          Discuss on X
+        </a>
+        <a
+          class="post-date article__source"
+          href={blogPostSourceUrl(post.id)}
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          View source
+        </a>
       </div>
+      <PostTags tags={tags} />
     </header>
 
     <div class="prose">

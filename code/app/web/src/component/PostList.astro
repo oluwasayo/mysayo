@@ -1,4 +1,5 @@
 ---
+import { getPostSlug } from '@/lib/posts'
 import { formatDate, toISODate } from '@/lib/date'
 import type { CollectionEntry } from 'astro:content'
 
@@ -13,7 +14,7 @@ const { posts } = Astro.props
   {
     posts.map(post => (
       <li class="post-item">
-        <a class="post-link" href={`/blog/${post.id}`}>
+        <a class="post-link" href={`/blog/${getPostSlug(post)}`}>
           <time class="post-date" datetime={toISODate(post.data.pubDate)}>
             {formatDate(post.data.pubDate)}
           </time>

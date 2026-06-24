@@ -8,6 +8,12 @@ export default defineConfig({
   integrations: [react()],
   output: 'static',
   site: 'https://mysayo.com',
+  markdown: {
+    shikiConfig: {
+      // Duotone palette driven by our design tokens (see --astro-code-* in global.css).
+      theme: 'css-variables',
+    },
+  },
   vite: {
     plugins: [babel({ presets: [reactCompilerPreset()] })],
     resolve: {

@@ -1,0 +1,116 @@
+/*
+ * Expanding-brain meme as an editorial 2x4 grid.
+ * Left column: mono step + label (theme-aware). Right column: the classic
+ * galaxy-brain levels, escalating from a dim x-ray to a cosmic burst. The images
+ * cover their cells edge-to-edge, so they carry their own dark canvas while the
+ * rest of the card follows the site's light/dark theme.
+ */
+
+.brain-meme {
+  margin: 2.25em 0;
+}
+
+.brain-meme__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 12rem;
+  max-width: 38rem;
+  margin-inline: auto;
+  border: var(--border-thin);
+  background: var(--bg-subtle);
+}
+
+.brain-meme__cell {
+  display: flex;
+  min-height: 4.75rem;
+  border-bottom: var(--border-thin);
+}
+
+.brain-meme__grid > :nth-last-child(1),
+.brain-meme__grid > :nth-last-child(2) {
+  border-bottom: 0;
+}
+
+.brain-meme__text {
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.95rem 1.2rem;
+}
+
+.brain-meme__mind {
+  align-items: stretch;
+  justify-content: stretch;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+}
+
+.brain-meme__step {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  color: var(--text-muted);
+}
+
+.brain-meme__cell[data-level="3"] .brain-meme__step,
+.brain-meme__cell[data-level="4"] .brain-meme__step {
+  color: var(--accent);
+}
+
+.brain-meme__label {
+  display: block;
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 1.0625rem;
+  font-weight: 500;
+  line-height: 1.45;
+  letter-spacing: -0.01em;
+  color: var(--text);
+}
+
+.brain-meme__cell[data-level="4"] .brain-meme__label {
+  font-weight: 600;
+}
+
+.brain-meme__label code {
+  padding: 0.12em 0.35em;
+  background: var(--bg);
+  border: var(--border-thin);
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+}
+
+.brain-meme__brain {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.brain-meme__caption {
+  margin-top: 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.02em;
+  text-align: center;
+  color: var(--text-muted);
+}
+
+@media (width < 34rem) {
+  .brain-meme__grid {
+    grid-template-columns: minmax(0, 1fr) 8rem;
+  }
+
+  .brain-meme__cell {
+    min-height: 4.5rem;
+  }
+
+  .brain-meme__text {
+    padding: 0.9rem 1rem;
+  }
+
+  .brain-meme__label {
+    font-size: 0.95rem;
+  }
+}

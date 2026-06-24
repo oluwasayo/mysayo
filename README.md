@@ -1,14 +1,18 @@
 # mysayo
 
+**Live site → [mysayo.com](https://mysayo.com)**
+
+Open-source personal website and writing. This repo holds the Astro site, Cloudflare Terraform infra, and CI.
+
+**Repository → [github.com/oluwasayo/mysayo](https://github.com/oluwasayo/mysayo)**
+
 [![Node.js](https://img.shields.io/badge/Node.js-26-green.svg)](https://nodejs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-7.0--rc-blue.svg)](https://www.typescriptlang.org/)
 [![Astro](https://img.shields.io/badge/Astro-7-orange.svg)](https://astro.build/)
 [![React](https://img.shields.io/badge/React-19-blue.svg)](https://react.dev/)
 [![Cloudflare](https://img.shields.io/badge/Cloudflare-Pages%20%2B%20Terraform-orange.svg)](https://www.cloudflare.com/)
 
-Personal website for [mysayo.com](https://mysayo.com). Static Astro site with React islands, deployed to Cloudflare Pages. Infrastructure (DNS, Pages project config, zone settings, Terraform state) is managed with Terraform and stored in Cloudflare R2.
-
-Repository: [github.com/oluwasayo/mysayo](https://github.com/oluwasayo/mysayo)
+Static Astro site with React islands, deployed to Cloudflare Pages. Infrastructure (DNS, Pages project config, zone settings, Terraform state) is managed with Terraform and stored in Cloudflare R2.
 
 ## Table of contents
 
