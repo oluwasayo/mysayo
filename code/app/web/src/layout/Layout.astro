@@ -1,26 +1,42 @@
 ---
-import { siteName } from '@shared/lib/site'
+import BaseHead from '@/layout/BaseHead.astro'
+import SiteFooter from '@/layout/SiteFooter.astro'
+import SiteHeader from '@/layout/SiteHeader.astro'
+import { siteName, siteTagline } from '@shared/lib/site'
 
 type Props = {
-  title: string
+  title?: string
+  description?: string
+  ogType?: 'website' | 'article'
+  publishedTime?: string
+  modifiedTime?: string
+  styles?: string[]
 }
 
-const { title } = Astro.props
+const { title, description, ogType, publishedTime, modifiedTime, styles } =
+  Astro.props
+const pageTitle = title ? `${title} · ${siteName}` : `${siteName} — ${siteTagline}`
 ---
 
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="description" content={`${siteName} personal website`} />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="generator" content={Astro.generator} />
-    <title>{title}</title>
+    <BaseHead
+      title={pageTitle}
+      headline={title}
+      description={description}
+      ogType={ogType}
+      publishedTime={publishedTime}
+      modifiedTime={modifiedTime}
+      styles={styles}
+    />
   </head>
   <body>
-    <main>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <SiteHeader />
+    <main id="main" class="page" tabindex="-1">
       <slot />
     </main>
+    <SiteFooter />
   </body>
 </html>

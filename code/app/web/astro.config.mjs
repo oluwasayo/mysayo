@@ -1,11 +1,21 @@
 import path from 'node:path'
 import react from '@astrojs/react'
+import sitemap from '@astrojs/sitemap'
 import babel from '@rolldown/plugin-babel'
 import { reactCompilerPreset } from '@vitejs/plugin-react'
 import { defineConfig } from 'astro/config'
 
 export default defineConfig({
-  integrations: [react()],
+  integrations: [
+    react(),
+    sitemap({ filter: page => !page.endsWith('/rss.xml') }),
+  ],
+  markdown: {
+    shikiConfig: {
+      // Duotone palette driven by our design tokens (see --astro-code-* in global.css).
+      theme: 'css-variables',
+    },
+  },
   output: 'static',
   site: 'https://mysayo.com',
   vite: {

@@ -30,8 +30,10 @@ locals {
   terraform_state_bucket = "${var.project}-${var.environment}-terraform-state"
 }
 
-# Bootstrap once with `wrangler r2 bucket create ...`, then import:
-# terraform import 'module.terraform_state[0].cloudflare_r2_bucket.state' '<account_id>/<bucket>/default'
+# Bootstrap once (see README.md § State bucket bootstrap), then import:
+#   wrangler r2 bucket create mysayo-production-terraform-state
+#   ./tf.sh init -backend-config=backend.hcl
+#   ./tf.sh import 'module.terraform_state[0].cloudflare_r2_bucket.state' '<account_id>/mysayo-production-terraform-state/default'
 module "terraform_state" {
   count  = var.cloudflare_api_token != null ? 1 : 0
   source = "./cloudflare/r2-terraform-state"

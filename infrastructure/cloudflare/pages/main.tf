@@ -1,4 +1,4 @@
-# Mitigate cloudflare_pages_project plan drift per:
+# Align cloudflare_pages_project with the recommended Wrangler-first bootstrap:
 # https://github.com/cloudflare/terraform-provider-cloudflare/issues/5928#issuecomment-3660180957
 # Requires the Pages project to exist before the first plan (create with wrangler first).
 data "cloudflare_pages_project" "current" {

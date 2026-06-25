@@ -22,7 +22,7 @@ Human-oriented onboarding lives in [README.md](./README.md).
 ## Monorepo layout
 
 ```
-code/app/web/       Astro + React islands + Mantine — SHIP HERE for site work
+code/app/web/       Astro + React islands + hand-rolled CSS — SHIP HERE for site work
 code/app/shared/    Cross-package constants (minimal today)
 code/app/server/    Placeholder — future Workers/DO; no runtime yet
 code/bin/           filter-terraform-plan CLI for CI
@@ -121,7 +121,7 @@ This is a known pre-bundle/interop issue. Test component **behavior**, not compi
 
 - **Vitest browser mode** + **Playwright Chromium** (headless)
 - **Not jsdom** — removed intentionally
-- Setup: `vitest.setup.ts` — Mantine CSS, `@testing-library/jest-dom`, RTL `cleanup`, `ResizeObserver` rAF shim, console error filtering
+- Setup: `vitest.setup.ts` — `@testing-library/jest-dom`, RTL `cleanup`, `ResizeObserver` rAF shim, console error filtering
 - CI caches Playwright binaries keyed on lockfile version; installs Chromium before tests
 
 Do not reintroduce jsdom without an explicit user request and a documented reason.
@@ -203,9 +203,38 @@ Variables defaults: `domain = mysayo.com`, `pages_project_name = mysayo-web`, `p
 
 Modules are gated with `count = var.cloudflare_api_token != null ? 1 : 0` so validate works without creds locally in some contexts; real plans need tokens.
 
+### State bucket bootstrap (first-time only)
+
+```bash
+cd code/app/web
+npx wrangler r2 bucket create mysayo-production-terraform-state
+
+cd ../..
+cp infrastructure/backend.hcl.example infrastructure/backend.hcl
+# Set endpoint: https://<CLOUDFLARE_ACCOUNT_ID>.r2.cloudflarestorage.com
+
+./tf.sh init -backend-config=backend.hcl
+
+./tf.sh import \
+  'module.terraform_state[0].cloudflare_r2_bucket.state' \
+  '<CLOUDFLARE_ACCOUNT_ID>/mysayo-production-terraform-state/default'
+```
+
+Bucket name pattern: `${project}-${environment}-terraform-state` (default `mysayo-production-terraform-state`).
+
 ### Pages project bootstrap (critical)
 
-1. **Create project with Wrangler first** — Terraform data source reads existing project to avoid plan drift ([cloudflare/terraform-provider-cloudflare#5928](https://github.com/cloudflare/terraform-provider-cloudflare/issues/5928))
+```bash
+cd code/app/web
+npx wrangler pages project create mysayo-web --production-branch main
+
+cd ../..
+./tf.sh import \
+  'module.cloudflare_pages[0].cloudflare_pages_project.web' \
+  '<CLOUDFLARE_ACCOUNT_ID>/mysayo-web'
+```
+
+1. **Create project with Wrangler first** — recommended Pages bootstrap; use a data source so computed fields stay aligned with the live project ([terraform-provider-cloudflare#5928](https://github.com/cloudflare/terraform-provider-cloudflare/issues/5928))
 2. **Import** `cloudflare_pages_project.web` before first apply
 3. Do **not** reintroduce a `pages_project_exists` toggle — bootstrap is Wrangler-first by design
 
@@ -254,7 +283,7 @@ Wrangler version in CI: `4.104.0` (keep in sync with `code/app/web` devDependenc
 
 ```typescript
 // web — always alias
-import Welcome from '@/component/Welcome'
+import ThemeToggle from '@/component/ThemeToggle'
 import { siteName } from '@shared/lib/site'
 
 // shared — always @shared/ for internal paths (when applicable)
@@ -269,15 +298,30 @@ import { siteName } from '@shared/lib/site'
 
 ### CSS
 
-- Mantine: `@mantine/core/styles.css` in pages or test setup
-- Global styles: `code/app/web/src/style/global.css`
-- PostCSS: Mantine preset in `postcss.config.cjs`
+- **Hand-rolled design system** — no component/UI library. Flat (no border radius), editorial, mobile-first.
+- **Typography** — Source Serif 4 for display headings (hero, article titles, essay h2/h3); system sans for body and UI; mono for meta/dates/code
+- Design tokens + base/layout/components: `code/app/web/src/style/global.css`
+- Long-form article typography: `code/app/web/src/style/prose.css`
+- Theming: light/dark driven by `data-theme` on `<html>`, set before paint by an inline script in `BaseHead.astro`, with a `prefers-color-scheme` fallback for no-JS visitors
+- No PostCSS config; Astro/Vite handle CSS. Stylelint uses **modern color notation** (`rgb(... / ..%)`), kebab-case classes
 
 ### New files
 
 - Tests colocated: `Component.test.tsx` next to `Component.tsx`
 - Shared logic → `code/app/shared` if used by more than one workspace
 - Do not add AWS/Terraform for non-Cloudflare resources without explicit request
+
+### Content (blog)
+
+- Blog posts are Markdown in `code/app/web/src/content/blog/*.md`
+- Schema in `code/app/web/src/content.config.ts` (Astro content layer, `glob` loader with flat `*.md` pattern)
+- **Every post must have `slug`, `title`, `description`, and `pubDate`**; `updatedDate`, `draft`, and `tags` are optional
+- **`slug` is the permanent permalink** — lowercase kebab-case, set at publish time, used in URLs as `/blog/{slug}`. It is independent of the filename (`post.id`), though matching them is fine for editor convenience
+- **Never change a published `slug`** without adding a 301 redirect in `code/app/web/public/_redirects` (Cloudflare Pages). Title and body edits are safe; slug changes break inbound links
+- **Tags** — optional array of values from `Tag` in `code/app/web/src/lib/tag.ts`. Add new tags only to the `Tag` const; labels and slugs are derived via `enumValueToText` / `enumValueToSlug` in `@shared/lib/enum`. Never rename a tag value after publish
+- Use `getPostSlug()` from `@/lib/post` for hrefs and routes; use `post.id` only for source-file links (`blogPostSourceUrl(post.id)`)
+- `getPublishedPosts()` throws at build time on duplicate slugs
+- After adding/changing collections, `npm run tsc` runs `astro sync` first to regenerate `astro:content` types
 
 ---
 
@@ -320,11 +364,16 @@ import { siteName } from '@shared/lib/site'
 
 ## Dependency upgrades
 
+Routine bumps follow the same three tracks as the Cursor Automations — use **`/bump-dependencies`** in chat or run manually:
+
 ```bash
 npm run bump-deps    # ncu across workspaces with 5-day cooldown
 npm install
+npm audit fix
 npm run test && npm run fix
 ```
+
+See `.cursor/commands/bump-dependencies.md` for the full bump workflow: read release notes from current → target version (npm, GHA, and each Terraform provider), then apply, audit-fix, validate, and plan. **Local agents** run `./tf.sh plan` when credentials are available; **cloud agents** open a PR and use `/loop-on-ci` to review the plan posted by `infrastructure-validate.yml`.
 
 After major upgrades, verify:
 
@@ -333,7 +382,7 @@ After major upgrades, verify:
 3. React Compiler still works in dev/build (not tests)
 4. CI wrangler version if wrangler major changed
 
-Recent stack (as scaffolded): Astro 7, Vite 8, `@astrojs/react` 6, `@vitejs/plugin-react` 6, TypeScript 7 RC, Vitest 4, Mantine 9, Wrangler 4.
+Recent stack: Astro 7, Vite 8, `@astrojs/react` 6, `@vitejs/plugin-react` 6, TypeScript 7 RC, Vitest 4, Wrangler 4. UI is a hand-rolled CSS design system (no component library).
 
 ---
 

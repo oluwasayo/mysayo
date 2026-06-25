@@ -17,7 +17,6 @@ on:
 jobs:
   validate-web:
     uses: ./.github/workflows/web-checks-reusable.yml
-    secrets: inherit
     with:
       upload_test_report: true
 

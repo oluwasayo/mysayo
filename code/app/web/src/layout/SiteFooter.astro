@@ -1,0 +1,14 @@
+---
+import { siteAuthor, socialLinks } from '@shared/lib/site'
+
+const year = new Date().getFullYear()
+---
+
+<footer class="site-footer">
+  <div class="wrap site-footer__inner">
+    <p>© {year} {siteAuthor}</p>
+    <nav class="site-footer__links" aria-label="Elsewhere">
+      {socialLinks.map(link => <a href={link.href}>{link.label}</a>)}
+    </nav>
+  </div>
+</footer>

@@ -1,22 +1,13 @@
-:root {
-  color-scheme: light dark;
-  font-family: Inter, system-ui, -apple-system, sans-serif;
-  line-height: 1.5;
-}
+/*
+ * mysayo design system — flat, editorial, mobile-first.
+ * Barrel: import partials in cascade order (tokens first, page layers last).
+ * Long-form post typography lives in prose.css; bespoke per-post styles are
+ * colocated under src/content/blog/<slug>.css and linked by [slug].astro.
+ */
 
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  min-height: 100vh;
-}
-
-main {
-  margin: 0 auto;
-  max-width: 64rem;
-  padding: 2rem 1.5rem 4rem;
-}
+@import url("./tokens.css");
+@import url("./base.css");
+@import url("./utilities.css");
+@import url("./chrome.css");
+@import url("./home.css");
+@import url("./article.css");

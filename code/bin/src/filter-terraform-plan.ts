@@ -11,7 +11,8 @@ import {
 
 const validOptions = {
   '--ci': {
-    description: 'CI mode: exit with code 0 if only nonsensical changes exist',
+    description:
+      'CI mode: exit with code 0 if plan diff is limited to known benign Pages fields',
     name: 'ci',
     type: 'boolean',
   },
@@ -63,7 +64,7 @@ function filterPlan(planOutput: string) {
   return planOutput
 }
 
-function hasOnlyNonsensicalChanges(planOutput: string) {
+function hasOnlyBenignPagesPlanDiff(planOutput: string) {
   return /Plan: 0 to add, 1 to change, 0 to destroy\./.test(planOutput)
 }
 
@@ -91,8 +92,8 @@ async function main() {
   writeFileSync(outputPath, filtered)
   printStatus(`Filtered plan written to ${outputPath}`)
 
-  if (args.ci && hasOnlyNonsensicalChanges(filtered)) {
-    printStatus('Only nonsensical Cloudflare Pages drift detected; exiting 0')
+  if (args.ci && hasOnlyBenignPagesPlanDiff(filtered)) {
+    printStatus('Only known benign Pages plan diff detected; exiting 0')
     process.exit(0)
   }
 }

@@ -11,13 +11,15 @@
   ],
   "dependencies": {
     "@astrojs/react": "6.0.0",
-    "@mantine/core": "9.4.0",
-    "@mantine/hooks": "9.4.0",
-    "@tabler/icons-react": "3.44.0",
+    "@astrojs/rss": "4.0.18",
+    "@astrojs/sitemap": "3.7.3",
+    "@resvg/resvg-js": "2.6.2",
     "astro": "7.0.2",
     "react": "19.2.7",
     "react-compiler-runtime": "1.0.0",
-    "react-dom": "19.2.7"
+    "react-dom": "19.2.7",
+    "satori": "0.26.0",
+    "satori-html": "0.3.2"
   },
   "description": "Personal website",
   "devDependencies": {
@@ -34,9 +36,6 @@
     "@vitest/browser-playwright": "4.1.9",
     "babel-plugin-react-compiler": "1.0.0",
     "playwright": "1.61.0",
-    "postcss": "8.5.15",
-    "postcss-preset-mantine": "1.18.0",
-    "postcss-simple-vars": "7.0.1",
     "stylelint": "17.13.0",
     "stylelint-config-css-modules": "4.6.0",
     "stylelint-config-standard": "40.0.0",
@@ -55,7 +54,7 @@
     "clean": "find src -type f -name \"*.js\" -delete 2>/dev/null || true && rm -rf dist .astro coverage",
     "deploy": "npm run build && wrangler pages deploy",
     "dev:web": "astro dev",
-    "fix": "npm run clean && tsc && npm run lint:fix",
+    "fix": "npm run clean && npm run tsc && npm run lint:fix",
     "install:testing:deps": "npx playwright install chromium --with-deps",
     "lint": "biome check . && npm run -s stylelint",
     "lint:fix": "biome check . --write && npm run -s stylelint:fix",
@@ -65,7 +64,7 @@
     "test": "vitest run",
     "test:ci": "vitest run --silent --reporter=junit --outputFile=./test-results/junit.xml",
     "test:coverage": "vitest run --coverage",
-    "tsc": "tsc"
+    "tsc": "astro sync && tsc"
   },
   "type": "module",
   "version": "0.0.1"

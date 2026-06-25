@@ -1,6 +1,7 @@
 variable "cloudflare_account_id" {
   description = "Cloudflare Account ID"
   nullable    = true
+  sensitive   = true
   type        = string
   default     = null
 }
@@ -16,6 +17,7 @@ variable "cloudflare_api_token" {
 variable "cloudflare_zone_id" {
   description = "Cloudflare Zone ID for the domain"
   nullable    = true
+  sensitive   = true
   type        = string
   default     = null
 }

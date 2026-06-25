@@ -1,0 +1,26 @@
+---
+import PostList from '@/component/PostList.astro'
+import Layout from '@/layout/Layout.astro'
+import { getPublishedPosts } from '@/lib/post'
+
+const posts = await getPublishedPosts()
+---
+
+<Layout
+  title="Writing"
+  description="Long-form notes on building software, systems, and this site."
+>
+  <div class="wrap">
+    <header class="hero">
+      <p class="eyebrow">Writing</p>
+      <h1>Notes &amp; essays</h1>
+      <p class="lead hero__lead">
+        Long-form notes on building software, systems, and this site.
+      </p>
+    </header>
+
+    <div class="home-section">
+      <PostList posts={posts} />
+    </div>
+  </div>
+</Layout>
