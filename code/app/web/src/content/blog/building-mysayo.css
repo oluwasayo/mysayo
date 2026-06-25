@@ -1,4 +1,7 @@
 /*
+ * Post-specific styles for building-mysayo, colocated with the markdown.
+ * Linked automatically by [slug].astro because the basename matches post.id.
+ *
  * Expanding-brain meme as an editorial 2x4 grid.
  * Left column: mono step + label (theme-aware). Right column: the classic
  * galaxy-brain levels, escalating from a dim x-ray to a cosmic burst. The images

@@ -1,7 +1,7 @@
 import { defineCollection, z } from 'astro:content'
 import { glob } from 'astro/loaders'
 
-import { tagValues } from '@/lib/tags'
+import { tagValues } from '@/lib/tag'
 
 const blog = defineCollection({
   loader: glob({ base: './src/content/blog', pattern: '*.md' }),

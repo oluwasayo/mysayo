@@ -55,6 +55,7 @@ infrastructure/backend.hcl
 **/.env
 **/.env.*
 !**/.env.example
+**/.dev.vars
 
 # Avoid committing any mistakenly compiled JS.
 code/app/**/src/**/*.js

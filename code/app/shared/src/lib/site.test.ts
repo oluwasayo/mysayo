@@ -1,9 +1,17 @@
-import { siteName, xDiscussUrl } from '@shared/lib/site'
+import { blogPostSourceUrl, siteName, xDiscussUrl } from '@shared/lib/site'
 import { describe, expect, it } from 'vitest'
 
 describe('siteName', () => {
   it('is configured', () => {
     expect(siteName).toBe('mysayo')
+  })
+})
+
+describe('blogPostSourceUrl', () => {
+  it('points at the markdown source on GitHub', () => {
+    expect(blogPostSourceUrl('building-mysayo')).toBe(
+      'https://github.com/oluwasayo/mysayo/blob/main/code/app/web/src/content/blog/building-mysayo.md',
+    )
   })
 })
 

@@ -11,22 +11,106 @@
 }
 
 .prose h2 {
-  margin-top: 2.4em;
+  margin-top: 1.75em;
   margin-bottom: 0.6em;
-  font-size: var(--step-2);
+  font-size: var(--step-3);
   font-weight: 600;
 }
 
+/* Editorial drafting ruler — partial baseline + corner tick (see building-mysayo essay). */
+.prose h2.prose-heading-ruler {
+  overflow: visible;
+}
+
+.prose .prose-heading-ruler__mark {
+  position: relative;
+  --ruler-baseline: 0.11em;
+  --ruler-run: 0.4em;
+  --ruler-gap: 0.189em;
+  --ruler-tick-drop: 0.12em;
+  --ruler-tick-rise: 0.92em;
+  --ruler-fade: 0.45em;
+}
+
+.prose .prose-heading-ruler__tail {
+  display: inline-block;
+  width: var(--ruler-run);
+  pointer-events: none;
+}
+
+.prose .prose-heading-ruler__tick {
+  position: relative;
+  display: inline-block;
+  width: var(--ruler-gap);
+  pointer-events: none;
+}
+
+.prose .prose-heading-ruler__mark::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  left: 0;
+  bottom: var(--ruler-baseline);
+  height: 1px;
+  background: var(--text);
+  opacity: 0.42;
+  pointer-events: none;
+  mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    #000 var(--ruler-fade),
+    #000 calc(100% - var(--ruler-fade)),
+    transparent 100%
+  );
+  mask-repeat: no-repeat;
+  mask-size: 100% 100%;
+}
+
+.prose .prose-heading-ruler__tick::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: calc(
+    var(--ruler-baseline) -
+    var(--ruler-tick-drop) -
+    2 *
+    var(--ruler-run)
+  );
+  width: 1px;
+  height: calc(
+    var(--ruler-tick-rise) +
+    var(--ruler-tick-drop) +
+    2 *
+    var(--ruler-run)
+  );
+  background: var(--text);
+  opacity: 0.42;
+  pointer-events: none;
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0,
+    #000 var(--ruler-fade),
+    #000 calc(100% - var(--ruler-fade)),
+    transparent 100%
+  );
+  mask-repeat: no-repeat;
+  mask-size: 100% 100%;
+}
+
 .prose h3 {
-  margin-top: 2em;
+  margin-top: 1.5em;
   margin-bottom: 0.5em;
-  font-size: var(--step-1);
+  font-size: var(--step-2);
   font-weight: 600;
 }
 
 .prose h2 + p,
 .prose h3 + p {
   margin-top: 0;
+}
+
+.prose .accent-text {
+  color: var(--accent);
 }
 
 .prose a {

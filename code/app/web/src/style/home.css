@@ -1,0 +1,98 @@
+/* Home page: hero, section heads, and the shared post list. */
+
+.hero h1 {
+  max-width: 18ch;
+  letter-spacing: -0.025em;
+}
+
+.hero__lead {
+  max-width: 46ch;
+  margin-top: 1rem;
+}
+
+.home-section {
+  margin-top: clamp(3rem, 8vw, 4.5rem);
+}
+
+.home-section__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: var(--border-thin);
+}
+
+.home-section__head h2 {
+  margin: 0;
+  font-size: var(--step-2);
+}
+
+.text-link {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+/* Post list (home + blog index; .post-date is reused by article meta) */
+
+.post-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.post-item + .post-item {
+  margin-top: 0.5rem;
+  padding-top: 1.5rem;
+  border-top: var(--border-thin);
+}
+
+.post-item:first-child {
+  padding-top: 0;
+}
+
+.post-link {
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.75rem 0;
+  text-decoration: none;
+  color: inherit;
+}
+
+.post-link__title {
+  display: block;
+  font-size: var(--step-1);
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.post-link:hover .post-link__title {
+  color: var(--accent);
+}
+
+.post-link__desc {
+  display: block;
+  margin-top: 0.25rem;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+.post-date {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+
+@media (width >= 40rem) {
+  .post-link {
+    grid-template-columns: 9rem 1fr;
+    gap: 1.5rem;
+    align-items: baseline;
+  }
+
+  .post-link .post-date {
+    padding-top: 0.15rem;
+  }
+}

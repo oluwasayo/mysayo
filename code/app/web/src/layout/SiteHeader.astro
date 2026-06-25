@@ -18,7 +18,10 @@ const isActive = (href: string) =>
         {
           navItems.map(item => (
             <a
-              class="site-nav__link"
+              class:list={[
+                'site-nav__link',
+                item.external && 'site-nav__link--external',
+              ]}
               href={item.href}
               aria-current={
                 item.external ? undefined : isActive(item.href) ? 'page' : undefined
@@ -27,6 +30,9 @@ const isActive = (href: string) =>
               target={item.external ? '_blank' : undefined}
             >
               {item.label}
+              {item.external && (
+                <span class="visually-hidden"> (opens in new tab)</span>
+              )}
             </a>
           ))
         }

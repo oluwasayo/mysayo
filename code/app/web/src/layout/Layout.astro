@@ -9,9 +9,12 @@ type Props = {
   description?: string
   ogType?: 'website' | 'article'
   publishedTime?: string
+  modifiedTime?: string
+  styles?: string[]
 }
 
-const { title, description, ogType, publishedTime } = Astro.props
+const { title, description, ogType, publishedTime, modifiedTime, styles } =
+  Astro.props
 const pageTitle = title ? `${title} · ${siteName}` : `${siteName} — ${siteTagline}`
 ---
 
@@ -20,9 +23,12 @@ const pageTitle = title ? `${title} · ${siteName}` : `${siteName} — ${siteTag
   <head>
     <BaseHead
       title={pageTitle}
+      headline={title}
       description={description}
       ogType={ogType}
       publishedTime={publishedTime}
+      modifiedTime={modifiedTime}
+      styles={styles}
     />
   </head>
   <body>

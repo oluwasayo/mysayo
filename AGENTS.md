@@ -203,9 +203,38 @@ Variables defaults: `domain = mysayo.com`, `pages_project_name = mysayo-web`, `p
 
 Modules are gated with `count = var.cloudflare_api_token != null ? 1 : 0` so validate works without creds locally in some contexts; real plans need tokens.
 
+### State bucket bootstrap (first-time only)
+
+```bash
+cd code/app/web
+npx wrangler r2 bucket create mysayo-production-terraform-state
+
+cd ../..
+cp infrastructure/backend.hcl.example infrastructure/backend.hcl
+# Set endpoint: https://<CLOUDFLARE_ACCOUNT_ID>.r2.cloudflarestorage.com
+
+./tf.sh init -backend-config=backend.hcl
+
+./tf.sh import \
+  'module.terraform_state[0].cloudflare_r2_bucket.state' \
+  '<CLOUDFLARE_ACCOUNT_ID>/mysayo-production-terraform-state/default'
+```
+
+Bucket name pattern: `${project}-${environment}-terraform-state` (default `mysayo-production-terraform-state`).
+
 ### Pages project bootstrap (critical)
 
-1. **Create project with Wrangler first** — Terraform data source reads existing project to avoid plan drift ([cloudflare/terraform-provider-cloudflare#5928](https://github.com/cloudflare/terraform-provider-cloudflare/issues/5928))
+```bash
+cd code/app/web
+npx wrangler pages project create mysayo-web --production-branch main
+
+cd ../..
+./tf.sh import \
+  'module.cloudflare_pages[0].cloudflare_pages_project.web' \
+  '<CLOUDFLARE_ACCOUNT_ID>/mysayo-web'
+```
+
+1. **Create project with Wrangler first** — recommended Pages bootstrap; use a data source so computed fields stay aligned with the live project ([terraform-provider-cloudflare#5928](https://github.com/cloudflare/terraform-provider-cloudflare/issues/5928))
 2. **Import** `cloudflare_pages_project.web` before first apply
 3. Do **not** reintroduce a `pages_project_exists` toggle — bootstrap is Wrangler-first by design
 
@@ -289,8 +318,8 @@ import { siteName } from '@shared/lib/site'
 - **Every post must have `slug`, `title`, `description`, and `pubDate`**; `updatedDate`, `draft`, and `tags` are optional
 - **`slug` is the permanent permalink** — lowercase kebab-case, set at publish time, used in URLs as `/blog/{slug}`. It is independent of the filename (`post.id`), though matching them is fine for editor convenience
 - **Never change a published `slug`** without adding a 301 redirect in `code/app/web/public/_redirects` (Cloudflare Pages). Title and body edits are safe; slug changes break inbound links
-- **Tags** — optional array of values from `Tag` in `code/app/web/src/lib/tags.ts`. Add new tags only in that file (`Tag` const, `tagLabels`, `tagSlugs`). Never rename a tag value after publish; display uses `tagLabels`, future archive URLs use `tagSlugs`
-- Use `getPostSlug()` from `@/lib/posts` for hrefs and routes; use `post.id` only for source-file links (`blogPostSourceUrl(post.id)`)
+- **Tags** — optional array of values from `Tag` in `code/app/web/src/lib/tag.ts`. Add new tags only to the `Tag` const; labels and slugs are derived via `enumValueToText` / `enumValueToSlug` in `@shared/lib/enum`. Never rename a tag value after publish
+- Use `getPostSlug()` from `@/lib/post` for hrefs and routes; use `post.id` only for source-file links (`blogPostSourceUrl(post.id)`)
 - `getPublishedPosts()` throws at build time on duplicate slugs
 - After adding/changing collections, `npm run tsc` runs `astro sync` first to regenerate `astro:content` types
 
@@ -335,11 +364,16 @@ import { siteName } from '@shared/lib/site'
 
 ## Dependency upgrades
 
+Routine bumps follow the same three tracks as the Cursor Automations — use **`/bump-dependencies`** in chat or run manually:
+
 ```bash
 npm run bump-deps    # ncu across workspaces with 5-day cooldown
 npm install
+npm audit fix
 npm run test && npm run fix
 ```
+
+See `.cursor/commands/bump-dependencies.md` for the full bump workflow: read release notes from current → target version (npm, GHA, and each Terraform provider), then apply, audit-fix, validate, and plan. **Local agents** run `./tf.sh plan` when credentials are available; **cloud agents** open a PR and use `/loop-on-ci` to review the plan posted by `infrastructure-validate.yml`.
 
 After major upgrades, verify:
 

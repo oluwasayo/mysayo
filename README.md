@@ -1,4 +1,4 @@
-# mysayo
+# Sayo Oladeji
 
 **Live site → [mysayo.com](https://mysayo.com)**
 
@@ -209,6 +209,50 @@ All Cloudflare resources for this project live under `infrastructure/`.
 
 State backend: **Cloudflare R2** via Terraform `backend "s3"` (S3-compatible API).
 
+### State bucket bootstrap (first-time only)
+
+The remote state bucket must exist **before** `./tf.sh init` can attach to the R2 backend. Create it once with Wrangler, configure the backend, init, then import the bucket into Terraform state.
+
+```bash
+# 1. Create the R2 bucket (name: ${project}-${environment}-terraform-state → mysayo-production-terraform-state)
+cd code/app/web
+npx wrangler r2 bucket create mysayo-production-terraform-state
+
+# 2. Backend config (gitignored) — set endpoint with your account ID
+cd ../..
+cp infrastructure/backend.hcl.example infrastructure/backend.hcl
+# bucket   = "mysayo-production-terraform-state"
+# endpoint = "https://<CLOUDFLARE_ACCOUNT_ID>.r2.cloudflarestorage.com"
+
+# 3. Init remote backend (loads R2 + TF_VAR_* from infrastructure/.env via ./tf.sh)
+./tf.sh init -backend-config=backend.hcl
+
+# 4. Import existing bucket into Terraform (requires TF_VAR_cloudflare_api_token in .env)
+./tf.sh import \
+  'module.terraform_state[0].cloudflare_r2_bucket.state' \
+  '<CLOUDFLARE_ACCOUNT_ID>/mysayo-production-terraform-state/default'
+```
+
+After import, `./tf.sh plan` should show no changes for the state bucket (or only benign diffs). Re-run `./tf.sh init -backend-config=backend.hcl -reconfigure` if you change `backend.hcl`.
+
+### Pages project bootstrap (first-time only)
+
+The Pages project must exist **before** the first Terraform plan that touches `module.cloudflare_pages`. Create it with Wrangler, then import into state (after state-bucket bootstrap and `./tf.sh init` above).
+
+```bash
+# 1. Create the Pages project (name matches pages_project_name → mysayo-web)
+cd code/app/web
+npx wrangler pages project create mysayo-web --production-branch main
+
+# 2. Import into Terraform (from repo root; ./tf.sh loads infrastructure/.env)
+cd ../..
+./tf.sh import \
+  'module.cloudflare_pages[0].cloudflare_pages_project.web' \
+  '<CLOUDFLARE_ACCOUNT_ID>/mysayo-web'
+```
+
+Terraform manages project settings and custom domains (`mysayo.com`, `www.mysayo.com`); **application deploys** are done by GitHub Actions / Wrangler (`pages deploy`), not Terraform builds.
+
 ### Local Terraform workflow
 
 ```bash
@@ -229,20 +273,6 @@ cp infrastructure/backend.hcl.example infrastructure/backend.hcl
 ```
 
 Or rely on `TF_VAR_*` entries in `infrastructure/.env` and run `./tf.sh plan` directly.
-
-### Pages project bootstrap
-
-The Pages project **must exist before the first Terraform plan** (provider drift workaround). Create it once with Wrangler, then import:
-
-```bash
-cd code/app/web
-npx wrangler pages project create mysayo-web --production-branch main
-
-# From repo root, after ./tf.sh init:
-./tf.sh import 'module.cloudflare_pages[0].cloudflare_pages_project.web' '<account_id>/mysayo-web'
-```
-
-Terraform manages project settings and custom domains (`mysayo.com`, `www.mysayo.com`); **application deploys** are done by GitHub Actions / Wrangler (`pages deploy`), not Terraform builds.
 
 ### Cloudflare API token scopes (local + CI)
 

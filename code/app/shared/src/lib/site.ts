@@ -1,4 +1,4 @@
-export const siteName = 'mysayo'
+export const siteName = 'ṣayọ̀'
 
 export const siteUrl = 'https://mysayo.com'
 
@@ -16,7 +16,7 @@ export const siteXHandle = 'oluwasayo_'
 export const xDiscussUrl = (pageUrl: string) =>
   `https://x.com/intent/tweet?${new URLSearchParams({
     text: `${pageUrl} @${siteXHandle}`,
-  }).toString()}`
+  })}`
 
 export const siteTagline =
   'Software engineer — web, systems, and cloud infrastructure.'

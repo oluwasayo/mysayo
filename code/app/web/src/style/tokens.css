@@ -1,0 +1,174 @@
+/*
+ * Design tokens — flat, editorial, mobile-first.
+ * Colors are driven by [data-theme] on <html> — system, light, or dark — set before
+ * paint in BaseHead, with a prefers-color-scheme fallback for no-JS visitors.
+ * Token cross-fade on toggle uses @property (see html transition below).
+ */
+
+@property --bg {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #fff;
+}
+
+@property --bg-subtle {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #f4f4f2;
+}
+
+@property --text {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #18181b;
+}
+
+@property --text-muted {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #59595f;
+}
+
+@property --border {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #e3e3df;
+}
+
+@property --accent {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #e04e1a;
+}
+
+@property --accent-strong {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #c23f10;
+}
+
+@property --selection {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: rgb(224 78 26 / 18%);
+}
+
+@property --focus {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #e04e1a;
+}
+
+:root {
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, "Segoe UI", roboto, helvetica,
+    arial, sans-serif;
+  --font-serif: "Source Serif 4", georgia, "Times New Roman", serif;
+  --font-mono:
+    ui-monospace, sfmono-regular, "SF Mono", menlo, consolas, "Liberation Mono",
+    monospace;
+
+  --bg: #fff;
+  --bg-subtle: #f4f4f2;
+  --text: #18181b;
+  --text-muted: #59595f;
+  --border: #e3e3df;
+  --accent: #e04e1a;
+  --accent-strong: #c23f10;
+  --selection: rgb(224 78 26 / 18%);
+  --focus: #e04e1a;
+
+  --radius: 0;
+  --border-thin: 1px solid var(--border);
+  --width-wide: 60rem;
+  --width-text: 50rem;
+  --gutter: clamp(1.25rem, 5vw, 2.5rem);
+  --step-0: 1.0625rem;
+  --step-prose: 1.125rem;
+  --step-1: 1.25rem;
+  --step-2: 1.5rem;
+  --step-3: clamp(1.75rem, 1.4rem + 1.6vw, 2.25rem);
+  --step-4: clamp(2.25rem, 1.7rem + 2.6vw, 3.25rem);
+
+  /*
+   * Code highlighting — Shiki "css-variables" theme.
+   * Duotone, three tiers so shell commands don't read as a wall of orange:
+   *   accent  → keywords, function/command names, links (the "verbs")
+   *   text    → strings, constants, parameters, identifiers (the payload)
+   *   muted   → comments, punctuation
+   * Values reference the theme tokens above, so they adapt to light/dark.
+   */
+  --astro-code-foreground: var(--text);
+  --astro-code-background: var(--bg-subtle);
+  --astro-code-token-comment: var(--text-muted);
+  --astro-code-token-punctuation: var(--text-muted);
+  --astro-code-token-parameter: var(--text);
+  --astro-code-token-function: var(--accent);
+  --astro-code-token-keyword: var(--accent);
+  --astro-code-token-constant: var(--text);
+  --astro-code-token-link: var(--accent);
+  --astro-code-token-string: var(--text);
+  --astro-code-token-string-expression: var(--text);
+
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]),
+  [data-theme="system"] {
+    --bg: #0d0d0f;
+    --bg-subtle: #161619;
+    --text: #ededee;
+    --text-muted: #9a9aa2;
+    --border: #26262b;
+    --accent: #ff6f4d;
+    --accent-strong: #ff8a70;
+    --selection: rgb(255 111 77 / 22%);
+    --focus: #ff6f4d;
+
+    color-scheme: dark;
+  }
+}
+
+[data-theme="light"] {
+  --bg: #fff;
+  --bg-subtle: #f4f4f2;
+  --text: #18181b;
+  --text-muted: #59595f;
+  --border: #e3e3df;
+  --accent: #e04e1a;
+  --accent-strong: #c23f10;
+  --selection: rgb(224 78 26 / 18%);
+  --focus: #e04e1a;
+
+  color-scheme: light;
+}
+
+[data-theme="dark"] {
+  --bg: #0d0d0f;
+  --bg-subtle: #161619;
+  --text: #ededee;
+  --text-muted: #9a9aa2;
+  --border: #26262b;
+  --accent: #ff6f4d;
+  --accent-strong: #ff8a70;
+  --selection: rgb(255 111 77 / 22%);
+  --focus: #ff6f4d;
+
+  color-scheme: dark;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    transition:
+      --bg 220ms ease,
+      --bg-subtle 220ms ease,
+      --text 220ms ease,
+      --text-muted 220ms ease,
+      --border 220ms ease,
+      --accent 220ms ease,
+      --accent-strong 220ms ease,
+      --selection 220ms ease,
+      --focus 220ms ease;
+  }
+}

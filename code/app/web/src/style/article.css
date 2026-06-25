@@ -1,0 +1,54 @@
+/* Article (blog post) chrome: header meta, source links, tags, back link. */
+
+.article__header {
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: var(--border-thin);
+}
+
+.article__title {
+  margin-top: 0.5rem;
+}
+
+.article__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  margin-top: 1rem;
+}
+
+.article__source {
+  color: var(--accent);
+  text-decoration-color: var(--accent);
+}
+
+.article__source:hover {
+  text-decoration-thickness: 2px;
+}
+
+.post-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.post-tag {
+  display: inline-block;
+  padding: 0.2em 0.55em;
+  border: var(--border-thin);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+}
+
+.back-link {
+  display: inline-block;
+  margin-top: 3rem;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}

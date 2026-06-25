@@ -13,6 +13,10 @@ export default defineConfig({
       '@': path.resolve(import.meta.dirname, 'src'),
       '@shared': path.resolve(import.meta.dirname, '../shared/src'),
       '@vitestBrowser': 'vitest/browser',
+      'astro:content': path.resolve(
+        import.meta.dirname,
+        'src/test/stubs/astro-content.ts',
+      ),
     },
     dedupe: ['react', 'react-dom'],
   },
