@@ -12,7 +12,7 @@ Open-source personal website and writing. This repo holds the Astro site, Cloudf
 [![React](https://img.shields.io/badge/React-19-blue.svg)](https://react.dev/)
 [![Cloudflare](https://img.shields.io/badge/Cloudflare-Pages%20%2B%20Terraform-orange.svg)](https://www.cloudflare.com/)
 
-Static Astro site with React islands, deployed to Cloudflare Pages. Infrastructure (DNS, Pages project config, zone settings, Terraform state) is managed with Terraform and stored in Cloudflare R2.
+Static Astro site with React islands, deployed to Cloudflare Pages. Infrastructure (DNS, Pages project config, zone settings, Terraform state) is managed with Terraform and stored in Cloudflare R2. At this scale the stack and hosting are entirely on free tiers.
 
 ## Table of contents
 
@@ -94,8 +94,9 @@ mysayo/
 | Language | TypeScript 7 RC (`tsc`, not `tsgo`) |
 | Tests | Vitest 4 + Playwright Chromium (browser mode, not jsdom) |
 | Lint/format | Biome + Stylelint (CSS in web) |
-| Hosting | Cloudflare Pages (`mysayo-web`) |
-| IaC | Terraform → Cloudflare provider v5, state in R2 |
+| Hosting | Cloudflare Pages (`mysayo-web`) — free tier |
+| IaC | Terraform → Cloudflare provider v5, state in R2 — free tier at this scale |
+| Cost | $0 for hosting, infra, and CI (OSS tooling; domain registration aside) |
 | Secrets | 1Password Environment mounts + GitHub Actions secrets |
 
 ---

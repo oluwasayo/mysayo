@@ -14,7 +14,7 @@ tags:
 
 I'd always liked the idea of a personal website but never gotten around to it. So I made an empty directory, ran `git init`, and got to work. The first post had to be the obvious one: how the thing you're reading was made. That means the decisions, the trade-offs, and the one platform surprise that had me scratching my head. The initial structure took about two hours, with the England vs Ghana World Cup match on in the background.
 
-The short version: it's a static [Astro](https://astro.build/) site with a single React island, compiled and bundled by Vite, deployed to Cloudflare Pages, with every piece of infrastructure (DNS, the Pages project, zone settings, even the Terraform state bucket) managed in Terraform against Cloudflare. Local secrets live in 1Password and are mounted at runtime; none of them are in the repository. The validation, build and deployment run in GitHub Actions.
+The short version: it's a static [Astro](https://astro.build/) site with a single React island, compiled and bundled by Vite, deployed to Cloudflare Pages, with every piece of infrastructure (DNS, the Pages project, zone settings, even the Terraform state bucket) managed in Terraform against Cloudflare. The hosting stack and CI all sit on free tiers; at this scale the bill is zero. Local secrets live in 1Password and are mounted at runtime; none of them are in the repository. The validation, build and deployment run in GitHub Actions.
 
 ## The stack, briefly
 
@@ -145,7 +145,7 @@ cd ../..
 
 I also enabled lockfile locking on the R2 backend and a CI concurrency group so plans and applies don't overlap.
 
-For a personal site, the stack holds up well: the edge performance, R2 pricing, and Pages deploys all do their job without much fuss. The Terraform provider is actively maintained, and reading release notes or provider discussions when something looks off has been enough to keep moving.
+For a personal site at this scale, the whole stack is free: Pages, DNS, R2 for Terraform state, and GitHub Actions for CI. Edge performance is fine, deploys are painless, and the Terraform provider is actively maintained. Reading release notes or provider discussions when something looks off has been enough to keep moving.
 
 ## Built with an agent
 
