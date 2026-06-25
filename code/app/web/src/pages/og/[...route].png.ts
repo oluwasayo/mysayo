@@ -13,7 +13,7 @@ type OgCard = { title: string; description: string }
 // Astro always builds with the cwd set to this workspace root (CI uses
 // working-directory: code/app/web), so resolve the vendored fonts from there.
 const readFont = (file: string) =>
-  readFileSync(join(process.cwd(), 'src/assets/og', file))
+  readFileSync(join(process.cwd(), 'src/asset/og', file))
 
 const fonts = [
   {
