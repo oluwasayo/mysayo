@@ -23,7 +23,7 @@ export const xRecommendUrl = `https://x.com/intent/tweet?${new URLSearchParams({
 })}`
 
 export const siteTagline =
-  'Software engineer — products, systems, and cloud infrastructure.'
+  'Software engineer: products, systems, and cloud infrastructure.'
 
 export const siteDescription =
   'The personal site and writing of Sayo Oladeji, a software engineer building products, systems, and cloud infrastructure.'

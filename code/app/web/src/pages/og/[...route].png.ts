@@ -15,6 +15,10 @@ type OgCard = { title: string; description: string }
 const readFont = (file: string) =>
   readFileSync(join(process.cwd(), 'src/asset/og', file))
 
+const portrait = `data:image/jpeg;base64,${readFileSync(
+  join(process.cwd(), 'src/asset/sayo.jpg'),
+).toString('base64')}`
+
 const fonts = [
   {
     data: readFont('SourceSerif4-Regular.ttf'),
@@ -97,12 +101,23 @@ export const getStaticPaths = (async () => {
 const card = ({ title, description }: OgCard) =>
   html(`
     <div style="height:100%;width:100%;display:flex;flex-direction:column;justify-content:space-between;background-color:#0d0d0f;color:#ededee;padding:72px;font-family:'Source Serif 4';">
-      <div style="display:flex;flex-direction:column;flex:1;justify-content:center;border-left:10px solid #ff6f4d;padding-left:48px;">
-        <div style="display:flex;font-size:26px;font-weight:400;letter-spacing:8px;text-transform:uppercase;color:#9a9aa2;margin-bottom:32px;">mysayo.com</div>
-        <div style="display:flex;font-size:68px;font-weight:600;line-height:1.1;letter-spacing:-2px;">${escapeHtml(title)}</div>
-        <div style="display:flex;font-size:32px;font-weight:400;color:#9a9aa2;line-height:1.4;margin-top:32px;">${escapeHtml(truncate(description))}</div>
+      <div style="display:flex;flex:1;align-items:center;gap:56px;">
+        <div style="display:flex;width:360px;height:360px;border:1px solid #303036;background-color:#17171b;">
+          <img 
+            src="${portrait}" 
+            width="360" 
+            height="360" 
+            style="display:flex;width:360px;height:360px;object-fit:cover;"
+            alt="personal portrait"
+          />
+        </div>
+        <div style="display:flex;flex-direction:column;flex:1;justify-content:center;border-left:10px solid #ff6f4d;padding-left:48px;">
+          <div style="display:flex;font-size:26px;font-weight:400;letter-spacing:8px;text-transform:uppercase;color:#9a9aa2;margin-bottom:32px;">mysayo.com</div>
+          <div style="display:flex;font-size:62px;font-weight:600;line-height:1.08;letter-spacing:-2px;">${escapeHtml(title)}</div>
+          <div style="display:flex;font-size:30px;font-weight:400;color:#9a9aa2;line-height:1.35;margin-top:28px;">${escapeHtml(truncate(description, 105))}</div>
+        </div>
       </div>
-      <div style="display:flex;align-items:center;justify-content:space-between;font-size:26px;font-weight:400;color:#9a9aa2;padding-left:48px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;font-size:26px;font-weight:400;color:#9a9aa2;">
         <div style="display:flex;">${escapeHtml(siteAuthor)}</div>
         <div style="display:flex;width:18px;height:18px;background-color:#ff6f4d;"></div>
       </div>

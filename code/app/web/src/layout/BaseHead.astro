@@ -123,6 +123,8 @@ const jsonLdScript = JSON.stringify(jsonLd).replace(/</g, '\\u003c')
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:site" content={`@${siteXHandle}`} />
 <meta name="twitter:creator" content={`@${siteXHandle}`} />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
 <meta name="twitter:image" content={ogImage} />
 
 <script type="application/ld+json" set:html={jsonLdScript} />
