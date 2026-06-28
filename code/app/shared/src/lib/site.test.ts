@@ -1,4 +1,10 @@
-import { blogPostSourceUrl, xDiscussUrl, xRecommendUrl } from '@shared/lib/site'
+import {
+  blogPostSourceUrl,
+  profileLinks,
+  socialLinks,
+  xDiscussUrl,
+  xRecommendUrl,
+} from '@shared/lib/site'
 import { describe, expect, it } from 'vitest'
 
 describe('site', () => {
@@ -25,6 +31,14 @@ describe('site', () => {
     it('opens X compose with a prompt mentioning the handle', () => {
       expect(xRecommendUrl).toMatch(/^https:\/\/x\.com\/intent\/tweet\?/)
       expect(xRecommendUrl).toContain('%40oluwasayo_+you+should+read')
+    })
+  })
+
+  describe('external link metadata', () => {
+    it('marks social and profile links as external', () => {
+      for (const link of [...socialLinks, ...profileLinks]) {
+        expect(link.external).toBe(true)
+      }
     })
   })
 })

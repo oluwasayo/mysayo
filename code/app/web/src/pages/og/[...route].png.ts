@@ -100,26 +100,24 @@ export const getStaticPaths = (async () => {
 
 const card = ({ title, description }: OgCard) =>
   html(`
-    <div style="height:100%;width:100%;display:flex;flex-direction:column;justify-content:space-between;background-color:#0d0d0f;color:#ededee;padding:72px;font-family:'Source Serif 4';">
-      <div style="display:flex;flex:1;align-items:center;gap:56px;">
-        <div style="display:flex;width:360px;height:360px;border:1px solid #303036;background-color:#17171b;">
-          <img 
-            src="${portrait}" 
-            width="360" 
-            height="360" 
-            style="display:flex;width:360px;height:360px;object-fit:cover;"
-            alt="personal portrait"
-          />
-        </div>
-        <div style="display:flex;flex-direction:column;flex:1;justify-content:center;border-left:10px solid #ff6f4d;padding-left:48px;">
-          <div style="display:flex;font-size:26px;font-weight:400;letter-spacing:8px;text-transform:uppercase;color:#9a9aa2;margin-bottom:32px;">mysayo.com</div>
-          <div style="display:flex;font-size:62px;font-weight:600;line-height:1.08;letter-spacing:-2px;">${escapeHtml(title)}</div>
-          <div style="display:flex;font-size:30px;font-weight:400;color:#9a9aa2;line-height:1.35;margin-top:28px;">${escapeHtml(truncate(description, 105))}</div>
-        </div>
+    <div style="height:100%;width:100%;display:flex;align-items:center;justify-content:center;gap:64px;background-color:#0d0d0f;color:#ededee;padding:96px 88px;font-family:'Source Serif 4';">
+      <div style="display:flex;width:320px;height:320px;flex-shrink:0;border:1px solid #303036;background-color:#17171b;">
+        <img
+          src="${portrait}"
+          width="320"
+          height="320"
+          style="display:flex;width:320px;height:320px;object-fit:cover;object-position:center top;transform:scaleX(-1);"
+          alt="personal portrait"
+        />
       </div>
-      <div style="display:flex;align-items:center;justify-content:space-between;font-size:26px;font-weight:400;color:#9a9aa2;">
-        <div style="display:flex;">${escapeHtml(siteAuthor)}</div>
-        <div style="display:flex;width:18px;height:18px;background-color:#ff6f4d;"></div>
+      <div style="display:flex;flex-direction:column;flex:1;justify-content:center;border-left:10px solid #ff6f4d;padding-left:48px;">
+        <div style="display:flex;font-size:26px;font-weight:400;letter-spacing:8px;text-transform:uppercase;color:#9a9aa2;margin-bottom:28px;">mysayo.com</div>
+        <div style="display:flex;font-size:60px;font-weight:600;line-height:1.08;letter-spacing:-2px;">${escapeHtml(title)}</div>
+        <div style="display:flex;font-size:30px;font-weight:400;color:#9a9aa2;line-height:1.35;margin-top:26px;">${escapeHtml(truncate(description, 105))}</div>
+        <div style="display:flex;align-items:center;gap:14px;margin-top:36px;font-size:24px;color:#9a9aa2;">
+          <span style="display:flex;width:16px;height:16px;background-color:#ff6f4d;"></span>
+          <span style="display:flex;">${escapeHtml(siteAuthor)}</span>
+        </div>
       </div>
     </div>
   `)

@@ -226,7 +226,7 @@ What that looks like in practice:
 - A **skip link** to `#main`, with `<main tabindex="-1">` so focus can land on the content region.
 - **Landmarks** (`<header>`, labeled `<nav>` regions, `<main>`, `<footer>`, `<article>` on posts) instead of div soup.
 - The theme toggle as a native **`<button>`** with an `aria-label` that names the current preference (`System`, `Light`, `Dark`). Decorative SVG icons are `aria-hidden`; the button text is the label.
-- **External links** that open new tabs (Source in the nav, Discuss on X, View source on posts) include visually hidden “(opens in new tab)” text for assistive technology. Sighted users get the ↗ on Source; screen reader users get the full phrase everywhere.
+- **External links** that leave the site share one CSS-drawn ↗ affordance across standalone and utility links (nav, profile links, work proof links, post actions), each with visually hidden “(opens in new tab)” text for assistive technology. Inline links inside prose stay arrow-free so body copy reads cleanly.
 - The theme toggle test runs in **headless Chromium**, same as the rest of the UI checks: one real click, one real DOM update.
 
 The Lighthouse manual pass is ten items long: keyboard focusability, logical tab order, landmark usage, offscreen content hidden from assistive tech, and the rest. Most of it passes because the markup is boring on purpose. The items worth verifying by hand are the ones automation can't fully judge: tab flow through the header, whether inactive theme icons stay out of the accessibility tree, whether new-tab links announce themselves.

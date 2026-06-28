@@ -19,6 +19,16 @@ Human-oriented onboarding lives in [README.md](./README.md).
 
 ---
 
+## Forking and content reuse
+
+This repository is public as a reference for structure, tooling, deployment, and implementation patterns. If someone forks or reuses it for their own site, they should replace the personal content rather than shipping it as-is.
+
+- Do not reuse Oluwasayo's personal writings, reading lists, about copy, photographs, homepage copy, blog posts, essays, or other site content in forked projects.
+- Treat `code/app/web` page structure, components, styling patterns, tests, CI, and infrastructure as the reusable parts.
+- When adapting this repo, preserve the architecture but create original content, images, metadata, branding, and domain/project names for the new owner.
+
+---
+
 ## Monorepo layout
 
 ```

@@ -100,17 +100,6 @@
   text-underline-offset: 0.3em;
 }
 
-.site-nav__link--external::after {
-  content: "";
-  display: inline-block;
-  width: 0.45em;
-  height: 0.45em;
-  margin-inline-start: 0.22em;
-  vertical-align: 0.1em;
-  border-top: 1.5px solid currentColor;
-  border-right: 1.5px solid currentColor;
-}
-
 /* Theme toggle */
 
 .theme-toggle {
