@@ -336,3 +336,11 @@ For day-to-day app work, steps 1–4 are already done; use `npm run dev` and ope
 ## Agent documentation
 
 See [AGENTS.md](./AGENTS.md) for AI/agent conventions, pitfalls, and detailed workflows.
+
+---
+
+## License
+
+Code in this repository is licensed under the [MIT License](./LICENSE).
+
+Writing, images, personal branding, and other non-code content are not licensed for reuse without permission.
