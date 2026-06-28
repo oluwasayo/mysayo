@@ -57,3 +57,23 @@
   line-height: 1.6;
   color: var(--text-muted);
 }
+
+/* Flat, radius-0 button-style link, matching the theme-toggle border treatment. */
+.button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.6rem 0.95rem;
+  border: var(--border-thin);
+  color: var(--text);
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition:
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.button:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}

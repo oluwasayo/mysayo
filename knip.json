@@ -19,7 +19,10 @@
       }
     },
     "code/app/web": {
-      "entry": ["src/pages/**/*.{astro,ts}", "src/layout/**/*.astro"],
+      "entry": [
+        "src/pages/**/*.{astro,ts}",
+        "src/layout/**/*.astro"
+      ],
       "ignore": ["src/test/stubs/**"],
       "paths": {
         "@/*": ["./src/*"],

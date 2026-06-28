@@ -2,20 +2,24 @@
 import PostList from '@/component/PostList.astro'
 import Layout from '@/layout/Layout.astro'
 import { getPublishedPosts } from '@/lib/post'
-import { siteAuthor, siteRepoUrl } from '@shared/lib/site'
+import { siteAuthor } from '@shared/lib/site'
 
-const posts = (await getPublishedPosts()).slice(0, 5)
+const posts = (await getPublishedPosts()).slice(0, 3)
 ---
 
 <Layout>
   <div class="wrap">
     <section class="hero">
       <p class="eyebrow">{siteAuthor}</p>
-      <h1>Software engineer building for the web and the cloud.</h1>
+      <h1>Software engineer building products, systems, and cloud infrastructure.</h1>
       <p class="lead hero__lead">
-        I design and ship products end to end — frontends, distributed backends,
-        and the infrastructure that runs them. Here, I write about my craft.
-        And this website is open source, check it out on <a class="site-nav__link--external" href={siteRepoUrl}>GitHub</a>
+        I design and ship software end to end — product frontends, distributed
+        backends, and the infrastructure that runs them. Here, I write about the
+        craft behind that work.
+      </p>
+      <p class="hero__cta">
+        <a class="text-link" href="/about">About me →</a>
+        <a class="text-link" href="/work">Selected work →</a>
       </p>
     </section>
 
@@ -24,7 +28,7 @@ const posts = (await getPublishedPosts()).slice(0, 5)
         <section class="home-section">
           <div class="home-section__head">
             <h2>Recent writing</h2>
-            <a class="text-link" href="/blog">
+            <a class="text-link" href="/writing">
               All writing →
             </a>
           </div>

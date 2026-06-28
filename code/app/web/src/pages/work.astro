@@ -1,0 +1,193 @@
+---
+import Layout from '@/layout/Layout.astro'
+
+type Role = {
+  company: string
+  role: string
+  period: string
+  location: string
+  summary: string
+}
+
+const experience: Role[] = [
+  {
+    company: 'Kreia',
+    role: 'CTO',
+    period: '2025 — Present',
+    location: 'Helsinki',
+    summary:
+      'Founding CTO and primary builder of an AI-native marketing platform: agent orchestration, a type-safe task orchestration framework, GraphQL API, web app, and AWS infrastructure.',
+  },
+  {
+    company: 'Swarmia',
+    role: 'Engineering Team Lead',
+    period: '2022 — 2025',
+    location: 'Helsinki',
+    summary:
+      'Led a 7-person cross-functional team owning Swarmia’s developer-facing product areas: Surveys, DORA, CI/CD Insights, Developer Overview, Search, Notifications, Swarmia Reviewed, and the core app shell. Took DevEx Surveys from concept to alpha in six weeks and 30%+ customer adoption; built CI sync orchestration for hundreds of millions of GitHub Actions records.',
+  },
+  {
+    company: 'Speechify',
+    role: 'Platform Software Engineer',
+    period: '2022',
+    location: 'Remote (US)',
+    summary:
+      'Led the web rollout of Speechify’s Kotlin Multiplatform listening SDK, integrating SDK-backed book, PDF, web-page, and classic readers with playback controls, highlighting, account preferences, library progress sync, instant listening, and time-to-listen instrumentation.',
+  },
+  {
+    company: 'Meta',
+    role: 'Software Engineer',
+    period: '2021 — 2022',
+    location: 'London',
+    summary:
+      'Built core components of the Showreel template-authoring stack, improving ad template production speed by over 10x.',
+  },
+  {
+    company: 'Smartly',
+    role: 'Software Engineer',
+    period: '2019 — 2021',
+    location: 'Helsinki',
+    summary:
+      'Co-pioneered the Display Ads line behind public campaigns like Deliveroo’s weather-based creatives; invented Modular Creatives, used by Uber Freight to produce 25 personalized videos and drive +108% CTR, -43% CPC, and -36% CPA sign-up.',
+  },
+  {
+    company: 'Tellerpoint',
+    role: 'Co-Founder & CTO',
+    period: '2017 — 2025',
+    location: 'Lagos (Remote)',
+    summary:
+      'Architected and ran payment infrastructure for a fintech and community-banking platform; bootstrapped to profitability.',
+  },
+  {
+    company: 'Vaadin',
+    role: 'Software Engineer',
+    period: '2017 — 2019',
+    location: 'Finland',
+    summary:
+      'Built commercial UI components on the Vaadin platform. Designed a Kotlin generator that derived a strongly-typed Java charting API from Highcharts\u2019 120k-line JSON schema, and shipped the Flow APIs for Vaadin Charts 6 and CRUD.',
+  },
+  {
+    company: 'Crown Interactive',
+    role: 'Lead Software Engineer',
+    period: '2015 — 2017',
+    location: 'Lagos',
+    summary:
+      'Designed and built the Unified Collections Gateway — wallet, bank transfer, card and POS payments — for CICOD, the revenue-cycle-management platform powering Eko Electricity (EKEDP), which serves half of Lagos. The production system was featured on DZone.',
+  },
+  {
+    company: 'Google',
+    role: 'Software Engineer Intern',
+    period: '2013',
+    location: 'Zurich',
+    summary:
+      'Built merchant reporting and Drive integration for BebaPay, an NFC payments platform for emerging markets.',
+  },
+]
+
+type CaseStudy = {
+  name: string
+  tagline: string
+  problem: string
+  role: string
+  outcome: string
+}
+
+const caseStudies: CaseStudy[] = [
+  {
+    name: 'Kreia',
+    tagline: 'Startup, marketing',
+    problem:
+      'Small businesses in real estate and construction need marketing output that compounds over time, but they rarely have the staff to ingest customer signals, decide what matters, coordinate the work, and produce publishable media with human oversight.',
+    role: 'CTO and primary builder across the platform: agent orchestration, data model, GraphQL API, web app, content tooling, and deployment pipeline.',
+    outcome:
+      'A multi-tenant production platform with customer-signal ingestion, live prioritization, a type-safe task orchestration framework, multi-phase media generation agents, cost attribution, and a shared human/AI media compiler, built at high velocity.',
+  },
+  {
+    name: 'Meta & Smartly',
+    tagline: 'Marketing technology at scale',
+    problem:
+      'Modern advertising depends on creative variation at scale: making many versions of an ad, proving which variants work, and delivering them within strict platform, performance, and bundle-size constraints.',
+    role: 'At Smartly, I co-pioneered the Display Ads product line and invented Modular Creatives. At Meta, I worked on Showreel’s creative template editor, where I led parts of the authoring and compatibility work for next-generation ad rendering.',
+    outcome:
+      'At Smartly, the display work helped open a new business area and powered campaigns like Deliveroo’s weather-based creatives, which produced hundreds of social ads across Display and Meta and beat benchmarks with +25% video completion rate, -32% CPM, and -51% CPA. At Meta, Showreel template-authoring improvements accelerated creative production by over 10x and supported an ads system handling millions in daily revenue opportunity.',
+  },
+  {
+    name: 'Tellerpoint',
+    tagline: 'Startup, fintech infrastructure',
+    problem:
+      'Community banking and agent networks needed reliable payment infrastructure in a market where cash access, reconciliation, and operational trust are existential product requirements.',
+    role: 'Co-founder and CTO; architected and operated the financial infrastructure end to end, from backend services and core algorithms to partner integrations, product development, hiring, onboarding, and data-protection leadership.',
+    outcome:
+      'Tellerpoint processed billions in USD-equivalent payment volume with zero reconciliation incidents, powered agent-network and payment flows for undisclosed enterprise financial institutions, and was bootstrapped to profitability.',
+  },
+]
+---
+
+<Layout
+  title="Work"
+  description="Selected work by Sayo Oladeji — production agentic platforms, fintech infrastructure at scale, and high-leverage performance engineering."
+>
+  <div class="wrap">
+    <header class="hero">
+      <p class="eyebrow">Work</p>
+      <h1>What I've shipped.</h1>
+      <p class="lead hero__lead">
+        Fourteen years across founder seats and engineering teams — from
+        national-scale payments to production AI. A few of the things I've built.
+      </p>
+    </header>
+
+    <section class="home-section">
+      <div class="home-section__head">
+        <h2>Selected work</h2>
+      </div>
+      <div class="case-studies">
+        {
+          caseStudies.map(study => (
+            <article class="case-study">
+              <h3 class="case-study__name">{study.name}</h3>
+              <p class="case-study__tagline">{study.tagline}</p>
+              <div class="case-study__facet">
+                <span class="case-study__label">Problem</span>
+                <p>{study.problem}</p>
+              </div>
+              <div class="case-study__facet">
+                <span class="case-study__label">Role</span>
+                <p>{study.role}</p>
+              </div>
+              <div class="case-study__facet">
+                <span class="case-study__label">Outcome</span>
+                <p>{study.outcome}</p>
+              </div>
+            </article>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="home-section">
+      <div class="home-section__head">
+        <h2>Experience</h2>
+      </div>
+      <ol class="work-timeline">
+        {
+          experience.map(role => (
+            <li class="work-row">
+              <span class="work-row__period">{role.period}</span>
+              <div class="work-row__body">
+                <p class="work-row__head">
+                  <span class="work-row__company">{role.company}</span>
+                  <span class="work-row__role">{role.role}</span>
+                  <span class="work-row__location">{role.location}</span>
+                </p>
+                <p class="work-row__summary">{role.summary}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </section>
+
+    <a class="back-link" href="/about">← About me</a>
+  </div>
+</Layout>

@@ -1,4 +1,4 @@
-import { blogPostSourceUrl, xDiscussUrl } from '@shared/lib/site'
+import { blogPostSourceUrl, xDiscussUrl, xRecommendUrl } from '@shared/lib/site'
 import { describe, expect, it } from 'vitest'
 
 describe('site', () => {
@@ -12,12 +12,19 @@ describe('site', () => {
 
   describe('xDiscussUrl', () => {
     it('opens X compose with the post url before the mention', () => {
-      const url = xDiscussUrl('https://mysayo.com/blog/building-mysayo')
+      const url = xDiscussUrl('https://mysayo.com/writing/building-mysayo')
 
       expect(url).toMatch(/^https:\/\/x\.com\/intent\/tweet\?/)
       expect(url).toContain(
-        'https%3A%2F%2Fmysayo.com%2Fblog%2Fbuilding-mysayo+%40oluwasayo_',
+        'https%3A%2F%2Fmysayo.com%2Fwriting%2Fbuilding-mysayo+%40oluwasayo_',
       )
+    })
+  })
+
+  describe('xRecommendUrl', () => {
+    it('opens X compose with a prompt mentioning the handle', () => {
+      expect(xRecommendUrl).toMatch(/^https:\/\/x\.com\/intent\/tweet\?/)
+      expect(xRecommendUrl).toContain('%40oluwasayo_+you+should+read')
     })
   })
 })

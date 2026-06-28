@@ -2,7 +2,7 @@
 title: Building mysayo.com
 description: How I built this site. A static Astro front-end, a React Compiler island, and a Cloudflare-only stack managed entirely in Terraform, with secrets that never touch the repo.
 slug: building-mysayo
-pubDate: 2026-06-24
+pubDate: 2026-06-28
 tags:
   - DESIGN
   - ARCHITECTURE
@@ -12,9 +12,9 @@ tags:
   - CURSOR
 ---
 
-I'd always liked the idea of a personal website but never gotten around to it. So I made an empty directory, ran `git init`, and got to work. The first post had to be the obvious one: how the thing you're reading was made. That means the decisions, the trade-offs, and the one platform surprise that had me scratching my head. The initial structure took about two hours, with the England vs Ghana World Cup match on in the background.
+I'd wanted a personal website for years, but the interesting part was never the page itself. It was whether I could treat a small site with the same care I expect from production software: fast validation, typed boundaries, and an editorial surface I could keep living with. So I made an empty directory, ran `git init`, and got to work. The first post had to be the obvious one: how the thing you're reading was made. The initial structure took about two hours, with the England vs Ghana World Cup match on in the background.
 
-The short version: it's a static [Astro](https://astro.build/) site with a single React island, compiled and bundled by Vite, deployed to Cloudflare Pages, with every piece of infrastructure (DNS, the Pages project, zone settings, even the Terraform state bucket) managed in Terraform against Cloudflare. The hosting stack and CI all sit on free tiers; at this scale the bill is zero. Local secrets live in 1Password and are mounted at runtime; none of them are in the repository. The validation, build and deployment run in GitHub Actions.
+The short version: it's a static [Astro](https://astro.build/) site with a single React island, compiled and bundled by Vite, deployed to Cloudflare Pages, with every piece of infrastructure (DNS, the Pages project, zone settings, even the Terraform state bucket) managed in Terraform against Cloudflare. The hosting stack and CI all sit on free tiers; at this scale the bill is zero. Local secrets live in 1Password and are mounted at runtime. The validation, build and deployment run in GitHub Actions.
 
 ## The stack, briefly
 
@@ -39,7 +39,7 @@ A single static site doesn't need a monorepo. I used one anyway, because I'd rat
 │   │   ├── web/           Astro site — where the work happens
 │   │   ├── shared/        cross-package constants and types
 │   │   └── server/        placeholder for future Cloudflare Workers
-│   └── bin/               ops CLIs (Terraform plan filter for CI)
+│   └── bin/               ops scripts
 └── infrastructure/        Terraform — Cloudflare only
 ```
 
@@ -48,13 +48,13 @@ The root orchestrates everything through npm workspace scripts, and Vitest runs 
 <figure class="brain-meme">
   <div class="brain-meme__grid">
     <div class="brain-meme__cell brain-meme__text" data-level="1"><span class="brain-meme__step">01</span><span class="brain-meme__label">Create a single <code>index.html</code> file</span></div>
-    <div class="brain-meme__cell brain-meme__mind" data-level="1"><img class="brain-meme__brain" src="/blog/brain-1.webp" alt="" width="420" height="305" loading="lazy" decoding="async" /></div>
+    <div class="brain-meme__cell brain-meme__mind" data-level="1"><img class="brain-meme__brain" src="/writing/brain-1.webp" alt="" width="420" height="305" loading="lazy" decoding="async" /></div>
     <div class="brain-meme__cell brain-meme__text" data-level="2"><span class="brain-meme__step">02</span><span class="brain-meme__label">Initialize npm workspaces</span></div>
-    <div class="brain-meme__cell brain-meme__mind" data-level="2"><img class="brain-meme__brain" src="/blog/brain-2.webp" alt="" width="420" height="309" loading="lazy" decoding="async" /></div>
+    <div class="brain-meme__cell brain-meme__mind" data-level="2"><img class="brain-meme__brain" src="/writing/brain-2.webp" alt="" width="420" height="309" loading="lazy" decoding="async" /></div>
     <div class="brain-meme__cell brain-meme__text" data-level="3"><span class="brain-meme__step">03</span><span class="brain-meme__label">Add Vitest, Playwright, and Chromium</span></div>
-    <div class="brain-meme__cell brain-meme__mind" data-level="3"><img class="brain-meme__brain" src="/blog/brain-3.webp" alt="" width="420" height="281" loading="lazy" decoding="async" /></div>
+    <div class="brain-meme__cell brain-meme__mind" data-level="3"><img class="brain-meme__brain" src="/writing/brain-3.webp" alt="" width="420" height="281" loading="lazy" decoding="async" /></div>
     <div class="brain-meme__cell brain-meme__text" data-level="4"><span class="brain-meme__step">04</span><span class="brain-meme__label">Manage secrets and infrastructure with Terraform and 1Password… for a one-page static site</span></div>
-    <div class="brain-meme__cell brain-meme__mind" data-level="4"><img class="brain-meme__brain" src="/blog/brain-4.webp" alt="" width="420" height="266" loading="lazy" decoding="async" /></div>
+    <div class="brain-meme__cell brain-meme__mind" data-level="4"><img class="brain-meme__brain" src="/writing/brain-4.webp" alt="" width="420" height="266" loading="lazy" decoding="async" /></div>
   </div>
   <figcaption class="brain-meme__caption">At least no Kubernetes. Yet.</figcaption>
 </figure>
@@ -105,7 +105,7 @@ backend "s3" {
 
 R2 speaks enough of the S3 API to be a credible state store, as long as you tell the backend to skip the checks that only make sense against real S3.
 
-## Secrets live in 1Password, never in the repo
+## Secrets live in 1Password, never on disk
 
 There are no `.env` files with real values anywhere in this project, and there never will be. Local credentials come from **1Password Environments**, mounted as `.env` files on demand. A small wrapper script, `tf.sh`, loads `infrastructure/.env` and maps the R2 credentials onto the `AWS_*` variables the S3 backend expects, then hands off to Terraform.
 
@@ -188,13 +188,13 @@ Keywords and function names pick up the orange accent, while strings, arguments,
 
 ## Writing on the web
 
-Blog posts are Astro content collections with a schema that enforces the boring important bits:
+Writing lives in Astro content collections with a schema that enforces the boring important bits:
 
 - **`slug`** in frontmatter is the permanent permalink, independent of the filename. The build fails on duplicate slugs.
 - **`tags`** are a typed enum in code, not free-form strings, so the taxonomy can't drift.
 - Each post links to its **source markdown on GitHub** and a **Discuss on X** intent URL with the canonical link pre-filled.
 
-The repo is linked from the nav as **Source**. The site is the story; the repo is the proof. Clone it, run the checks, and read along.
+The repo is linked from the nav as **Source**. The site is the story; the repo is there to inspect. Clone it, run the checks, and read along.
 
 ## Discoverable by default
 

@@ -131,16 +131,16 @@ const jsonLdScript = JSON.stringify(jsonLd).replace(/</g, '\\u003c')
 
 <script is:inline>
   ;(() => {
-    let stored = null
+    let stored
     try {
       stored = localStorage.getItem('theme')
     } catch {
       stored = null
     }
-    const preference =
+
+    document.documentElement.dataset.theme =
       stored === 'light' || stored === 'dark' || stored === 'system'
         ? stored
         : 'system'
-    document.documentElement.dataset.theme = preference
   })()
 </script>

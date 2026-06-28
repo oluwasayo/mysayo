@@ -1,0 +1,222 @@
+---
+import Layout from '@/layout/Layout.astro'
+import { xRecommendUrl } from '@shared/lib/site'
+
+type Book = { title: string; author?: string; year?: number }
+type Shelf = { label: string; books: Book[] }
+
+// A curated subset of finished books — same-author titles co-located; otherwise by signal.
+const shelves: Shelf[] = [
+  {
+    label: 'Software craft & systems',
+    books: [
+      {
+        title: 'Designing Data-Intensive Applications',
+        author: 'Martin Kleppmann',
+        year: 2021,
+      },
+      {
+        title: 'Software Engineering at Google',
+        author: 'Winters, Manshreck & Wright',
+        year: 2021,
+      },
+      {
+        title: 'Site Reliability Engineering',
+        author: 'Beyer, Jones, Petoff & Murphy',
+        year: 2025,
+      },
+      {
+        title: 'Accelerate',
+        author: 'Forsgren, Humble & Kim',
+        year: 2022,
+      },
+      {
+        title: 'The Pragmatic Programmer',
+        author: 'David Thomas & Andrew Hunt',
+        year: 2020,
+      },
+      { title: 'Clean Code', author: 'Robert C. Martin', year: 2020 },
+      { title: 'The Clean Coder', author: 'Robert C. Martin', year: 2021 },
+      { title: 'Clean Architecture', author: 'Robert C. Martin', year: 2021 },
+      { title: 'Thinking in Systems', author: 'Donella H. Meadows', year: 2022 },
+      {
+        title: 'The Design of Everyday Things',
+        author: 'Don Norman',
+        year: 2022,
+      },
+      { title: 'The Kubernetes Book', author: 'Nigel Poulton', year: 2024 },
+      { title: 'System Design Interview', author: 'Alex Xu', year: 2025 },
+    ],
+  },
+  {
+    // Executive → Director → Staff → Engineering Manager; Will Larson & Michael Lopp grouped
+    label: 'Engineering leadership',
+    books: [
+      {
+        title: 'The Engineering Executive\u2019s Primer',
+        author: 'Will Larson',
+        year: 2025,
+      },
+      { title: 'An Elegant Puzzle', author: 'Will Larson', year: 2024 },
+      { title: 'Staff Engineer', author: 'Will Larson', year: 2021 },
+      {
+        title: 'The Startup CTO\u2019s Handbook',
+        author: 'Zach Goldberg',
+        year: 2025,
+      },
+      { title: 'The First 90 Days', author: 'Michael D. Watkins', year: 2024 },
+      { title: 'The Manager\u2019s Path', author: 'Camille Fournier', year: 2022 },
+      {
+        title: 'Leading Effective Engineering Teams',
+        author: 'Addy Osmani',
+        year: 2024,
+      },
+      { title: 'The Phoenix Project', author: 'Gene Kim et al.', year: 2026 },
+      {
+        title: 'The Staff Engineer\u2019s Path',
+        author: 'Tanya Reilly',
+        year: 2024,
+      },
+      { title: 'Managing Humans', author: 'Michael Lopp', year: 2021 },
+      { title: 'The Art of Leadership', author: 'Michael Lopp', year: 2022 },
+      { title: 'Radical Candor', author: 'Kim Scott', year: 2022 },
+    ],
+  },
+  {
+    label: 'Startups & business',
+    books: [
+      { title: 'Zero to One', author: 'Peter Thiel & Blake Masters', year: 2025 },
+      {
+        title: 'The Hard Thing About Hard Things',
+        author: 'Ben Horowitz',
+        year: 2025,
+      },
+      { title: 'Blitzscaling', author: 'Reid Hoffman & Chris Yeh', year: 2025 },
+      {
+        title: 'The Startup of You',
+        author: 'Reid Hoffman & Ben Casnocha',
+        year: 2025,
+      },
+      { title: 'Amazon Shareholder Letters', author: 'Jeff Bezos', year: 2025 },
+      {
+        title: 'Hustle Harder, Hustle Smarter',
+        author: 'Curtis Jackson',
+        year: 2022,
+      },
+    ],
+  },
+  {
+    label: 'Ideas, history & economics',
+    books: [
+      { title: 'Sapiens', author: 'Yuval Noah Harari', year: 2019 },
+      { title: 'Homo Deus', author: 'Yuval Noah Harari', year: 2024 },
+      { title: 'Predictably Irrational', author: 'Dan Ariely', year: 2025 },
+      {
+        title: 'Algorithms to Live By',
+        author: 'Brian Christian & Tom Griffiths',
+        year: 2022,
+      },
+      {
+        title: 'The Dawn of Everything',
+        author: 'David Graeber & David Wengrow',
+        year: 2025,
+      },
+      { title: 'Debt: The First 5,000 Years', author: 'David Graeber', year: 2024 },
+      {
+        title: 'Behavioral Economics: When Psychology and Economics Collide',
+        author: 'Scott Huettel',
+        year: 2022,
+      },
+      { title: 'Progress and Poverty', author: 'Henry George', year: 2023 },
+      {
+        title: 'Reality Is Not What It Seems',
+        author: 'Carlo Rovelli',
+        year: 2019,
+      },
+    ],
+  },
+  {
+    label: 'Fiction & literature',
+    books: [
+      {
+        title: 'Half of a Yellow Sun',
+        author: 'Chimamanda Ngozi Adichie',
+        year: 2020,
+      },
+      { title: 'Animal Farm', author: 'George Orwell', year: 2022 },
+      {
+        title: 'The Little Prince',
+        author: 'Antoine de Saint-Exup\u00e9ry',
+        year: 2019,
+      },
+    ],
+  },
+  {
+    label: 'Family & parenting',
+    books: [
+      { title: 'The Montessori Toddler', author: 'Simone Davies', year: 2021 },
+      { title: 'The Expectant Father', author: 'Armin A. Brott', year: 2020 },
+      { title: 'The New Father', author: 'Armin A. Brott', year: 2021 },
+      {
+        title: 'The Happiest Baby on the Block',
+        author: 'Harvey Karp',
+        year: 2020,
+      },
+    ],
+  },
+]
+---
+
+<Layout
+  title="Reading"
+  description="A selective reading list from Sayo Oladeji — software craft, engineering leadership, startups, history, economics, and ideas."
+>
+  <div class="wrap">
+    <header class="hero">
+      <p class="eyebrow">Reading</p>
+      <h1>Books I've finished.</h1>
+      <p class="lead hero__lead">
+        A selective list of books I've completed — mostly software, systems,
+        leadership, and startups, with regular detours into history, economics,
+        and ideas.
+      </p>
+      <p class="hero__cta">
+        <a
+          class="button"
+          href={xRecommendUrl}
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          Recommend a book on X
+          <span aria-hidden="true">↗</span>
+          <span class="visually-hidden"> (opens in new tab)</span>
+        </a>
+      </p>
+    </header>
+
+    {
+      shelves.map(shelf => (
+        <section class="home-section">
+          <div class="home-section__head">
+            <h2>{shelf.label}</h2>
+          </div>
+          <ul class="reading-list">
+            {shelf.books.map(book => (
+              <li class="reading-item">
+                <span class="reading-year">{book.year ?? ''}</span>
+                <span class="reading-body">
+                  <span class="reading-title">{book.title}</span>
+                  {book.author && (
+                    <span class="reading-author"> — {book.author}</span>
+                  )}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))
+    }
+
+    <a class="back-link" href="/about">← About me</a>
+  </div>
+</Layout>

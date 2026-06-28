@@ -4,24 +4,39 @@ import {
   type ThemePreference,
 } from '@shared/lib/theme'
 
-export const readDocumentThemePreference = (): ThemePreference => {
-  if (typeof document === 'undefined') {
+type ThemeDocument = Pick<Document, 'documentElement'>
+type ThemeStorage = Pick<Storage, 'setItem'>
+
+const getDocument = (): ThemeDocument | undefined =>
+  typeof document === 'undefined' ? undefined : document
+
+const getStorage = (): ThemeStorage | undefined =>
+  typeof localStorage === 'undefined' ? undefined : localStorage
+
+export const readDocumentThemePreference = (
+  themeDocument: ThemeDocument | null | undefined = getDocument(),
+): ThemePreference => {
+  if (!themeDocument) {
     return 'system'
   }
 
-  const { theme } = document.documentElement.dataset
+  const { theme } = themeDocument.documentElement.dataset
   return isThemePreference(theme) ? theme : 'system'
 }
 
-export const applyThemePreference = (preference: ThemePreference) => {
-  if (typeof document === 'undefined') {
+export const applyThemePreference = (
+  preference: ThemePreference,
+  themeDocument: ThemeDocument | null | undefined = getDocument(),
+  themeStorage = getStorage(),
+) => {
+  if (!themeDocument) {
     return
   }
 
-  document.documentElement.dataset.theme = preference
+  themeDocument.documentElement.dataset.theme = preference
 
   try {
-    localStorage.setItem(THEME_STORAGE_KEY, preference)
+    themeStorage?.setItem(THEME_STORAGE_KEY, preference)
   } catch {
     // localStorage may be unavailable; preference still applies this session.
   }

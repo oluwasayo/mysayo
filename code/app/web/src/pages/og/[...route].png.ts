@@ -49,11 +49,35 @@ export const getStaticPaths = (async () => {
       props: { description: siteTagline, title: siteName },
     },
     {
-      params: { route: 'blog' },
+      params: { route: 'about' },
       props: {
         description:
-          'Long-form notes on building software, systems, and this site.',
+          'Software engineer building products, systems, and AI-native infrastructure.',
+        title: 'About',
+      },
+    },
+    {
+      params: { route: 'work' },
+      props: {
+        description:
+          'Production agentic platforms, fintech infrastructure at scale, and high-leverage performance engineering.',
+        title: 'Work',
+      },
+    },
+    {
+      params: { route: 'writing' },
+      props: {
+        description:
+          'Notes on software engineering, systems, and the making of this site.',
         title: 'Writing',
+      },
+    },
+    {
+      params: { route: 'reading' },
+      props: {
+        description:
+          'A selective reading list: software craft, engineering leadership, startups, history, economics, and ideas.',
+        title: 'Reading',
       },
     },
     {
@@ -64,7 +88,7 @@ export const getStaticPaths = (async () => {
       },
     },
     ...posts.map(post => ({
-      params: { route: `blog/${getPostSlug(post)}` },
+      params: { route: `writing/${getPostSlug(post)}` },
       props: { description: post.data.description, title: post.data.title },
     })),
   ]

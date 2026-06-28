@@ -1,0 +1,119 @@
+/* Work page: case-study cards and the experience timeline. */
+
+.case-studies {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.case-study {
+  padding: clamp(1.25rem, 4vw, 2rem);
+  border: var(--border-thin);
+}
+
+.case-study__name {
+  margin: 0;
+  font-size: var(--step-2);
+}
+
+.case-study__tagline {
+  margin: 0.25rem 0 0;
+  color: var(--text-muted);
+}
+
+.case-study__tagline + .case-study__facet,
+.case-study__facet + .case-study__facet {
+  margin-top: 1.25rem;
+}
+
+.case-study__label {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.case-study p:not(.case-study__tagline) {
+  margin: 0;
+}
+
+/* Experience timeline — mirrors the post-list date-column rhythm. */
+
+.work-timeline {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.work-row {
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.75rem 0;
+}
+
+.work-row + .work-row {
+  margin-top: 0.5rem;
+  padding-top: 1.5rem;
+  border-top: var(--border-thin);
+}
+
+.work-row:first-child {
+  padding-top: 0;
+}
+
+.work-row__period {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+
+.work-row__body {
+  min-width: 0;
+}
+
+.work-row__head {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.4rem 0.75rem;
+}
+
+.work-row__company {
+  font-size: var(--step-1);
+  font-weight: 600;
+}
+
+.work-row__role {
+  color: var(--text);
+}
+
+.work-row__location {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.work-row__summary {
+  margin: 0.35rem 0 0;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+@media (width >= 40rem) {
+  .work-row {
+    grid-template-columns: 9rem 1fr;
+    gap: 1.5rem;
+    align-items: baseline;
+  }
+
+  .work-row__period {
+    padding-top: 0.2rem;
+  }
+}

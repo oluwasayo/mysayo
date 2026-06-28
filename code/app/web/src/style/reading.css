@@ -1,0 +1,50 @@
+/* Reading page: shelves of finished books, year-column rhythm. */
+
+.reading-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.reading-item {
+  display: grid;
+  gap: 0.2rem;
+  padding: 0.6rem 0;
+}
+
+.reading-item + .reading-item {
+  margin-top: 0.4rem;
+  padding-top: 1rem;
+  border-top: var(--border-thin);
+}
+
+.reading-item:first-child {
+  padding-top: 0;
+}
+
+.reading-year {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+
+.reading-title {
+  font-weight: 600;
+}
+
+.reading-author {
+  color: var(--text-muted);
+}
+
+@media (width >= 40rem) {
+  .reading-item {
+    grid-template-columns: 5rem 1fr;
+    gap: 1.5rem;
+    align-items: baseline;
+  }
+
+  .reading-year {
+    padding-top: 0.1rem;
+  }
+}
