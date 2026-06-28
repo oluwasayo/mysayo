@@ -1,6 +1,13 @@
 import { enumValueToSlug, enumValueToText } from '@shared/lib/enum'
 import { describe, expect, it } from 'vitest'
-import { getTagLabel, Tag, tagLabels, tagSlugs, tagValues } from '@/lib/tag'
+import {
+  getTagLabel,
+  substackTagSlugToTag,
+  Tag,
+  tagLabels,
+  tagSlugs,
+  tagValues,
+} from '@/lib/tag'
 
 describe('tag', () => {
   it('exposes stable enum values for the content schema', () => {
@@ -13,6 +20,14 @@ describe('tag', () => {
     expect(getTagLabel(Tag.Design)).toBe('Design')
     expect(tagSlugs[Tag.Terraform]).toBe('terraform')
     expect(tagSlugs[Tag.VibeCoding]).toBe('vibe-coding')
+  })
+
+  it('maps Substack publication tag slugs to site tags', () => {
+    expect(substackTagSlugToTag['software-engineering']).toBe(
+      Tag.SoftwareEngineering,
+    )
+    expect(substackTagSlugToTag['pull-request']).toBe(Tag.PullRequest)
+    expect(substackTagSlugToTag['vibe-coding']).toBe(Tag.VibeCoding)
   })
 
   it('covers every tag with a derived label and slug', () => {

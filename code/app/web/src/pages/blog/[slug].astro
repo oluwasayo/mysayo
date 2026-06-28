@@ -1,87 +1,14 @@
 ---
-import Layout from '@/layout/Layout.astro'
-import PostTags from '@/component/PostTags.astro'
-import { formatDate, toISODate } from '@/lib/date'
 import { getPostSlug, getPublishedPosts } from '@/lib/post'
-import { blogPostSourceUrl, siteUrl, xDiscussUrl } from '@shared/lib/site'
-import '@/style/prose.css'
-import { render } from 'astro:content'
-
-// Convention: a post may ship a colocated stylesheet at
-// src/content/blog/<post.id>.css. Link it only on that post.
-const postStyleUrls = import.meta.glob('../../content/blog/*.css', {
-  eager: true,
-  import: 'default',
-  query: '?url',
-}) as Record<string, string>
 
 export async function getStaticPaths() {
   const posts = await getPublishedPosts()
   return posts.map(post => ({
     params: { slug: getPostSlug(post) },
-    props: { post },
   }))
 }
 
-const { post } = Astro.props
-const { Content } = await render(post)
-const { description, pubDate, tags, title, updatedDate } = post.data
-const postUrl = new URL(Astro.url.pathname, siteUrl).href
+const { slug } = Astro.params
 
-const postStyleHref = postStyleUrls[`../../content/blog/${post.id}.css`]
-const styles = postStyleHref ? [postStyleHref] : []
+return Astro.redirect(`/writing/${slug}`, 301)
 ---
-
-<Layout
-  title={title}
-  description={description}
-  ogType="article"
-  publishedTime={pubDate.toISOString()}
-  modifiedTime={updatedDate?.toISOString()}
-  styles={styles}
->
-
-  <article class="wrap wrap-text">
-    <header class="article__header">
-      <p class="eyebrow">Writing</p>
-      <h1 class="article__title">{title}</h1>
-      <div class="article__meta">
-        <time class="post-date" datetime={toISODate(pubDate)}>
-          {formatDate(pubDate)}
-        </time>
-        {
-          updatedDate && (
-            <span class="post-date muted">
-              Updated {formatDate(updatedDate)}
-            </span>
-          )
-        }
-        <a
-          class="post-date article__source"
-          href={xDiscussUrl(postUrl)}
-          rel="noopener noreferrer"
-          target="_blank"
-        >
-          Discuss on X
-          <span class="visually-hidden"> (opens in new tab)</span>
-        </a>
-        <a
-          class="post-date article__source"
-          href={blogPostSourceUrl(post.id)}
-          rel="noopener noreferrer"
-          target="_blank"
-        >
-          View source
-          <span class="visually-hidden"> (opens in new tab)</span>
-        </a>
-      </div>
-      <PostTags tags={tags} />
-    </header>
-
-    <div class="prose">
-      <Content />
-    </div>
-
-    <a class="back-link" href="/blog">← All writing</a>
-  </article>
-</Layout>

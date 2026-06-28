@@ -8,7 +8,12 @@ import { defineConfig } from 'astro/config'
 export default defineConfig({
   integrations: [
     react(),
-    sitemap({ filter: page => !page.endsWith('/rss.xml') }),
+    sitemap({
+      filter: page =>
+        !page.endsWith('/rss.xml') &&
+        !page.endsWith('/blog') &&
+        !page.includes('/blog/'),
+    }),
   ],
   markdown: {
     shikiConfig: {

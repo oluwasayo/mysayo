@@ -50,7 +50,7 @@
   "private": true,
   "scripts": {
     "astro": "astro",
-    "build": "astro build",
+    "build": "astro build && npm run verify:build-output",
     "clean": "find src -type f -name \"*.js\" -delete 2>/dev/null || true && rm -rf dist .astro coverage",
     "deploy": "npm run build && wrangler pages deploy",
     "dev:web": "astro dev",
@@ -64,7 +64,8 @@
     "test": "vitest run",
     "test:ci": "vitest run --silent --reporter=junit --outputFile=./test-results/junit.xml",
     "test:coverage": "vitest run --coverage",
-    "tsc": "astro sync && tsc"
+    "tsc": "astro sync && tsc",
+    "verify:build-output": "node script/verify-build-output.mjs"
   },
   "type": "module",
   "version": "0.0.1"

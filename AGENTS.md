@@ -163,7 +163,7 @@ Keep `@vitejs/plugin-react` on v6 with Astro 7 / Vite 8.
 | `infrastructure/backend.hcl` | yes | R2 bucket + endpoint for `terraform init` |
 | `code/app/web/.env` | yes | Wrangler deploy creds |
 
-Committed templates: `*.env.example`.
+Committed template: `infrastructure/.env.example`.
 
 ### `./tf.sh` behavior (important)
 

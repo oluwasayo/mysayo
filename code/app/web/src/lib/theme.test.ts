@@ -1,5 +1,5 @@
 import { THEME_STORAGE_KEY } from '@shared/lib/theme'
-import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { applyThemePreference, readDocumentThemePreference } from '@/lib/theme'
 
@@ -25,6 +25,10 @@ describe('theme', () => {
       document.documentElement.dataset.theme = 'auto'
       expect(readDocumentThemePreference()).toBe('system')
     })
+
+    it('falls back to system outside a document environment', () => {
+      expect(readDocumentThemePreference(null)).toBe('system')
+    })
   })
 
   describe('applyThemePreference', () => {
@@ -33,6 +37,25 @@ describe('theme', () => {
 
       expect(document.documentElement.dataset.theme).toBe('light')
       expect(localStorage.getItem(THEME_STORAGE_KEY)).toBe('light')
+    })
+
+    it('does nothing outside a document environment', () => {
+      expect(() => applyThemePreference('dark', null)).not.toThrow()
+      expect(localStorage.getItem(THEME_STORAGE_KEY)).toBeNull()
+    })
+
+    it('still applies the document theme when localStorage is unavailable', () => {
+      const unavailableStorage = {
+        setItem: vi.fn(() => {
+          throw new Error('localStorage unavailable')
+        }),
+      }
+
+      expect(() =>
+        applyThemePreference('dark', document, unavailableStorage),
+      ).not.toThrow()
+      expect(document.documentElement.dataset.theme).toBe('dark')
+      expect(localStorage.getItem(THEME_STORAGE_KEY)).toBeNull()
     })
   })
 })

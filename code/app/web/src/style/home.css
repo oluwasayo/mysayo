@@ -10,6 +10,13 @@
   margin-top: 1rem;
 }
 
+.hero__cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.5rem;
+  margin: 1.25rem 0 0;
+}
+
 .home-section {
   margin-top: clamp(3rem, 8vw, 4.5rem);
 }

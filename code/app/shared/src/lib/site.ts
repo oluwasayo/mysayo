@@ -18,11 +18,15 @@ export const xDiscussUrl = (pageUrl: string) =>
     text: `${pageUrl} @${siteXHandle}`,
   })}`
 
+export const xRecommendUrl = `https://x.com/intent/tweet?${new URLSearchParams({
+  text: `@${siteXHandle} you should read `,
+})}`
+
 export const siteTagline =
-  'Software engineer — web, systems, and cloud infrastructure.'
+  'Software engineer — products, systems, and cloud infrastructure.'
 
 export const siteDescription =
-  'The personal site and writing of Sayo Oladeji, a software engineer building for the web and the cloud.'
+  'The personal site and writing of Sayo Oladeji, a software engineer building products, systems, and cloud infrastructure.'
 
 export type NavItem = {
   external?: boolean
@@ -32,7 +36,10 @@ export type NavItem = {
 
 export const navItems: NavItem[] = [
   { href: '/', label: 'Home' },
-  { href: '/blog', label: 'Writing' },
+  { href: '/about', label: 'About' },
+  { href: '/work', label: 'Work' },
+  { href: '/reading', label: 'Reading' },
+  { href: '/writing', label: 'Writing' },
   {
     external: true,
     href: siteRepoUrl,
@@ -41,7 +48,12 @@ export const navItems: NavItem[] = [
 ]
 
 export const socialLinks: NavItem[] = [
-  { href: 'https://github.com/oluwasayo', label: 'GitHub' },
+  { href: 'https://x.com/oluwasayo_', label: 'X (Twitter)' },
   { href: 'https://linkedin.com/in/oluwasayo', label: 'LinkedIn' },
-  { href: 'https://x.com/oluwasayo_', label: 'X' },
+  { href: 'https://github.com/oluwasayo', label: 'GitHub' },
+]
+
+export const profileLinks: NavItem[] = [
+  ...socialLinks,
+  { external: true, href: 'https://cursor.com/@sayo', label: 'Cursor' },
 ]

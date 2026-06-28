@@ -110,7 +110,7 @@ We do **not** commit or share plaintext secrets. Use **1Password Environments** 
 | `infrastructure/.env` | `./tf.sh` — Cloudflare API token, account/zone IDs, R2 state credentials |
 | `code/app/web/.env` | `wrangler pages deploy` — `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID` |
 
-Templates (safe to commit): `infrastructure/.env.example`, `code/app/web/.env.example`.
+Template (safe to commit): `infrastructure/.env.example`.
 
 ### Terraform env file
 
