@@ -19,3 +19,17 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+---
+
+Content and personal materials
+
+The MIT License above applies to the site's code, tooling, infrastructure,
+and implementation (e.g. Astro pages, components, styles, tests, CI, Terraform).
+
+The following are not licensed for reuse without permission from Sayo Oladeji:
+writings, reading lists, about/bio copy, photographs, homepage copy, branding,
+and other personal content in this repository.
+
+Forkers may use the structure and implementation patterns; replace personal
+content with their own.
