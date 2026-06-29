@@ -8,7 +8,21 @@ const year = new Date().getFullYear()
   <div class="wrap site-footer__inner">
     <p>© {year} {siteAuthor}</p>
     <nav class="site-footer__links" aria-label="Elsewhere">
-      {socialLinks.map(link => <a href={link.href}>{link.label}</a>)}
+      {
+        socialLinks.map(link => (
+          <a
+            class:list={[link.external && 'external-link']}
+            href={link.href}
+            rel={link.external ? 'noopener noreferrer' : undefined}
+            target={link.external ? '_blank' : undefined}
+          >
+            {link.label}
+            {link.external && (
+              <span class="visually-hidden"> (opens in new tab)</span>
+            )}
+          </a>
+        ))
+      }
     </nav>
   </div>
 </footer>

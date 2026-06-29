@@ -17,6 +17,9 @@
   object-position: center top;
   filter: grayscale(1);
   border: var(--border-thin);
+
+  /* Mobile: image sits above the text, so mirror it to look into the page. */
+  transform: scaleX(-1);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -39,6 +42,9 @@
   .about-portrait {
     order: 0;
     width: 16rem;
+
+    /* Desktop: image is on the right, looking left already faces the text. */
+    transform: none;
   }
 }
 

@@ -1,8 +1,18 @@
 ---
 import Layout from '@/layout/Layout.astro'
 
+type WorkLink = {
+  href: string
+  label: string
+}
+
+const smartlyDeliverooHref = 'https://www.smartly.io/resources/deliveroo-2'
+const smartlyUberFreightHref = 'https://www.smartly.io/resources/uber-freight'
+const tellerpointHref = 'https://tellerpoint.ng/'
+
 type Role = {
   company: string
+  links?: WorkLink[]
   role: string
   period: string
   location: string
@@ -25,6 +35,13 @@ const experience: Role[] = [
     location: 'Helsinki',
     summary:
       'Led a 7-person cross-functional team owning Swarmia’s developer-facing product areas: Surveys, DORA, CI/CD Insights, Developer Overview, Search, Notifications, Swarmia Reviewed, and the core app shell. Took DevEx Surveys from concept to alpha in six weeks and 30%+ customer adoption; built CI sync orchestration for hundreds of millions of GitHub Actions records.',
+    links: [
+      { href: 'https://www.swarmia.com/customers/miro/', label: 'Miro' },
+      {
+        href: 'https://www.swarmia.com/customers/truelayer/',
+        label: 'TrueLayer',
+      },
+    ],
   },
   {
     company: 'Speechify',
@@ -49,6 +66,10 @@ const experience: Role[] = [
     location: 'Helsinki',
     summary:
       'Co-pioneered the Display Ads line behind public campaigns like Deliveroo’s weather-based creatives; invented Modular Creatives, used by Uber Freight to produce 25 personalized videos and drive +108% CTR, -43% CPC, and -36% CPA sign-up.',
+    links: [
+      { href: smartlyDeliverooHref, label: 'Deliveroo' },
+      { href: smartlyUberFreightHref, label: 'Uber Freight' },
+    ],
   },
   {
     company: 'Tellerpoint',
@@ -57,6 +78,7 @@ const experience: Role[] = [
     location: 'Lagos (Remote)',
     summary:
       'Architected and ran payment infrastructure for a fintech and community-banking platform; bootstrapped to profitability.',
+    links: [{ href: tellerpointHref, label: 'Tellerpoint' }],
   },
   {
     company: 'Vaadin',
@@ -65,6 +87,12 @@ const experience: Role[] = [
     location: 'Finland',
     summary:
       'Built commercial UI components on the Vaadin platform. Designed a Kotlin generator that derived a strongly-typed Java charting API from Highcharts\u2019 120k-line JSON schema, and shipped the Flow APIs for Vaadin Charts 6 and CRUD.',
+    links: [
+      {
+        href: 'https://vaadin.com/docs/latest/components/charts',
+        label: 'Vaadin Charts',
+      },
+    ],
   },
   {
     company: 'Crown Interactive',
@@ -87,6 +115,7 @@ const experience: Role[] = [
 type CaseStudy = {
   name: string
   tagline: string
+  links?: WorkLink[]
   problem: string
   role: string
   outcome: string
@@ -107,9 +136,13 @@ const caseStudies: CaseStudy[] = [
     tagline: 'Marketing technology at scale',
     problem:
       'Modern advertising depends on creative variation at scale: making many versions of an ad, proving which variants work, and delivering them within strict platform, performance, and bundle-size constraints.',
-    role: 'At Smartly, I co-pioneered the Display Ads product line and invented Modular Creatives. At Meta, I worked on Showreel’s creative template editor, where I led parts of the authoring and compatibility work for next-generation ad rendering.',
+    role: 'At Smartly, I co-pioneered the Display Ads product line, invented Modular Creatives, and led the extension of the video-template editor to image templates. At Meta, I worked on Showreel’s creative template editor, where I led parts of the authoring and compatibility work for next-generation ad rendering.',
     outcome:
       'At Smartly, the display work helped open a new business area and powered campaigns like Deliveroo’s weather-based creatives, which produced hundreds of social ads across Display and Meta and beat benchmarks with +25% video completion rate, -32% CPM, and -51% CPA. At Meta, Showreel template-authoring improvements accelerated creative production by over 10x and supported an ads system handling millions in daily revenue opportunity.',
+    links: [
+      { href: smartlyDeliverooHref, label: 'Deliveroo case study' },
+      { href: smartlyUberFreightHref, label: 'Uber Freight case study' },
+    ],
   },
   {
     name: 'Tellerpoint',
@@ -119,6 +152,7 @@ const caseStudies: CaseStudy[] = [
     role: 'Co-founder and CTO; architected and operated the financial infrastructure end to end, from backend services and core algorithms to partner integrations, product development, hiring, onboarding, and data-protection leadership.',
     outcome:
       'Tellerpoint processed billions in USD-equivalent payment volume with zero reconciliation incidents, powered agent-network and payment flows for undisclosed enterprise financial institutions, and was bootstrapped to profitability.',
+    links: [{ href: tellerpointHref, label: 'Tellerpoint' }],
   },
 ]
 ---
@@ -159,6 +193,26 @@ const caseStudies: CaseStudy[] = [
                 <span class="case-study__label">Outcome</span>
                 <p>{study.outcome}</p>
               </div>
+              {study.links && (
+                <ul class="work-links" aria-label={`${study.name} links`}>
+                  {study.links.map(link => (
+                    <li>
+                      <a
+                        class="external-link"
+                        href={link.href}
+                        rel="noopener noreferrer"
+                        target="_blank"
+                      >
+                        {link.label}
+                        <span class="visually-hidden">
+                          {' '}
+                          (opens in new tab)
+                        </span>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </article>
           ))
         }
@@ -181,6 +235,26 @@ const caseStudies: CaseStudy[] = [
                   <span class="work-row__location">{role.location}</span>
                 </p>
                 <p class="work-row__summary">{role.summary}</p>
+                {role.links && (
+                  <ul class="work-links" aria-label={`${role.company} links`}>
+                    {role.links.map(link => (
+                      <li>
+                        <a
+                          class="external-link"
+                          href={link.href}
+                          rel="noopener noreferrer"
+                          target="_blank"
+                        >
+                          {link.label}
+                          <span class="visually-hidden">
+                            {' '}
+                            (opens in new tab)
+                          </span>
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
             </li>
           ))

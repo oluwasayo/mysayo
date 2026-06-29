@@ -48,9 +48,13 @@ export const navItems: NavItem[] = [
 ]
 
 export const socialLinks: NavItem[] = [
-  { href: 'https://x.com/oluwasayo_', label: 'X (Twitter)' },
-  { href: 'https://linkedin.com/in/oluwasayo', label: 'LinkedIn' },
-  { href: 'https://github.com/oluwasayo', label: 'GitHub' },
+  { external: true, href: 'https://x.com/oluwasayo_', label: 'X (Twitter)' },
+  {
+    external: true,
+    href: 'https://linkedin.com/in/oluwasayo',
+    label: 'LinkedIn',
+  },
+  { external: true, href: 'https://github.com/oluwasayo', label: 'GitHub' },
 ]
 
 export const profileLinks: NavItem[] = [

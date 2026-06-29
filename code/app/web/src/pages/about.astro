@@ -123,6 +123,7 @@ const stack = [
           profileLinks.map(link => (
             <li>
               <a
+                class:list={[link.external && 'external-link']}
                 href={link.href}
                 rel={link.external ? 'noopener noreferrer' : undefined}
                 target={link.external ? '_blank' : undefined}

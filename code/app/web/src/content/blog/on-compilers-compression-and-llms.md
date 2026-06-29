@@ -48,7 +48,7 @@ Engineering effectiveness requires the art of allocating human attention where i
 
 Imagine your application as a tree. The leaf nodes consist of simple UI labels, CSS-in-JS objects, or one-off internal scripts. Nothing else depends on them. If the AI makes a mistake here, the blast radius remains tiny. The root and core consist of your data access layer, security middleware, or state logic. These sit deep in the stack.
 
-As David Fowler famously noted:
+As David Fowler famously [noted](https://x.com/davidfowl/status/1814339702696345897):
 
 > **“The lower on the technology stack you sit, the less mistakes you are allowed to make.”**
 

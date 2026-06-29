@@ -40,6 +40,30 @@
   margin: 0;
 }
 
+.work-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem 0.75rem;
+  margin: 1.25rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.work-links a {
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+}
+
+.work-links a:hover {
+  color: var(--accent);
+  text-decoration-thickness: 2px;
+}
+
 /* Experience timeline — mirrors the post-list date-column rhythm. */
 
 .work-timeline {

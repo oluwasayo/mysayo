@@ -77,3 +77,20 @@
   border-color: var(--accent);
   color: var(--accent);
 }
+
+/* External-link affordance: a small CSS-drawn arrow marking links that leave the site. */
+.external-link::after {
+  content: "";
+  display: inline-block;
+  width: 0.45em;
+  height: 0.45em;
+  margin-inline-start: 0.22em;
+  vertical-align: 0.1em;
+  border-top: 1.5px solid currentColor;
+  border-right: 1.5px solid currentColor;
+}
+
+/* The button supplies its own gap between label and arrow. */
+.button.external-link::after {
+  margin-inline-start: 0;
+}
