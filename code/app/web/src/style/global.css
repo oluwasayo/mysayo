@@ -1,8 +1,8 @@
 /*
  * mysayo design system — flat, editorial, mobile-first.
  * Barrel: import partials in cascade order (tokens first, page layers last).
- * Long-form post typography lives in prose.css; bespoke per-post styles are
- * colocated under src/content/blog/<slug>.css and linked by [slug].astro.
+ * Long-form post typography lives in prose.css (including `.callout` asides);
+ * bespoke per-post styles are colocated under src/content/blog/<slug>.css and linked by [slug].astro.
  */
 
 @import url("./tokens.css");
@@ -14,3 +14,4 @@
 @import url("./about.css");
 @import url("./work.css");
 @import url("./reading.css");
+@import url("./print.css"); /* Last: print overrides must beat theme tokens. */

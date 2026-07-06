@@ -1,0 +1,88 @@
+/*
+ * Post-specific styles for everything-is-a-blob, colocated with the markdown.
+ * Linked automatically by [slug].astro because the basename matches post.id.
+ *
+ * Hand-drawn whiteboard diagrams as inline SVG. Inlining (rather than <img>)
+ * lets the site's [data-theme] tokens reach the strokes and lettering, so the
+ * diagrams flip with the light/dark toggle instead of only prefers-color-scheme.
+ * Line wobble comes from an feTurbulence/feDisplacementMap filter in each SVG;
+ * lettering uses Excalifont (OFL-1.1, self-hosted — see public/fonts/).
+ */
+
+@font-face {
+  font-family: Excalifont;
+  src: url("/fonts/Excalifont-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+.blob-diagram {
+  margin: 2.25em 0;
+}
+
+.blob-diagram svg {
+  display: block;
+  width: 100%;
+  max-width: 44rem;
+  height: auto;
+  margin-inline: auto;
+  overflow: visible;
+  font-family: Excalifont, "Comic Sans MS", cursive;
+  font-size: 19px;
+}
+
+/* Marker strokes: theme ink, no fills, rounded like a felt tip. */
+.blob-diagram .d-ink {
+  fill: none;
+  stroke: var(--text);
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.blob-diagram .d-dash {
+  stroke-dasharray: 7 6;
+}
+
+.blob-diagram .d-muted-ink {
+  stroke: var(--text-muted);
+}
+
+.blob-diagram .d-accent {
+  stroke: var(--accent);
+}
+
+.blob-diagram .d-thick {
+  stroke-width: 2.6;
+}
+
+/* Lettering: theme ink by default, muted and accent variants. */
+.blob-diagram text {
+  fill: var(--text);
+  stroke: none;
+}
+
+.blob-diagram .d-t-muted {
+  fill: var(--text-muted);
+  font-size: 16px;
+}
+
+.blob-diagram .d-t-accent {
+  fill: var(--accent);
+}
+
+.blob-diagram figcaption {
+  max-width: 40rem;
+  margin-inline: auto;
+}
+
+@media (width < 34rem) {
+  .blob-diagram svg {
+    font-size: 22px;
+  }
+
+  .blob-diagram .d-t-muted {
+    font-size: 19px;
+  }
+}
