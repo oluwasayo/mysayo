@@ -36,7 +36,6 @@
   .page {
     padding-block: 0;
   }
-
 }
 
 /* Prose-level print rules live in prose.css, which loads after this file. */
