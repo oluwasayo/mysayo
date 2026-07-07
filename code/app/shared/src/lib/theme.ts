@@ -3,7 +3,7 @@ import { enumValuesToRecord, enumValueToText } from '@shared/lib/enum'
 
 export const THEME_STORAGE_KEY = 'theme'
 
-export const themePreferenceOrder = ['system', 'light', 'dark'] as const
+export const themePreferenceOrder = ['system', 'dark', 'light'] as const
 
 export type ThemePreference = (typeof themePreferenceOrder)[number]
 

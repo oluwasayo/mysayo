@@ -152,6 +152,57 @@
   margin-bottom: 0;
 }
 
+/* Collapsible callouts (<details class="callout">): optional forks, design notes, caveats.
+   Native <details>/<summary> — no JavaScript. Collapsed by default; add `open` to expand. */
+.prose .callout {
+  margin: 2em 0;
+  padding: 0 1.3rem;
+  border: var(--border-thin);
+  border-left: 3px solid var(--text-muted);
+  background: var(--bg-subtle);
+}
+
+.prose .callout > summary {
+  margin: 0 -1.3rem;
+  padding: 1.05rem 1.3rem;
+  font-style: normal;
+  font-size: 0.92em;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  cursor: pointer;
+  list-style: none;
+}
+
+.prose .callout > summary::-webkit-details-marker {
+  display: none;
+}
+
+.prose .callout > summary::before {
+  content: "\25b8"; /* ▸ */
+  display: inline-block;
+  width: 1em;
+  margin-right: 0.4em;
+  transition: transform 0.15s ease;
+}
+
+.prose .callout[open] > summary {
+  border-bottom: var(--border-thin);
+}
+
+.prose .callout[open] > summary::before {
+  transform: rotate(90deg);
+}
+
+.prose .callout > summary + * {
+  margin-top: 1.15rem;
+}
+
+.prose .callout > :last-child {
+  margin-bottom: 1.25rem;
+}
+
 .prose code {
   font-family: var(--font-mono);
   padding: 0.15em 0.4em;
@@ -198,4 +249,53 @@
   color: var(--text-muted);
   font-size: 0.85rem;
   text-align: center;
+}
+
+/* Print: unbox inline code, wrap code blocks, expand callouts. Tokens and
+   chrome are handled globally in print.css; these rules are prose-specific
+   and live here because prose.css loads after print.css in the cascade. */
+@media print {
+  /* The mono face alone signals code; boxes around every token are noise on paper. */
+  .prose code {
+    padding: 0;
+    border: 0;
+    background: none;
+  }
+
+  /* Code blocks keep their frame but wrap instead of clipping long lines. */
+  .prose pre {
+    background: none;
+    overflow-x: visible;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+
+  .prose pre,
+  .prose figure,
+  .prose blockquote {
+    break-inside: avoid;
+  }
+
+  .prose h2,
+  .prose h3,
+  .prose .callout > summary {
+    break-after: avoid;
+  }
+
+  /*
+   * Collapsible callouts cannot be toggled on paper, so print them expanded.
+   * ::details-content reveals the content of a closed <details> in engines
+   * that support it (Chrome 131+, Firefox 138+, Safari 18.4+).
+   */
+  .prose .callout::details-content {
+    content-visibility: visible;
+  }
+
+  .prose .callout > summary {
+    border-bottom: var(--border-thin);
+  }
+
+  .prose .callout > summary::before {
+    transform: rotate(90deg);
+  }
 }

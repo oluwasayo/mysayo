@@ -1,0 +1,41 @@
+/*
+ * Print styles. Screens negotiate contrast with themes; paper does not.
+ * Force high-contrast light tokens regardless of [data-theme] (a dark-theme
+ * visitor otherwise prints #ededee text on white paper), expand the
+ * collapsible callouts, drop the navigation chrome, and unbox inline code.
+ */
+
+@media print {
+  :root:not([data-theme]),
+  [data-theme] {
+    --bg: #fff;
+    --bg-subtle: #fff;
+    --text: #000;
+    --text-muted: #333;
+    --border: #999;
+    --accent: #c23f10;
+    --accent-strong: #a33409;
+    --selection: transparent;
+
+    color-scheme: light;
+  }
+
+  body {
+    -webkit-font-smoothing: auto;
+    -moz-osx-font-smoothing: auto;
+  }
+
+  /* Chrome is navigation, and paper has no navigation. */
+  .site-header,
+  .site-footer,
+  .theme-toggle,
+  .back-link {
+    display: none;
+  }
+
+  .page {
+    padding-block: 0;
+  }
+}
+
+/* Prose-level print rules live in prose.css, which loads after this file. */

@@ -311,7 +311,8 @@ import { siteName } from '@shared/lib/site'
 - **Hand-rolled design system** — no component/UI library. Flat (no border radius), editorial, mobile-first.
 - **Typography** — Source Serif 4 for display headings (hero, article titles, essay h2/h3); system sans for body and UI; mono for meta/dates/code
 - Design tokens + base/layout/components: `code/app/web/src/style/global.css`
-- Long-form article typography: `code/app/web/src/style/prose.css`
+- Long-form article typography: `code/app/web/src/style/prose.css` (includes collapsible `.callout` disclosures for blog posts; its `@media print` block expands callouts, unboxes inline code, and wraps code blocks)
+- Print: `code/app/web/src/style/print.css` (imported **last** in `global.css` so its high-contrast light tokens beat `[data-theme]`; hides site chrome)
 - Theming: light/dark driven by `data-theme` on `<html>`, set before paint by an inline script in `BaseHead.astro`, with a `prefers-color-scheme` fallback for no-JS visitors
 - No PostCSS config; Astro/Vite handle CSS. Stylelint uses **modern color notation** (`rgb(... / ..%)`), kebab-case classes
 
@@ -332,6 +333,44 @@ import { siteName } from '@shared/lib/site'
 - Use `getPostSlug()` from `@/lib/post` for hrefs and routes; use `post.id` only for source-file links (`blogPostSourceUrl(post.id)`)
 - `getPublishedPosts()` throws at build time on duplicate slugs
 - After adding/changing collections, `npm run tsc` runs `astro sync` first to regenerate `astro:content` types
+
+#### Callouts (`.callout`)
+
+Blog-wide callout styling lives in `code/app/web/src/style/prose.css` (`.prose .callout`). Use it for **optional design forks, caveats, and tangents** — material that is useful but not part of the main narrative. Callouts are **collapsible** via native `<details>`/`<summary>` (no JavaScript) and render **collapsed by default**. Do **not** use post-specific CSS for callouts.
+
+**Not** for pull quotes — use Markdown `blockquote` for those (italic, accent left rule).
+
+**Markup** — raw HTML inside `.md` posts (Astro content layer renders it inside `.prose`):
+
+```html
+<details class="callout">
+<summary>Label: title of the aside</summary>
+
+First body paragraph…
+
+Second paragraph if needed.
+
+</details>
+```
+
+**Conventions:**
+
+- Use `<details class="callout">` with a `<summary>` as its first child. The summary is the always-visible, clickable label; it renders as a muted uppercase heading with a disclosure caret.
+- Put the label as **plain text** in `<summary>` (no Markdown bold, no backticks) — e.g. `Alternative: the commit outbox`. Keep it short.
+- Leave a **blank line after `</summary>`** so the body renders as Markdown; follow with normal Markdown paragraphs.
+- Collapsed by default. Add the `open` attribute (`<details class="callout" open>`) only if the callout should start expanded.
+- No post-specific class names — always `callout`.
+
+**Example** (from `everything-is-a-blob.md`):
+
+```html
+<details class="callout">
+<summary>Alternative: the commit outbox</summary>
+
+`adopt` keeps commit synchronous and verified, but it is not the only shape…
+
+</details>
+```
 
 ---
 
@@ -407,5 +446,6 @@ Recent stack: Astro 7, Vite 8, `@astrojs/react` 6, `@vitejs/plugin-react` 6, Typ
 | TF wrapper | `tf.sh` |
 | Shared test config | `vite.shared.js` |
 | Lint rules | `biome.json` |
+| Blog prose + callouts | `code/app/web/src/style/prose.css` |
 | Unused code | `knip.json` |
 | Workflows | `.github/workflows/*.yml` |
