@@ -3,9 +3,25 @@ import {
   type ThemePreference,
   themePreferenceLabels,
 } from '@shared/lib/theme'
-import { useEffect, useState } from 'react'
+import { type Dispatch, type SetStateAction, useEffect, useState } from 'react'
 
 import { applyThemePreference, readDocumentThemePreference } from '@/lib/theme'
+
+const isEditableTarget = (target: EventTarget | null) =>
+  target instanceof HTMLElement &&
+  target.closest(
+    'input, textarea, select, [contenteditable=""], [contenteditable="true"]',
+  ) !== null
+
+const cycleThemeState = (
+  setPreference: Dispatch<SetStateAction<ThemePreference>>,
+) => {
+  setPreference(current => {
+    const next = nextThemePreference(current)
+    applyThemePreference(next)
+    return next
+  })
+}
 
 export default function ThemeToggle() {
   const [preference, setPreference] = useState<ThemePreference>('system')
@@ -14,21 +30,36 @@ export default function ThemeToggle() {
     setPreference(readDocumentThemePreference())
   }, [])
 
+  const cycleTheme = () => cycleThemeState(setPreference)
+
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== 'b' || !(event.metaKey || event.ctrlKey)) {
+        return
+      }
+
+      if (isEditableTarget(event.target)) {
+        return
+      }
+
+      event.preventDefault()
+      cycleThemeState(setPreference)
+    }
+
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [])
+
   const label = themePreferenceLabels[preference]
   const nextLabel = themePreferenceLabels[nextThemePreference(preference)]
-
-  const activate = () => {
-    const next = nextThemePreference(preference)
-    applyThemePreference(next)
-    setPreference(next)
-  }
 
   return (
     <button
       aria-label={`Color theme: ${label}`}
+      aria-keyshortcuts="Meta+B Control+B"
       className="theme-toggle"
-      onClick={activate}
-      title={`Color theme: ${label}. Click for ${nextLabel}.`}
+      onClick={cycleTheme}
+      title={`Color theme: ${label}. Click or ⌘B for ${nextLabel}.`}
       type="button"
     >
       <svg

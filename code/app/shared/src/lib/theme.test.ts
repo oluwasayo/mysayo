@@ -23,10 +23,10 @@ describe('theme', () => {
   })
 
   describe('nextThemePreference', () => {
-    it('cycles system → light → dark → system', () => {
-      expect(nextThemePreference('system')).toBe('light')
-      expect(nextThemePreference('light')).toBe('dark')
-      expect(nextThemePreference('dark')).toBe('system')
+    it('cycles system → dark → light → system', () => {
+      expect(nextThemePreference('system')).toBe('dark')
+      expect(nextThemePreference('dark')).toBe('light')
+      expect(nextThemePreference('light')).toBe('system')
     })
   })
 

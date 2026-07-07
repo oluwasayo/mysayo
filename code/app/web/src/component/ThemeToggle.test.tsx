@@ -15,22 +15,22 @@ describe('ThemeToggle', () => {
     delete document.documentElement.dataset.theme
   })
 
-  it('cycles system → light → dark → system and persists the choice', async () => {
+  it('cycles system → dark → light → system and persists the choice', async () => {
     const user = userEvent.setup()
     render(<ThemeToggle />)
 
     const button = screen.getByRole('button', { name: /color theme: system/i })
 
     await user.click(button)
-    expect(document.documentElement.dataset.theme).toBe('light')
-    expect(localStorage.getItem('theme')).toBe('light')
+    expect(document.documentElement.dataset.theme).toBe('dark')
+    expect(localStorage.getItem('theme')).toBe('dark')
     expect(
-      screen.getByRole('button', { name: /color theme: light/i }),
+      screen.getByRole('button', { name: /color theme: dark/i }),
     ).toBeTruthy()
 
     await user.click(button)
-    expect(document.documentElement.dataset.theme).toBe('dark')
-    expect(localStorage.getItem('theme')).toBe('dark')
+    expect(document.documentElement.dataset.theme).toBe('light')
+    expect(localStorage.getItem('theme')).toBe('light')
 
     await user.click(button)
     expect(document.documentElement.dataset.theme).toBe('system')
@@ -45,7 +45,41 @@ describe('ThemeToggle', () => {
     button.focus()
 
     await user.keyboard('{Enter}')
+    expect(document.documentElement.dataset.theme).toBe('dark')
+    expect(localStorage.getItem('theme')).toBe('dark')
+  })
+
+  it('cycles with Cmd+B or Ctrl+B outside editable fields', async () => {
+    const user = userEvent.setup()
+    render(<ThemeToggle />)
+
+    await user.keyboard('{Meta>}b{/Meta}')
+    expect(document.documentElement.dataset.theme).toBe('dark')
+    expect(localStorage.getItem('theme')).toBe('dark')
+
+    await user.keyboard('{Meta>}b{/Meta}')
     expect(document.documentElement.dataset.theme).toBe('light')
     expect(localStorage.getItem('theme')).toBe('light')
+
+    await user.keyboard('{Control>}b{/Control}')
+    expect(document.documentElement.dataset.theme).toBe('system')
+    expect(localStorage.getItem('theme')).toBe('system')
+  })
+
+  it('does not cycle with Cmd+B while typing in an input', async () => {
+    const user = userEvent.setup()
+    render(
+      <>
+        <ThemeToggle />
+        <input aria-label="Search" />
+      </>,
+    )
+
+    const input = screen.getByRole('textbox', { name: 'Search' })
+    await user.click(input)
+    await user.keyboard('{Meta>}b{/Meta}')
+
+    expect(document.documentElement.dataset.theme).toBe('system')
+    expect(localStorage.getItem('theme')).toBeNull()
   })
 })

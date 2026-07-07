@@ -6,7 +6,7 @@
  * lets the site's [data-theme] tokens reach the strokes and lettering, so the
  * diagrams flip with the light/dark toggle instead of only prefers-color-scheme.
  * Line wobble comes from an feTurbulence/feDisplacementMap filter in each SVG;
- * lettering uses Excalifont (OFL-1.1, self-hosted — see public/fonts/).
+ * lettering uses Excalifont (OFL-1.1, self-hosted; see public/fonts/).
  */
 
 @font-face {
