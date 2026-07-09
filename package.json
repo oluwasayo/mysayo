@@ -36,6 +36,7 @@
     "lint:server": "npm run lint -w server",
     "lint:shared": "npm run lint -w shared",
     "lint:web": "npm run lint -w web",
+    "rasterize": "npm run rasterize -w web --",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
     "test:shared": "vitest run --project shared",

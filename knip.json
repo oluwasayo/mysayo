@@ -21,14 +21,15 @@
     "code/app/web": {
       "entry": [
         "src/pages/**/*.{astro,ts}",
-        "src/layout/**/*.astro"
+        "src/layout/**/*.astro",
+        "script/**/*.ts"
       ],
       "ignore": ["src/test/stubs/**"],
       "paths": {
         "@/*": ["./src/*"],
         "@shared/*": ["../shared/src/*"]
       },
-      "project": ["src/**/*.{ts,tsx,astro}"],
+      "project": ["src/**/*.{ts,tsx,astro}", "script/**/*.ts"],
       "vite": {
         "config": ["astro.config.mjs", "vitest.config.js"]
       },
