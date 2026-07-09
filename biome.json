@@ -122,7 +122,7 @@
       }
     },
     {
-      "includes": ["code/bin/src/**/*.ts", "code/doc/src/cli.ts"],
+      "includes": ["code/bin/src/**/*.ts", "code/doc/src/cli.ts", "code/app/web/script/**/*.ts"],
       "linter": {
         "rules": {
           "suspicious": {

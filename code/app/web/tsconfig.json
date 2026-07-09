@@ -16,5 +16,5 @@
   },
   "exclude": ["dist", "node_modules", "coverage", "test-results"],
   "extends": "astro/tsconfigs/strict",
-  "include": ["src", "vitest.setup.ts"]
+  "include": ["src", "script", "vitest.setup.ts"]
 }

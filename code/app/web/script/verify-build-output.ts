@@ -5,21 +5,21 @@ import { fileURLToPath } from 'node:url'
 const dist = new URL('../dist/', import.meta.url)
 const distPath = fileURLToPath(dist)
 
-const file = path => new URL(path, dist)
+const file = (path: string) => new URL(path, dist)
 
-const read = path => readFileSync(file(path), 'utf8')
+const read = (path: string) => readFileSync(file(path), 'utf8')
 
-const assert = (condition, message) => {
+function assert(condition: unknown, message: string): asserts condition {
   if (!condition) {
     throw new Error(message)
   }
 }
 
-const assertExists = path => {
+const assertExists = (path: string) => {
   assert(existsSync(file(path)), `Expected build output to include ${path}`)
 }
 
-const listXmlFiles = directory => {
+const listXmlFiles = (directory: string): string[] => {
   const entries = readdirSync(directory, { withFileTypes: true })
   return entries.flatMap(entry => {
     const entryPath = join(directory, entry.name)
@@ -98,7 +98,7 @@ assert(
   '/blog/building-mysayo should be a noindex redirect page',
 )
 
-const listHtmlFiles = (directory, prefix = '') => {
+const listHtmlFiles = (directory: string, prefix = ''): string[] => {
   const entries = readdirSync(directory, { withFileTypes: true })
   return entries.flatMap(entry => {
     const entryPath = join(directory, entry.name)
@@ -110,7 +110,7 @@ const listHtmlFiles = (directory, prefix = '') => {
   })
 }
 
-const assertNoSubstackCrossPostLinks = html =>
+const assertNoSubstackCrossPostLinks = (html: string) =>
   !html.includes('oluwasayo.substack.com/p/') &&
   !html.includes('substack.com/@oluwasayo/p-')
 
