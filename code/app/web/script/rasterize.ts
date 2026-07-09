@@ -103,20 +103,22 @@ async function main() {
         `${String(index + 1).padStart(2, '0')}-${diagramSlug}.png`,
       )
 
-      const html = `<!DOCTYPE html>
-<html lang="en" data-theme="light">
-<head>
-<meta charset="utf-8">
-<style>
-${themeTokensCss}
-${rasterizeLayoutCss}
-${postCss}
-</style>
-</head>
-<body>
-${figure}
-</body>
-</html>`
+      const html = `
+        <!DOCTYPE html>
+        <html lang="en" data-theme="light">
+          <head>
+            <meta charset="utf-8">
+            <style>
+              ${themeTokensCss}
+              ${rasterizeLayoutCss}
+              ${postCss}
+            </style>
+          </head>
+          <body>
+          ${figure}
+          </body>
+        </html>
+      `
 
       await page.setContent(html, { waitUntil: 'load' })
       await page.locator('figure svg').screenshot({
