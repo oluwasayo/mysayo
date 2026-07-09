@@ -7,7 +7,7 @@ Open-source personal website and writing. This repo holds the Astro site, Cloudf
 **Repository → [github.com/oluwasayo/mysayo](https://github.com/oluwasayo/mysayo)**
 
 [![Node.js](https://img.shields.io/badge/Node.js-26-green.svg)](https://nodejs.org/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-7.0--rc-blue.svg)](https://www.typescriptlang.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-7.0-blue.svg)](https://www.typescriptlang.org/)
 [![Astro](https://img.shields.io/badge/Astro-7-orange.svg)](https://astro.build/)
 [![React](https://img.shields.io/badge/React-19-blue.svg)](https://react.dev/)
 [![Cloudflare](https://img.shields.io/badge/Cloudflare-Pages%20%2B%20Terraform-orange.svg)](https://www.cloudflare.com/)
@@ -91,7 +91,7 @@ mysayo/
 | UI | Hand-rolled flat CSS design system (no component library); React 19 islands only where interactive |
 | React Compiler | `@rolldown/plugin-babel` + `reactCompilerPreset()` in `astro.config.mjs` (build/dev only) |
 | Bundler | Vite 8 (via Astro) |
-| Language | TypeScript 7 RC (`tsc`, not `tsgo`) |
+| Language | TypeScript 7 (`tsc`, not `tsgo`) |
 | Tests | Vitest 4 + Playwright Chromium (browser mode, not jsdom) |
 | Lint/format | Biome + Stylelint (CSS in web) |
 | Hosting | Cloudflare Pages (`mysayo-web`) — free tier |

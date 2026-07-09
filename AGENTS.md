@@ -138,7 +138,7 @@ Do not reintroduce jsdom without an explicit user request and a documented reaso
 
 ### TypeScript
 
-- **TypeScript 7 RC** (`typescript@7.0.1-rc`)
+- **TypeScript 7** (`typescript@7.0.2`)
 - Use **`tsc`** in all workspaces — not `tsgo` / `@typescript/native-preview`
 - Root and workspaces pin exact versions
 
@@ -431,7 +431,7 @@ After major upgrades, verify:
 3. React Compiler still works in dev/build (not tests)
 4. CI wrangler version if wrangler major changed
 
-Recent stack: Astro 7, Vite 8, `@astrojs/react` 6, `@vitejs/plugin-react` 6, TypeScript 7 RC, Vitest 4, Wrangler 4. UI is a hand-rolled CSS design system (no component library).
+Recent stack: Astro 7, Vite 8, `@astrojs/react` 6, `@vitejs/plugin-react` 6, TypeScript 7, Vitest 4, Wrangler 4. UI is a hand-rolled CSS design system (no component library).
 
 ---
 
