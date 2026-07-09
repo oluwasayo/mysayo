@@ -1,8 +1,8 @@
 {
   "description": "Cloudflare edge functions and durable objects (placeholder)",
   "devDependencies": {
-    "@types/node": "26.0.0",
-    "typescript": "7.0.1-rc"
+    "@types/node": "26.1.0",
+    "typescript": "7.0.2"
   },
   "name": "server",
   "private": true,

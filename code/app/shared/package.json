@@ -1,8 +1,8 @@
 {
   "description": "Utilities shared between the server and web app",
   "devDependencies": {
-    "@types/node": "26.0.0",
-    "typescript": "7.0.1-rc",
+    "@types/node": "26.1.0",
+    "typescript": "7.0.2",
     "vitest": "4.1.9"
   },
   "name": "shared",
