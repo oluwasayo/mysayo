@@ -17,6 +17,7 @@ export const Tag = {
   Design: 'DESIGN',
   Efficiency: 'EFFICIENCY',
   EngineeringEffectiveness: 'ENGINEERING_EFFECTIVENESS',
+  Frontend: 'FRONTEND',
   InformationTheory: 'INFORMATION_THEORY',
   LargeLanguageModels: 'LARGE_LANGUAGE_MODELS',
   PullRequest: 'PULL_REQUEST',

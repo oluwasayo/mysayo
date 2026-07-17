@@ -1,0 +1,83 @@
+/*
+ * Post-specific styles for search-params-are-state, colocated with the markdown.
+ * Linked automatically by [slug].astro because the basename matches post.id.
+ *
+ * Inline SVG diagrams use theme tokens so strokes and labels flip with data-theme.
+ */
+
+.url-state-diagram {
+  margin: 2.25em 0;
+}
+
+.url-state-diagram svg {
+  display: block;
+  width: 100%;
+  max-width: 44rem;
+  height: auto;
+  margin-inline: auto;
+  overflow: visible;
+  font-family: var(--font-mono);
+  font-size: 14px;
+}
+
+.url-state-diagram .d-ink {
+  fill: none;
+  stroke: var(--text);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.url-state-diagram .d-fill {
+  fill: var(--bg-subtle);
+  stroke: var(--text);
+  stroke-width: 1.6;
+}
+
+.url-state-diagram .d-dash {
+  stroke-dasharray: 6 5;
+}
+
+.url-state-diagram .d-muted-ink {
+  stroke: var(--text-muted);
+}
+
+.url-state-diagram .d-accent {
+  stroke: var(--accent);
+}
+
+.url-state-diagram text {
+  fill: var(--text);
+  stroke: none;
+  font-family: var(--font-mono);
+}
+
+.url-state-diagram .d-t-muted {
+  fill: var(--text-muted);
+  font-size: 12px;
+}
+
+.url-state-diagram .d-t-accent {
+  fill: var(--accent);
+}
+
+.url-state-diagram .d-t-label {
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.url-state-diagram figcaption {
+  max-width: 40rem;
+  margin-inline: auto;
+}
+
+@media (width < 34rem) {
+  .url-state-diagram svg {
+    font-size: 13px;
+  }
+
+  .url-state-diagram .d-t-muted {
+    font-size: 11px;
+  }
+}
