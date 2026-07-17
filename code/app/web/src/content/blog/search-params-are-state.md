@@ -2,7 +2,7 @@
 title: Search Params are State
 description: 'Component-level hooks vs router-level schemas for URL state: what each offers, what each trades, and how to test both.'
 slug: search-params-are-state
-pubDate: 2026-07-12
+pubDate: 2026-07-17
 draft: false
 tags:
   - ARCHITECTURE
