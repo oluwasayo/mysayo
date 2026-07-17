@@ -1,5 +1,5 @@
 ---
-title: Search Params Are State
+title: Search Params are State
 description: 'Component-level hooks vs router-level schemas for URL state: what each offers, what each trades, and how to test both.'
 slug: search-params-are-state
 pubDate: 2026-07-12
