@@ -1,6 +1,6 @@
 ---
 title: Building mysayo.com
-description: How I built this site. A static Astro front-end, a React Compiler island, and a Cloudflare-only stack managed entirely in Terraform, with secrets that never touch the repo.
+description: How I built this site. A static Astro front-end, a React island, and a Cloudflare-only stack managed entirely in Terraform, with secrets that never touch the repo.
 slug: building-mysayo
 pubDate: 2026-06-28
 tags:

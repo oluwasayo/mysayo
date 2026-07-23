@@ -2,7 +2,12 @@ import type { CollectionEntry } from 'astro:content'
 import { getCollection } from 'astro:content'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { getPostSlug, getPublishedPosts } from '@/lib/post'
+import {
+  featuredPostSlugs,
+  getFeaturedPosts,
+  getPostSlug,
+  getPublishedPosts,
+} from '@/lib/post'
 
 const blogPost = (
   data: Partial<CollectionEntry<'blog'>['data']> &
@@ -80,6 +85,33 @@ describe('post', () => {
 
       await expect(getPublishedPosts()).rejects.toThrow(
         'Duplicate blog slug: duplicate-slug',
+      )
+    })
+  })
+
+  describe('getFeaturedPosts', () => {
+    it('returns featured posts in configured order', async () => {
+      const posts = featuredPostSlugs.toReversed().map((slug, index) =>
+        blogPost({
+          pubDate: new Date(`2026-0${index + 1}-01T00:00:00.000Z`),
+          slug,
+        }),
+      )
+
+      vi.mocked(getCollection).mockImplementation(
+        async (_collection, filter) => (filter ? posts.filter(filter) : posts),
+      )
+
+      const featured = await getFeaturedPosts()
+
+      expect(featured.map(getPostSlug)).toEqual([...featuredPostSlugs])
+    })
+
+    it('throws when a featured slug is missing', async () => {
+      vi.mocked(getCollection).mockResolvedValue([])
+
+      await expect(getFeaturedPosts()).rejects.toThrow(
+        `Featured blog slug not found: ${featuredPostSlugs[0]}`,
       )
     })
   })
