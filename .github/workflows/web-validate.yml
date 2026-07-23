@@ -65,7 +65,7 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           command: pages deploy code/app/web/dist --project-name=mysayo-web
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
-          wranglerVersion: '4.107.0'
+          wranglerVersion: '4.114.0'
 
       - name: Comment deploy url
         uses: mshick/add-pr-comment@ec328af66588ab8f77cdeb2c264f14aba45bbf59 # v3.12.0
