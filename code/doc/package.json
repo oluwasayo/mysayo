@@ -1,7 +1,7 @@
 {
   "description": "Documentation and notes (placeholder)",
   "devDependencies": {
-    "@types/node": "26.1.0",
+    "@types/node": "26.1.1",
     "typescript": "7.0.2"
   },
   "name": "doc",
