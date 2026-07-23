@@ -2,6 +2,13 @@ import { type CollectionEntry, getCollection } from 'astro:content'
 
 export const getPostSlug = (post: CollectionEntry<'blog'>) => post.data.slug
 
+/** Homepage featured writing, in display order. */
+export const featuredPostSlugs = [
+  'everything-is-a-blob',
+  'building-mysayo',
+  'on-compilers-compression-and-llms',
+] as const
+
 export const getPublishedPosts = async () => {
   const posts = await getCollection('blog', ({ data }) => !data.draft)
   const sorted = posts.sort(
@@ -18,4 +25,18 @@ export const getPublishedPosts = async () => {
   }
 
   return sorted
+}
+
+export const getFeaturedPosts = async () => {
+  const bySlug = new Map(
+    (await getPublishedPosts()).map(post => [getPostSlug(post), post]),
+  )
+
+  return featuredPostSlugs.map(slug => {
+    const post = bySlug.get(slug)
+    if (!post) {
+      throw new Error(`Featured blog slug not found: ${slug}`)
+    }
+    return post
+  })
 }

@@ -1,21 +1,21 @@
 ---
 import PostList from '@/component/PostList.astro'
 import Layout from '@/layout/Layout.astro'
-import { getPublishedPosts } from '@/lib/post'
+import { getFeaturedPosts } from '@/lib/post'
 import { siteAuthor } from '@shared/lib/site'
 
-const posts = (await getPublishedPosts()).slice(0, 3)
+const posts = await getFeaturedPosts()
 ---
 
 <Layout>
   <div class="wrap">
     <section class="hero">
       <p class="eyebrow">{siteAuthor}</p>
-      <h1>Software engineer building products, systems, and cloud infrastructure.</h1>
+      <h1>Hands-on engineer, building and leading across product and infrastructure.</h1>
       <p class="lead hero__lead">
-        I design and ship software end to end — product frontends, distributed
-        backends, and the infrastructure that runs them. Here, I write about the
-        craft behind that work.
+        I design, ship, and lead software end to end — product surfaces,
+        distributed backends, and the cloud infrastructure that runs them. Here, I write about
+        the craft behind that work.
       </p>
       <p class="hero__cta">
         <a class="text-link" href="/about">About me →</a>
@@ -27,7 +27,7 @@ const posts = (await getPublishedPosts()).slice(0, 3)
       posts.length > 0 && (
         <section class="home-section">
           <div class="home-section__head">
-            <h2>Recent writing</h2>
+            <h2>Featured writing</h2>
             <a class="text-link" href="/writing">
               All writing →
             </a>
