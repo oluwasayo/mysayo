@@ -1,0 +1,66 @@
+/*
+ * Post-specific styles for prepare-pull-request, colocated with the markdown.
+ * Linked automatically by [slug].astro because the basename matches post.id.
+ *
+ * Hand-drawn pipeline diagram as inline SVG (same pattern as everything-is-a-blob).
+ */
+
+@font-face {
+  font-family: Excalifont;
+  src: url("/fonts/Excalifont-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+.pr-pipeline-diagram {
+  margin: 2.25em 0;
+}
+
+.pr-pipeline-diagram svg {
+  display: block;
+  width: 100%;
+  max-width: 44rem;
+  height: auto;
+  margin-inline: auto;
+  overflow: visible;
+  font-family: Excalifont, "Comic Sans MS", cursive;
+  font-size: 17px;
+}
+
+.pr-pipeline-diagram .d-ink {
+  fill: none;
+  stroke: var(--text);
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.pr-pipeline-diagram text {
+  fill: var(--text);
+  stroke: none;
+}
+
+.pr-pipeline-diagram .d-t-muted {
+  fill: var(--text-muted);
+  font-size: 14px;
+}
+
+.pr-pipeline-diagram .d-t-accent {
+  fill: var(--accent);
+}
+
+.pr-pipeline-diagram figcaption {
+  max-width: 40rem;
+  margin-inline: auto;
+}
+
+@media (width < 34rem) {
+  .pr-pipeline-diagram svg {
+    font-size: 20px;
+  }
+
+  .pr-pipeline-diagram .d-t-muted {
+    font-size: 16px;
+  }
+}
