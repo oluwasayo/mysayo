@@ -4,7 +4,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import {
   featuredPostSlugs,
-  getFeaturedPosts,
+  getHomepageWriting,
   getPostSlug,
   getPublishedPosts,
 } from '@/lib/post'
@@ -89,11 +89,41 @@ describe('post', () => {
     })
   })
 
-  describe('getFeaturedPosts', () => {
-    it('returns featured posts in configured order', async () => {
-      const posts = featuredPostSlugs.toReversed().map((slug, index) =>
+  describe('getHomepageWriting', () => {
+    it('returns latest and the first two featured when latest is not featured', async () => {
+      const posts = [
         blogPost({
-          pubDate: new Date(`2026-0${index + 1}-01T00:00:00.000Z`),
+          pubDate: new Date('2026-07-01T00:00:00.000Z'),
+          slug: 'unrelated-latest',
+        }),
+        ...featuredPostSlugs.map((slug, index) =>
+          blogPost({
+            pubDate: new Date(`2026-0${index + 1}-01T00:00:00.000Z`),
+            slug,
+          }),
+        ),
+      ]
+
+      vi.mocked(getCollection).mockImplementation(
+        async (_collection, filter) => (filter ? posts.filter(filter) : posts),
+      )
+
+      const { featuredPosts, latestPosts } = await getHomepageWriting()
+
+      expect(latestPosts.map(getPostSlug)).toEqual(['unrelated-latest'])
+      expect(featuredPosts.map(getPostSlug)).toEqual([
+        featuredPostSlugs[0],
+        featuredPostSlugs[1],
+      ])
+    })
+
+    it('excludes latest from featured and fills from the next candidates', async () => {
+      const posts = featuredPostSlugs.map((slug, index) =>
+        blogPost({
+          // First configured featured slug is newest → becomes latest, not featured.
+          pubDate: new Date(
+            `2026-0${featuredPostSlugs.length - index}-01T00:00:00.000Z`,
+          ),
           slug,
         }),
       )
@@ -102,15 +132,19 @@ describe('post', () => {
         async (_collection, filter) => (filter ? posts.filter(filter) : posts),
       )
 
-      const featured = await getFeaturedPosts()
+      const { featuredPosts, latestPosts } = await getHomepageWriting()
 
-      expect(featured.map(getPostSlug)).toEqual([...featuredPostSlugs])
+      expect(latestPosts.map(getPostSlug)).toEqual([featuredPostSlugs[0]])
+      expect(featuredPosts.map(getPostSlug)).toEqual([
+        featuredPostSlugs[1],
+        featuredPostSlugs[2],
+      ])
     })
 
     it('throws when a featured slug is missing', async () => {
       vi.mocked(getCollection).mockResolvedValue([])
 
-      await expect(getFeaturedPosts()).rejects.toThrow(
+      await expect(getHomepageWriting()).rejects.toThrow(
         `Featured blog slug not found: ${featuredPostSlugs[0]}`,
       )
     })

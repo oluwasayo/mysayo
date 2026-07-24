@@ -1,5 +1,5 @@
 ---
-title: Prepare Pull Request
+title: "Prepare Pull Request\u00A0\u00A0🪄"
 description: 'Agent guardrails are safety that makes high velocity workable. I encode mine as a single Cursor command that runs reviews, tests, lint, CI, and the feedback loop before a human ever sees the PR.'
 slug: prepare-pull-request
 pubDate: 2026-07-24

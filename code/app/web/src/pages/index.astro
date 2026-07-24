@@ -1,10 +1,10 @@
 ---
 import PostList from '@/component/PostList.astro'
 import Layout from '@/layout/Layout.astro'
-import { getFeaturedPosts } from '@/lib/post'
+import { getHomepageWriting } from '@/lib/post'
 import { siteAuthor } from '@shared/lib/site'
 
-const posts = await getFeaturedPosts()
+const { featuredPosts, latestPosts } = await getHomepageWriting()
 ---
 
 <Layout>
@@ -24,7 +24,21 @@ const posts = await getFeaturedPosts()
     </section>
 
     {
-      posts.length > 0 && (
+      latestPosts.length > 0 && (
+        <section class="home-section">
+          <div class="home-section__head">
+            <h2>Latest writing</h2>
+            <a class="text-link" href="/writing">
+              All writing →
+            </a>
+          </div>
+          <PostList posts={latestPosts} />
+        </section>
+      )
+    }
+
+    {
+      featuredPosts.length > 0 && (
         <section class="home-section">
           <div class="home-section__head">
             <h2>Featured writing</h2>
@@ -32,7 +46,7 @@ const posts = await getFeaturedPosts()
               All writing →
             </a>
           </div>
-          <PostList posts={posts} />
+          <PostList posts={featuredPosts} />
         </section>
       )
     }
