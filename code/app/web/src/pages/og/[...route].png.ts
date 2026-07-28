@@ -6,6 +6,7 @@ import { siteAuthor, siteName, siteTagline } from '@shared/lib/site'
 import type { APIContext, GetStaticPaths } from 'astro'
 import satori from 'satori'
 import { html } from 'satori-html'
+import { emojiCodePoint, loadEmojiDataUri } from '@/lib/og-emoji'
 import { getPostSlug, getPublishedPosts } from '@/lib/post'
 
 type OgCard = { title: string; description: string }
@@ -131,7 +132,25 @@ export async function GET({ props }: APIContext) {
     typeof satori
   >[0]
 
-  const svg = await satori(markup, { fonts, height: 630, width: 1200 })
+  const svg = await satori(markup, {
+    fonts,
+    height: 630,
+    loadAdditionalAsset: async (languageCode, segment) => {
+      if (languageCode !== 'emoji') {
+        return ''
+      }
+
+      const uri = loadEmojiDataUri(segment)
+      if (!uri) {
+        const code = emojiCodePoint(segment)
+        throw new Error(
+          `Missing OG emoji SVG for ${JSON.stringify(segment)} — add src/asset/og/emoji/${code}.svg`,
+        )
+      }
+      return uri
+    },
+    width: 1200,
+  })
 
   const png = new Resvg(svg, {
     fitTo: { mode: 'width', value: 1200 },

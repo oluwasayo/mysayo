@@ -334,6 +334,19 @@ import { siteName } from '@shared/lib/site'
 - `getPublishedPosts()` throws at build time on duplicate slugs
 - After adding/changing collections, `npm run tsc` runs `astro sync` first to regenerate `astro:content` types
 
+#### Emoji in titles (Open Graph)
+
+Social cards are built by `code/app/web/src/pages/og/[...route].png.ts` with [satori](https://github.com/vercel/satori) + Source Serif 4. **That font has no emoji glyphs.** An emoji in `title` (or any other OG card string) shows correctly in HTML/`og:title`, but the PNG becomes a tofu box (□ / ☒) unless a Twemoji SVG is vendored.
+
+**When a post title includes emoji** (e.g. `Prepare Pull Request  🪄`):
+
+1. Resolve the Twemoji filename stem with `emojiCodePoint` in `@/lib/og-emoji` (🪄 → `1fa84`).
+2. Vendor the SVG at `code/app/web/src/asset/og/emoji/{code}.svg` (Twemoji CC-BY 4.0 — copy from the [twemoji](https://github.com/twitter/twemoji) `assets/svg/` tree, e.g. jsDelivr `…/twemoji@14.0.2/assets/svg/{code}.svg`).
+3. Build and open `dist/og/writing/{slug}.png` — confirm the glyph, not tofu.
+4. Build fails loud if an emoji appears without a matching SVG (`loadAdditionalAsset` in the OG route).
+
+Vendored emoji SVGs are excluded from Biome (`biome.json`); do not “fix” them for a11y titles. HTML meta already carries the character; only the raster card needs the asset.
+
 #### Callouts (`.callout`)
 
 Blog-wide callout styling lives in `code/app/web/src/style/prose.css` (`.prose .callout`). Use it for **optional design forks, caveats, and tangents** — material that is useful but not part of the main narrative. Callouts are **collapsible** via native `<details>`/`<summary>` (no JavaScript) and render **collapsed by default**. Do **not** use post-specific CSS for callouts.
@@ -385,6 +398,7 @@ Second paragraph if needed.
 | Dev server restart loop | 1Password remounts `.env` | `server.watch.ignored: ['**/.env']` |
 | Knip flags `react-compiler-runtime` | Runtime used only in compiled output | Listed in `knip.json` `ignoreDependencies` |
 | `@babel/core` engine warnings | Babel 8 wants Node ≥24.11 | CI uses Node 26 — OK; local older Node may warn |
+| OG card shows tofu instead of emoji | Satori + Source Serif have no emoji glyphs | Vendor Twemoji SVG under `src/asset/og/emoji/` — see **Emoji in titles (Open Graph)** |
 
 ---
 
@@ -447,5 +461,7 @@ Recent stack: Astro 7, Vite 8, `@astrojs/react` 6, `@vitejs/plugin-react` 6, Typ
 | Shared test config | `vite.shared.js` |
 | Lint rules | `biome.json` |
 | Blog prose + callouts | `code/app/web/src/style/prose.css` |
+| OG social cards | `code/app/web/src/pages/og/[...route].png.ts` |
+| OG emoji (Twemoji SVGs) | `code/app/web/src/lib/og-emoji.ts`, `src/asset/og/emoji/` |
 | Unused code | `knip.json` |
 | Workflows | `.github/workflows/*.yml` |

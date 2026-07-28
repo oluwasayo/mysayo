@@ -21,6 +21,7 @@
       "!!**/test-results",
       "!code/app/web/.astro",
       "!code/app/web/**/*.astro",
+      "!code/app/web/src/asset/og/emoji/**",
       "!infrastructure"
     ]
   },
