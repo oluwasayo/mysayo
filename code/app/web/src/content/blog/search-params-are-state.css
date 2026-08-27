@@ -39,11 +39,11 @@
 }
 
 .url-state-diagram .d-muted-ink {
-  stroke: var(--text-muted);
+  stroke: var(--diagram-muted);
 }
 
 .url-state-diagram .d-accent {
-  stroke: var(--accent);
+  stroke: var(--diagram-accent);
 }
 
 .url-state-diagram text {
@@ -53,12 +53,12 @@
 }
 
 .url-state-diagram .d-t-muted {
-  fill: var(--text-muted);
+  fill: var(--diagram-muted);
   font-size: 12px;
 }
 
 .url-state-diagram .d-t-accent {
-  fill: var(--accent);
+  fill: var(--diagram-accent);
 }
 
 .url-state-diagram .d-t-label {

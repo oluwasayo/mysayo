@@ -16,6 +16,8 @@
     --accent: #c23f10;
     --accent-strong: #a33409;
     --selection: transparent;
+    --diagram-muted: #333;
+    --diagram-accent: #a33409;
 
     color-scheme: light;
   }

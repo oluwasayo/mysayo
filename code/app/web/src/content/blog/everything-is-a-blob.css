@@ -46,11 +46,11 @@
 }
 
 .blob-diagram .d-muted-ink {
-  stroke: var(--text-muted);
+  stroke: var(--diagram-muted);
 }
 
 .blob-diagram .d-accent {
-  stroke: var(--accent);
+  stroke: var(--diagram-accent);
 }
 
 .blob-diagram .d-thick {
@@ -64,12 +64,12 @@
 }
 
 .blob-diagram .d-t-muted {
-  fill: var(--text-muted);
+  fill: var(--diagram-muted);
   font-size: 16px;
 }
 
 .blob-diagram .d-t-accent {
-  fill: var(--accent);
+  fill: var(--diagram-accent);
 }
 
 .blob-diagram figcaption {

@@ -42,12 +42,12 @@
 }
 
 .pr-pipeline-diagram .d-t-muted {
-  fill: var(--text-muted);
+  fill: var(--diagram-muted);
   font-size: 14px;
 }
 
 .pr-pipeline-diagram .d-t-accent {
-  fill: var(--accent);
+  fill: var(--diagram-accent);
 }
 
 .pr-pipeline-diagram figcaption {

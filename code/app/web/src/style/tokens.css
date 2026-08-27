@@ -59,6 +59,18 @@
   initial-value: #e04e1a;
 }
 
+@property --diagram-muted {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #45454b;
+}
+
+@property --diagram-accent {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #c23f10;
+}
+
 :root {
   --font-sans:
     ui-sans-serif, system-ui, -apple-system, "Segoe UI", roboto, helvetica,
@@ -77,6 +89,8 @@
   --accent-strong: #c23f10;
   --selection: rgb(224 78 26 / 18%);
   --focus: #e04e1a;
+  --diagram-muted: #45454b;
+  --diagram-accent: #c23f10;
 
   --radius: 0;
   --border-thin: 1px solid var(--border);
@@ -125,6 +139,8 @@
     --accent-strong: #ff8a70;
     --selection: rgb(255 111 77 / 22%);
     --focus: #ff6f4d;
+    --diagram-muted: #9a9aa2;
+    --diagram-accent: #ff6f4d;
 
     color-scheme: dark;
   }
@@ -140,6 +156,8 @@
   --accent-strong: #c23f10;
   --selection: rgb(224 78 26 / 18%);
   --focus: #e04e1a;
+  --diagram-muted: #45454b;
+  --diagram-accent: #c23f10;
 
   color-scheme: light;
 }
@@ -154,6 +172,8 @@
   --accent-strong: #ff8a70;
   --selection: rgb(255 111 77 / 22%);
   --focus: #ff6f4d;
+  --diagram-muted: #9a9aa2;
+  --diagram-accent: #ff6f4d;
 
   color-scheme: dark;
 }
@@ -169,6 +189,8 @@
       --accent 220ms ease,
       --accent-strong 220ms ease,
       --selection 220ms ease,
-      --focus 220ms ease;
+      --focus 220ms ease,
+      --diagram-muted 220ms ease,
+      --diagram-accent 220ms ease;
   }
 }
