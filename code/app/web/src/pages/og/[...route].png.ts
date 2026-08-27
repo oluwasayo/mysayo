@@ -111,12 +111,12 @@ const card = ({ title, description }: OgCard) =>
           alt="personal portrait"
         />
       </div>
-      <div style="display:flex;flex-direction:column;flex:1;justify-content:center;border-left:10px solid #ff6f4d;padding-left:48px;">
+      <div style="display:flex;flex-direction:column;flex:1;justify-content:center;border-left:10px solid #39e079;padding-left:48px;">
         <div style="display:flex;font-size:26px;font-weight:400;letter-spacing:8px;text-transform:uppercase;color:#9a9aa2;margin-bottom:28px;">mysayo.com</div>
         <div style="display:flex;font-size:60px;font-weight:600;line-height:1.08;letter-spacing:-2px;">${escapeHtml(title)}</div>
         <div style="display:flex;font-size:30px;font-weight:400;color:#9a9aa2;line-height:1.35;margin-top:26px;">${escapeHtml(truncate(description, 105))}</div>
         <div style="display:flex;align-items:center;gap:14px;margin-top:36px;font-size:24px;color:#9a9aa2;">
-          <span style="display:flex;width:16px;height:16px;background-color:#ff6f4d;"></span>
+          <span style="display:flex;width:16px;height:16px;background-color:#39e079;"></span>
           <span style="display:flex;">${escapeHtml(siteAuthor)}</span>
         </div>
       </div>

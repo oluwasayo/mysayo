@@ -38,25 +38,25 @@
 @property --accent {
   syntax: "<color>";
   inherits: true;
-  initial-value: #e04e1a;
+  initial-value: #008743;
 }
 
 @property --accent-strong {
   syntax: "<color>";
   inherits: true;
-  initial-value: #c23f10;
+  initial-value: #006b35;
 }
 
 @property --selection {
   syntax: "<color>";
   inherits: true;
-  initial-value: rgb(224 78 26 / 18%);
+  initial-value: rgb(0 135 67 / 18%);
 }
 
 @property --focus {
   syntax: "<color>";
   inherits: true;
-  initial-value: #e04e1a;
+  initial-value: #008743;
 }
 
 :root {
@@ -73,10 +73,10 @@
   --text: #18181b;
   --text-muted: #59595f;
   --border: #e3e3df;
-  --accent: #e04e1a;
-  --accent-strong: #c23f10;
-  --selection: rgb(224 78 26 / 18%);
-  --focus: #e04e1a;
+  --accent: #008743;
+  --accent-strong: #006b35;
+  --selection: rgb(0 135 67 / 18%);
+  --focus: #008743;
 
   --radius: 0;
   --border-thin: 1px solid var(--border);
@@ -92,7 +92,7 @@
 
   /*
    * Code highlighting — Shiki "css-variables" theme.
-   * Duotone, three tiers so shell commands don't read as a wall of orange:
+   * Duotone, three tiers so shell commands don't read as a wall of green:
    *   accent  → keywords, function/command names, links (the "verbs")
    *   text    → strings, constants, parameters, identifiers (the payload)
    *   muted   → comments, punctuation
@@ -121,10 +121,10 @@
     --text: #ededee;
     --text-muted: #9a9aa2;
     --border: #26262b;
-    --accent: #ff6f4d;
-    --accent-strong: #ff8a70;
-    --selection: rgb(255 111 77 / 22%);
-    --focus: #ff6f4d;
+    --accent: #39e079;
+    --accent-strong: #75f29f;
+    --selection: rgb(57 224 121 / 22%);
+    --focus: #39e079;
 
     color-scheme: dark;
   }
@@ -136,10 +136,10 @@
   --text: #18181b;
   --text-muted: #59595f;
   --border: #e3e3df;
-  --accent: #e04e1a;
-  --accent-strong: #c23f10;
-  --selection: rgb(224 78 26 / 18%);
-  --focus: #e04e1a;
+  --accent: #008743;
+  --accent-strong: #006b35;
+  --selection: rgb(0 135 67 / 18%);
+  --focus: #008743;
 
   color-scheme: light;
 }
@@ -150,10 +150,10 @@
   --text: #ededee;
   --text-muted: #9a9aa2;
   --border: #26262b;
-  --accent: #ff6f4d;
-  --accent-strong: #ff8a70;
-  --selection: rgb(255 111 77 / 22%);
-  --focus: #ff6f4d;
+  --accent: #39e079;
+  --accent-strong: #75f29f;
+  --selection: rgb(57 224 121 / 22%);
+  --focus: #39e079;
 
   color-scheme: dark;
 }

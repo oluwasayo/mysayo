@@ -169,7 +169,7 @@ The expanding-brain grid above is a **2×4 CSS grid** (step labels on the left, 
 
 Reading measure is intentionally wider than the default (~50rem for the essay column). A small `-webkit-font-smoothing: antialiased` on `body` lightens the apparent weight without dropping to a thin 300 that would wash out on light backgrounds. Details, but you notice them over a long post.
 
-<h2>Light, dark, and <span class="accent-text">orange</span></h2>
+<h2>Light, dark, and <span class="accent-text">green</span></h2>
 
 The theme lives in **`data-theme` on `<html>`**, with values `system` (the default), `light`, or `dark`, set before first paint by an inline script in `BaseHead.astro`. That avoids the [flash of wrong-theme content](https://css-tricks.com/flash-of-inaccurate-color-theme-fart/). The script reads `localStorage` when it can, defaults to **system** when nothing is stored, and the React theme toggle cycles through all three preferences.
 
@@ -184,7 +184,7 @@ markdown: {
 },
 ```
 
-Keywords and function names pick up the orange accent, while strings, arguments, and values stay neutral and comments and punctuation are muted. That keeps shell commands legible instead of a wall of orange, and the whole thing flips with the rest of the page.
+Keywords and function names pick up the green accent, while strings, arguments, and values stay neutral and comments and punctuation are muted. That keeps shell commands legible instead of a wall of green, and the whole thing flips with the rest of the page.
 
 ## Writing on the web
 
