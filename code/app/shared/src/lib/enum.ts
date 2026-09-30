@@ -1,5 +1,5 @@
 /** UPPER_SNAKE_CASE → "Title case words" (e.g. VIBE_CODING → "Vibe coding"). */
-export const enumValueToText = (value: string, separator = ' '): string => {
+export const enumValueToText = (value: string, separator = ' ') => {
   if (value === '') {
     return ''
   }
@@ -9,13 +9,13 @@ export const enumValueToText = (value: string, separator = ' '): string => {
 }
 
 /** UPPER_SNAKE_CASE → kebab-case slug (e.g. VIBE_CODING → "vibe-coding"). */
-export const enumValueToSlug = (value: string): string =>
+export const enumValueToSlug = (value: string) =>
   value.toLowerCase().replaceAll('_', '-')
 
 export const enumValuesToRecord = <T extends string>(
   values: readonly T[],
   map: (value: T) => string,
-): Record<T, string> =>
+) =>
   Object.fromEntries(values.map(value => [value, map(value)])) as Record<
     T,
     string

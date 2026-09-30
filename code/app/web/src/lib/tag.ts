@@ -19,10 +19,13 @@ export const Tag = {
   EngineeringEffectiveness: 'ENGINEERING_EFFECTIVENESS',
   Frontend: 'FRONTEND',
   InformationTheory: 'INFORMATION_THEORY',
+  Lambda: 'LAMBDA',
   LargeLanguageModels: 'LARGE_LANGUAGE_MODELS',
+  Postgres: 'POSTGRES',
   PullRequest: 'PULL_REQUEST',
   S3: 'S3',
   SoftwareEngineering: 'SOFTWARE_ENGINEERING',
+  SQS: 'SQS',
   Substack: 'SUBSTACK',
   Terraform: 'TERRAFORM',
   Testing: 'TESTING',
@@ -34,7 +37,15 @@ export type Tag = (typeof Tag)[keyof typeof Tag]
 
 export const tagValues = Object.values(Tag) as [Tag, ...Tag[]]
 
-export const tagLabels = enumValuesToRecord(tagValues, enumValueToText)
+/** Acronym tags where the generic Title-case derivation is wrong. */
+const tagLabelOverrides: Partial<Record<Tag, string>> = {
+  [Tag.SQS]: 'SQS',
+}
+
+export const tagLabels = {
+  ...enumValuesToRecord(tagValues, enumValueToText),
+  ...tagLabelOverrides,
+}
 
 /** URL slug per tag — for future /writing/tags/{slug} archive pages. */
 export const tagSlugs = enumValuesToRecord(tagValues, enumValueToSlug)

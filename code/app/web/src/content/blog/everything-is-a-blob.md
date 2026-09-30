@@ -16,7 +16,11 @@ Every web product accumulates blobs: profile pictures, brand assets, uploaded do
 
 I think about this differently. Files deserve a **primitive**: one small, boring abstraction that sits beneath every feature, the same way a database connection pool sits beneath every query. I've designed, built, and currently operate a system very close to the one described here in production, so this isn't hypothetical. That said, this essay is about how I reason about the design, not a tour of any particular implementation.
 
+<aside class="callout">
+
 One note before we start: the examples use S3 for object storage, Postgres (PostgreSQL) with foreign keys for the registry, EventBridge for scheduled work, Terraform for infrastructure, and TypeScript as the programming language. None of those choices are essential to the design. Any object store with the same capabilities (GCS, Azure Blob, Cloudflare R2, or even a directory on disk for a small deployment) can sit behind the store interface. Any scheduler can run the sweepers. Any relational database with foreign keys can hold the registry. Any IaC system, or no IaC at all, can provision the pieces. The design is the primitive; the examples are just one way to realize it.
+
+</aside>
 
 The workload is narrower than "all large data." This primitive is for file-like values that are written once, referenced from product data, served many times, and eventually deleted: uploads, generated artifacts, inbound attachments, exported reports, and offloaded queue payloads. It is **not** a database, a log store, or a block device. If you need to patch byte ranges, append diffs to a large object, run concurrent writers against segments, or query inside the payload, use a storage model built around chunks, deltas, tables, or streams. Here, the unit of change is the whole blob: new bytes mean a new key.
 
@@ -69,7 +73,7 @@ type BlobStore = {
 }
 ```
 
-That's the entire interface. There's no `uploadAvatar` and no `attachReport`. Features compose the primitive instead of wrapping the SDK themselves, and the payoff compounds in a way that's hard to appreciate until you've lived it. The same primitive can carry user uploads, generated artifacts, and email attachments. If your message queue offloads large bodies, it can even carry queue messages transparently, with consumers never knowing the difference. That last case reveals what the primitive really is: not a file-upload helper but storage infrastructure, and infrastructure code uses it as happily as product code does.
+That's the entire interface. There's no `uploadAvatar` and no `attachReport`. Features compose the primitive instead of wrapping the SDK themselves, and the payoff compounds in a way that's hard to appreciate until you've lived it. The same primitive can carry user uploads, generated artifacts, and email attachments. If your [message queue offloads large bodies](/writing/a-tree-of-trees), it can even carry queue messages transparently, with consumers never knowing the difference. That last case reveals what the primitive really is: not a file-upload helper but storage infrastructure, and infrastructure code uses it as happily as product code does.
 
 On the frontend the effect is one uploader component. A new feature that needs files picks a `PublicStorageDirectory` from the enum (defined in the next section), sets its size and type limits, presigns and PUTs, then hands the returned key to a feature mutation that adopts it. There are no new endpoints, no new validation code, and no new URL scheme. This is what adding file upload to a feature looks like in its entirety:
 
