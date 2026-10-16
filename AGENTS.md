@@ -152,16 +152,18 @@ Do not reintroduce jsdom without an explicit user request and a documented reaso
 
 ### Vite versions
 
-Root `package.json` overrides:
+Keep `@vitejs/plugin-react` on v6 with Astro 7 / Vite 8. Pin `vite`, `@vitejs/plugin-react`, and `playwright` as exact direct dependencies. Those ranges already resolve to the pins, so root overrides for them are unnecessary.
+
+Root overrides that are still required replace an exact vulnerable transitive pin:
 
 ```json
 "overrides": {
-  "@astrojs/react": { "@vitejs/plugin-react": "6.0.3" },
-  "vite": "8.1.0"
+  "miniflare": { "sharp": "0.35.5" },
+  "satori": { "fflate": "0.7.5" }
 }
 ```
 
-Keep `@vitejs/plugin-react` on v6 with Astro 7 / Vite 8.
+`miniflare` pins `sharp@0.35.4` (GHSA-wq5f-xc86-pv6w, fixed in 0.35.5). `satori` pins `fflate@0.7.3` (GHSA-px8p-9vwx-vf98, fixed in 0.7.5). Drop each override once the upstream pin is on a patched release.
 
 ---
 
