@@ -10,17 +10,12 @@
   },
   "name": "mysayo-monorepo",
   "overrides": {
-    "@astrojs/react": {
-      "@vitejs/plugin-react": "6.1.2"
-    },
     "miniflare": {
       "sharp": "0.35.5"
     },
-    "playwright": "1.63.0",
     "satori": {
       "fflate": "0.7.5"
-    },
-    "vite": "8.3.3"
+    }
   },
   "private": true,
   "scripts": {
