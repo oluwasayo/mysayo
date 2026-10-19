@@ -158,12 +158,11 @@ Root overrides that are still required replace an exact vulnerable transitive pi
 
 ```json
 "overrides": {
-  "miniflare": { "sharp": "0.35.5" },
   "satori": { "fflate": "0.7.5" }
 }
 ```
 
-`miniflare` pins `sharp@0.35.4` (GHSA-wq5f-xc86-pv6w, fixed in 0.35.5). `satori` pins `fflate@0.7.3` (GHSA-px8p-9vwx-vf98, fixed in 0.7.5). Drop each override once the upstream pin is on a patched release.
+`satori` pins `fflate@0.7.3` (GHSA-px8p-9vwx-vf98, fixed in 0.7.5). Drop the override once satori pins a patched release. Wrangler `4.151.0` / miniflare `5.20261012.0-beta` pins `sharp@0.35.5`, so the old `miniflare.sharp` override is no longer required.
 
 ---
 
@@ -281,7 +280,7 @@ These are different credentials with different scopes.
 - `R2_ACCESS_KEY_ID`
 - `R2_SECRET_ACCESS_KEY`
 
-Wrangler version in CI: `4.104.0` (keep in sync with `code/app/web` devDependency).
+Wrangler version in CI: `4.151.0` (keep in sync with `code/app/web` devDependency).
 
 ### Clean script CI gate
 

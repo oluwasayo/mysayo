@@ -108,8 +108,12 @@ const card = ({ title, description }: OgCard) => {
           <span style="display:flex;">${escapeHtml(siteAuthor)}</span>
         </div>`
 
+  // Satori 0.56 treats width as a content box and sizes a flex item to its
+  // text. Border-box keeps the 88px padding inside the 1200px card. The
+  // column is the remaining 640px, and each line is 582px (that width minus
+  // the 10px rule and 48px padding) so the copy wraps before the edge.
   return html(`
-    <div style="height:100%;width:100%;display:flex;align-items:center;justify-content:center;gap:64px;background-color:#0d0d0f;color:#ededee;padding:96px 88px;font-family:'Source Serif 4';">
+    <div style="height:100%;width:100%;box-sizing:border-box;display:flex;align-items:center;gap:64px;background-color:#0d0d0f;color:#ededee;padding:96px 88px;font-family:'Source Serif 4';">
       <div style="display:flex;width:320px;height:320px;flex-shrink:0;border:1px solid #303036;background-color:#17171b;">
         <img
           src="${portrait}"
@@ -119,10 +123,10 @@ const card = ({ title, description }: OgCard) => {
           alt="personal portrait"
         />
       </div>
-      <div style="display:flex;flex-direction:column;flex:1;justify-content:center;border-left:10px solid #ff6f4d;padding-left:48px;">
-        <div style="display:flex;font-size:26px;font-weight:400;letter-spacing:8px;text-transform:uppercase;color:#9a9aa2;margin-bottom:28px;">mysayo.com</div>
-        <div style="display:flex;font-size:60px;font-weight:600;line-height:1.08;letter-spacing:-2px;">${escapeHtml(title)}</div>
-        <div style="display:flex;font-size:30px;font-weight:400;color:#9a9aa2;line-height:1.35;margin-top:26px;">${escapeHtml(truncate(description, 105))}</div>
+      <div style="display:flex;flex-direction:column;width:640px;box-sizing:border-box;flex-shrink:0;justify-content:center;border-left:10px solid #ff6f4d;padding-left:48px;">
+        <div style="display:flex;width:582px;font-size:26px;font-weight:400;letter-spacing:8px;text-transform:uppercase;color:#9a9aa2;margin-bottom:28px;">mysayo.com</div>
+        <div style="display:flex;width:582px;font-size:60px;font-weight:600;line-height:1.08;letter-spacing:-2px;">${escapeHtml(title)}</div>
+        <div style="display:flex;width:582px;font-size:30px;font-weight:400;color:#9a9aa2;line-height:1.35;margin-top:26px;">${escapeHtml(truncate(description, 105))}</div>
         ${author}
       </div>
     </div>

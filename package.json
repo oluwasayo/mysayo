@@ -1,18 +1,15 @@
 {
   "devDependencies": {
     "@biomejs/biome": "2.5.15",
-    "@types/node": "26.6.4",
-    "@vitest/coverage-v8": "5.0.3",
-    "knip": "6.40.0",
-    "npm-check-updates": "23.1.0",
+    "@types/node": "26.6.5",
+    "@vitest/coverage-v8": "5.0.4",
+    "knip": "6.41.0",
+    "npm-check-updates": "23.1.1",
     "typescript": "7.0.2",
-    "vitest": "5.0.3"
+    "vitest": "5.0.4"
   },
   "name": "mysayo-monorepo",
   "overrides": {
-    "miniflare": {
-      "sharp": "0.35.5"
-    },
     "satori": {
       "fflate": "0.7.5"
     }
