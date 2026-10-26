@@ -1,15 +1,17 @@
 ---
+
 title: "Prepare Pull Request\u00A0\u00A0🪄"
 description: 'Agent guardrails are safety that makes high velocity workable. I encode mine as a single Cursor command that runs reviews, tests, lint, CI, and the feedback loop before a human ever sees the PR.'
 slug: prepare-pull-request
 pubDate: 2026-07-24
 draft: false
 tags:
-  - CURSOR
-  - PULL_REQUEST
-  - CODE_REVIEW
-  - SOFTWARE_ENGINEERING
-  - TESTING
+- CURSOR
+- PULL_REQUEST
+- CODE_REVIEW
+- SOFTWARE_ENGINEERING
+- TESTING
+
 ---
 
 Agents are fast at producing diffs and slow at the unglamorous readiness work. Left to their own devices, they skip self-review, under-test, open pull requests too early, and call it done when the laptop build passes. Plenty of motion. Thin pull requests.
@@ -24,17 +26,17 @@ I've written about [pull requests as cultural artifacts](/writing/pull-requests-
 
 ## The guardrail stack
 
-| Guardrail | What it protects |
-| --- | --- |
-| Strong typing / typecheck | Type errors before runtime |
-| Strict lint + format (`npm run fix`) | Mechanical nits out of human review |
-| Builds and tests | Artifacts that compile, apps brought to readiness, behavior that holds |
-| Bug review (`/review-bugbot`) | Correctness and security |
-| Maintainability review (`/thermo-nuclear-code-quality-review`) | Readability and long-term structure |
-| Draft PR → CI | Remote quality gates, not laptop theater |
-| CI (`/loop-on-ci`) | Builds, tests, and deploy-shaped checks on clean runners |
-| Component screenshots (when the UI warrants it) | Cheap visual eyeballing for humans and agents |
-| Review comments | Feedback on the PR itself, not only build status |
+| Guardrail                                                      | What it protects                                                       |
+| -------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| Strong typing / typecheck                                      | Type errors before runtime                                             |
+| Strict lint + format (`npm run fix`)                           | Mechanical nits out of human review                                    |
+| Builds and tests                                               | Artifacts that compile, apps brought to readiness, behavior that holds |
+| Bug review (`/review-bugbot`)                                  | Correctness and security                                               |
+| Maintainability review (`/thermo-nuclear-code-quality-review`) | Readability and long-term structure                                    |
+| Draft PR → CI                                                  | Remote quality gates, not laptop theater                               |
+| CI (`/loop-on-ci`)                                             | Builds, tests, and deploy-shaped checks on clean runners               |
+| Component screenshots (when the UI warrants it)                | Cheap visual eyeballing for humans and agents                          |
+| Review comments                                                | Feedback on the PR itself, not only build status                       |
 
 These only work if the repo already has typed boundaries, strict lint, real CI, and builds/tests that mean something. [Building this site](/writing/building-mysayo) was the same idea on a much smaller scale. What CI runs in a multi-app repo (Lambda bundles, container images, web builds, simulated deploy paths) is a topic for another post. Here, CI is the remote gate the command loops on until green.
 
@@ -118,7 +120,6 @@ Run "npm run fix" and address any errors that arise
 If we are on the main branch on git, checkout a new branch
 
 **Component previews** (only when the branch diff vs `main` includes meaningful `code/app/web/src` component changes):
-
 1. Run `npm run list-components-needing-stories -w web` and parse the JSON output
 2. For each component with `hasStory: false`: read the component and colocated test (when `testPath` is present), write co-located `Foo.stories.tsx` following `code/app/web/script/story-scaffold.template.ts` and `storyHelpers` conventions. Use `mockQueryResultFactory(..., false)` in stories — never `vi.fn()`. Commit new story files to the branch.
 3. Re-run affected web tests if new stories were added

@@ -1,14 +1,16 @@
 ---
+
 title: Search Params are State
 description: 'Component-level hooks vs router-level schemas for URL state: what each offers, what each trades, and how to test both.'
 slug: search-params-are-state
 pubDate: 2026-07-17
 draft: false
 tags:
-  - ARCHITECTURE
-  - FRONTEND
-  - SOFTWARE_ENGINEERING
-  - TESTING
+- ARCHITECTURE
+- FRONTEND
+- SOFTWARE_ENGINEERING
+- TESTING
+
 ---
 
 Every filtered list page already has the state it needs. It lives in `useState`, survives until refresh, and vanishes when someone copies the URL. Cmd-click to open in a new tab, bookmark for later, share a link with a colleague, hit back after drilling in: every one of these assumes the URL carries intent. When it does not, the app feels subtly broken, and no stack trace points at the cause. Six months in, the same product often has five filter implementations, five incompatible link builders, and nobody can say which query params are canonical.
@@ -45,17 +47,17 @@ Put the schema in the hooks, and each call site owns its own `parse`, `format`, 
 <figcaption>Hooks on the left, route schema on the right.</figcaption>
 </figure>
 
-| Concern                             | Component-level ownership | Router-level ownership |
-|-------------------------------------| --- | --- |
-| Where the schema lives              | Hook definitions + shared key enum | Route `validateSearch` schema |
-| Who enforces write safety           | Discipline + hook APIs; links built manually | `<Link>` and `navigate` typed against schema |
-| Serialization                       | Per-hook `parse`/`format` | Router `parseSearch`/`stringifySearch` + middlewares |
-| Cross-param rules (e.g. reset page) | Declared on setters (`deleteQueryStringsOnUpdate`) | Bundled in handlers or `useEffect`; reducer-style |
-| Write API at call site              | Per-param setters (`setPage`, `setStatus`) | `navigate({ search: (prev) => patch })` |
-| Adoption path                       | Incremental `useState` → `useUrlState` | Route schema before typed navigation |
-| Schema inheritance                  | Manual; key enum in shared package | Hierarchical; child routes extend parent |
-| Framework                           | Any router | TanStack Router |
-| Default URL style                   | Human-readable per param (a design choice) | JSON-first default; customizable globally |
+| Concern                             | Component-level ownership                          | Router-level ownership                               |
+| ----------------------------------- | -------------------------------------------------- | ---------------------------------------------------- |
+| Where the schema lives              | Hook definitions + shared key enum                 | Route `validateSearch` schema                        |
+| Who enforces write safety           | Discipline + hook APIs; links built manually       | `<Link>` and `navigate` typed against schema         |
+| Serialization                       | Per-hook `parse`/`format`                          | Router `parseSearch`/`stringifySearch` + middlewares |
+| Cross-param rules (e.g. reset page) | Declared on setters (`deleteQueryStringsOnUpdate`) | Bundled in handlers or `useEffect`; reducer-style    |
+| Write API at call site              | Per-param setters (`setPage`, `setStatus`)         | `navigate({ search: (prev) => patch })`              |
+| Adoption path                       | Incremental `useState` → `useUrlState`             | Route schema before typed navigation                 |
+| Schema inheritance                  | Manual; key enum in shared package                 | Hierarchical; child routes extend parent             |
+| Framework                           | Any router                                         | TanStack Router                                      |
+| Default URL style                   | Human-readable per param (a design choice)         | JSON-first default; customizable globally            |
 
 Both respond to the same failures: schema drift across files, untyped `<Link>` hrefs, and `URLSearchParams` treating everything as flat strings.
 
@@ -205,10 +207,7 @@ The payoff is incremental adoption on an existing React Router app, per-param UR
 The cost is discipline on the write side. `<Link>` and programmatic navigations do not inherit hook codecs automatically, so link-building drift is the failure mode I watch for. Setters and hooks agree on encoding; plain `to={`/posts?page=${n}`}` strings do not. I address that with small route-builder helpers that call the same `format` functions the hooks use:
 
 ```ts
-export const postsListHref = (params: {
-  page?: number
-  status?: string
-}) => {
+export const postsListHref = (params: { page?: number; status?: string }) => {
   const search = new URLSearchParams()
   if (params.page != null && params.page !== 1) {
     search.set(UrlStateKey.Page, String(params.page))
@@ -277,7 +276,7 @@ Writes are transactional partial updates. You pass a reducer, not a full object 
 
 ```tsx
 navigate({
-  search: (prev) => ({ ...prev, page: prev.page + 1 }),
+  search: prev => ({ ...prev, page: prev.page + 1 }),
 })
 ```
 
@@ -297,10 +296,8 @@ Global serialization is swappable: JSON-first by default, or something custom at
 ```tsx
 const router = createRouter({
   routeTree,
-  stringifySearch: stringifySearchWith((value) =>
-    btoa(JSON.stringify(value)),
-  ),
-  parseSearch: parseSearchWith((value) => JSON.parse(atob(value))),
+  stringifySearch: stringifySearchWith(value => btoa(JSON.stringify(value))),
+  parseSearch: parseSearchWith(value => JSON.parse(atob(value))),
 })
 ```
 
@@ -317,13 +314,13 @@ The price is adopting TanStack Router: schemas, middlewares, and typed navigatio
 
 ## Capability comparison
 
-| Question | Component-level | Router-level (TanStack) |
-| --- | --- | --- |
-| Deep components, type-safe? | Import hook anywhere | `getRouteApi(path).useSearch()` or `useSearch({ from })` |
-| Options without TanStack Router? | A hook stack like this one, Nuqs, framework loaders + Zod | N/A; adopting the router is the premise |
-| Cross-param delete-on-update? | `deleteQueryStringsOnUpdate` on setter | Handler bundling or `useEffect` (below) |
-| Pagination/sort composition? | `useUrlPagination`, `useUrlMultiSort` | Shared schema + thin hooks over `useSearch` |
-| Per-param setters (`setPage(2)`)? | Yes; each hook returns its own setter | Partial update via `navigate` reducer (below) |
+| Question                          | Component-level                                           | Router-level (TanStack)                                  |
+| --------------------------------- | --------------------------------------------------------- | -------------------------------------------------------- |
+| Deep components, type-safe?       | Import hook anywhere                                      | `getRouteApi(path).useSearch()` or `useSearch({ from })` |
+| Options without TanStack Router?  | A hook stack like this one, Nuqs, framework loaders + Zod | N/A; adopting the router is the premise                  |
+| Cross-param delete-on-update?     | `deleteQueryStringsOnUpdate` on setter                    | Handler bundling or `useEffect` (below)                  |
+| Pagination/sort composition?      | `useUrlPagination`, `useUrlMultiSort`                     | Shared schema + thin hooks over `useSearch`              |
+| Per-param setters (`setPage(2)`)? | Yes; each hook returns its own setter                     | Partial update via `navigate` reducer (below)            |
 
 ### Resetting page when a filter changes
 
@@ -340,7 +337,7 @@ setStatuses(['DRAFT']) // page cleared in same URL write
 Router-level ownership keeps the schema pure. The idiomatic TanStack pattern bundles `page` in the same navigation:
 
 ```tsx
-navigate({ search: (prev) => ({ ...prev, sort: sortBy, page: 1 }) })
+navigate({ search: prev => ({ ...prev, sort: sortBy, page: 1 }) })
 ```
 
 When params can change independently (back/forward, deep links), TanStack's [navigation guide](https://tanstack.com/router/latest/docs/how-to/navigate-with-search-params) also shows a reactive `useEffect`:
@@ -348,20 +345,20 @@ When params can change independently (back/forward, deep links), TanStack's [nav
 ```tsx
 useEffect(() => {
   if (search.query && search.page > 1) {
-    navigate({ search: (prev) => ({ ...prev, page: 1 }), replace: true })
+    navigate({ search: prev => ({ ...prev, page: 1 }), replace: true })
   }
 }, [search.query, search.page, navigate])
 ```
 
 The effect covers paths the handlers miss, at the cost of a second navigation tick: the filter change lands, a render happens, then the effect corrects the page. `replace: true` keeps the intermediate state off the back stack.
 
-| | Setter-level | Handler bundling | `useEffect` |
-| --- | --- | --- | --- |
-| Single URL write | Yes | Yes | Often two |
-| Wired once per param/hook | Yes | Per handler | Per effect |
-| Clears page when filter changes via UI | On setter write | If that handler includes it | After the fact |
-| Covers back/forward / deep-link edge cases | No (URL restored as-is) | No | Yes |
-| Lives in schema layer | No | No | No |
+|                                            | Setter-level            | Handler bundling            | `useEffect`    |
+| ------------------------------------------ | ----------------------- | --------------------------- | -------------- |
+| Single URL write                           | Yes                     | Yes                         | Often two      |
+| Wired once per param/hook                  | Yes                     | Per handler                 | Per effect     |
+| Clears page when filter changes via UI     | On setter write         | If that handler includes it | After the fact |
+| Covers back/forward / deep-link edge cases | No (URL restored as-is) | No                          | Yes            |
+| Lives in schema layer                      | No                      | No                          | No             |
 
 ### Individual setters vs reducer updates
 
@@ -372,11 +369,11 @@ const { page, pageSize } = Route.useSearch()
 const navigate = useNavigate({ from: Route.fullPath })
 
 const setPage = (next: number) => {
-  navigate({ search: (prev) => ({ ...prev, page: next }) })
+  navigate({ search: prev => ({ ...prev, page: next }) })
 }
 
 const setPageSize = (next: number) => {
-  navigate({ search: (prev) => ({ ...prev, pageSize: next, page: 1 }) })
+  navigate({ search: prev => ({ ...prev, pageSize: next, page: 1 }) })
 }
 ```
 
@@ -418,8 +415,9 @@ My testing strategy for URL state follows the ownership boundary. Both sides are
 Production tests mount components with a real React Router wrapper (Vitest browser mode + Playwright). A helper seeds the initial URL; the render helper returns the router instance so assertions target `router.state.location.search` after interaction:
 
 ```tsx
-export const queryStringHistory = (params: Record<string, string>) =>
-  [`/?${new URLSearchParams(params).toString()}`]
+export const queryStringHistory = (params: Record<string, string>) => [
+  `/?${new URLSearchParams(params).toString()}`,
+]
 
 it('clears page from URL when a filter updates', async () => {
   const { router } = renderComponent({
@@ -479,12 +477,12 @@ render(<RouterProvider router={router} />)
 
 Invalid URL handling is configurable: Zod `.catch()` for silent fallbacks, or `errorComponent` when you want to surface malformed input. Cross-param coordination is application logic; you test the handler or effect explicitly.
 
-| | Component-level | Router-level |
-| --- | --- | --- |
-| Fastest unit tests | Exported `parse`/`format` | Zod/schema `.parse()` |
-| Integration harness | Real router render helper + `queryStringHistory` | `createMemoryHistory` + `RouterProvider` |
-| Invalid URL behavior | Fail-soft → default (by design) | `.catch()` fallback or `errorComponent` |
-| Link write safety | Route-builder helpers tested alongside hooks | Typed `<Link>` / `navigate` assertions |
+|                      | Component-level                                  | Router-level                             |
+| -------------------- | ------------------------------------------------ | ---------------------------------------- |
+| Fastest unit tests   | Exported `parse`/`format`                        | Zod/schema `.parse()`                    |
+| Integration harness  | Real router render helper + `queryStringHistory` | `createMemoryHistory` + `RouterProvider` |
+| Invalid URL behavior | Fail-soft → default (by design)                  | `.catch()` fallback or `errorComponent`  |
+| Link write safety    | Route-builder helpers tested alongside hooks     | Typed `<Link>` / `navigate` assertions   |
 
 ## Nuqs, a third approach
 
@@ -492,8 +490,8 @@ Invalid URL handling is configurable: Zod `.catch()` for silent fallbacks, or `e
 
 ```ts
 const parseAsBase64Json = createParser({
-  parse: (query) => JSON.parse(atob(query)),
-  serialize: (value) => btoa(JSON.stringify(value)),
+  parse: query => JSON.parse(atob(query)),
+  serialize: value => btoa(JSON.stringify(value)),
 })
 
 const serialize = createSerializer({

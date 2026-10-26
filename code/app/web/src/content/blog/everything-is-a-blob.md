@@ -1,15 +1,17 @@
 ---
+
 title: Everything is a Blob
 description: 'How I think about blob storage: one immutable primitive, a registry table, presigned URLs, and foreign keys as the garbage collector.'
 slug: everything-is-a-blob
 pubDate: 2026-07-05
 draft: false
 tags:
-  - ARCHITECTURE
-  - BACKEND
-  - S3
-  - SOFTWARE_ENGINEERING
-  - TESTING
+- ARCHITECTURE
+- BACKEND
+- S3
+- SOFTWARE_ENGINEERING
+- TESTING
+
 ---
 
 Every web product accumulates blobs: profile pictures, brand assets, uploaded documents, generated reports, rendered videos, inbound email attachments, and webhook payloads too large for the queue. Most codebases treat each of these as its own little feature. There is an avatar endpoint here, an attachments table there, and a one-off S3 call in a worker somewhere else. Six months in, there are five upload paths, five validation schemes, five ways to leak storage, and nobody can answer the question of what files the company actually has.
@@ -21,7 +23,6 @@ One note before we start: the examples use S3 for object storage, Postgres (Post
 The workload is narrower than "all large data." This primitive is for file-like values that are written once, referenced from product data, served many times, and eventually deleted: uploads, generated artifacts, inbound attachments, exported reports, and offloaded queue payloads. It is **not** a database, a log store, or a block device. If you need to patch byte ranges, append diffs to a large object, run concurrent writers against segments, or query inside the payload, use a storage model built around chunks, deltas, tables, or streams. Here, the unit of change is the whole blob: new bytes mean a new key.
 
 That scope gives the design its goals:
-
 - **Expose one simple interface across product surfaces.** A unified primitive gives the product a consistent storage model, makes onboarding easier for engineers, and creates one chokepoint for cross-cutting concerns such as access control, audit, quotas, validation, lifecycle, garbage collection, and observability.
 - **Store arbitrary write-once values.** The primitive shouldn't care whether the bytes are an image, an attachment, a generated report, an export, or an oversized queue payload. It stores values that are written once and read potentially many times.
 - **Do not accumulate garbage.** Unreferenced blobs carry forever costs, make customers' "right to be forgotten" harder to honor, and increase the amount of data that could be breached. If the application no longer needs a blob, the system should be able to prove that and delete it safely.
@@ -131,10 +132,7 @@ Keys have a flat, two-segment structure: a directory and a **UUIDv7**. Both segm
 ```ts
 import { z } from 'zod/v4'
 
-const PublicStorageDirectory = z.enum([
-  'AVATARS',
-  'ATTACHMENTS',
-])
+const PublicStorageDirectory = z.enum(['AVATARS', 'ATTACHMENTS'])
 type PublicStorageDirectory = z.infer<typeof PublicStorageDirectory>
 
 const PrivateStorageDirectory = z.enum([
@@ -167,15 +165,13 @@ const BlobKey = z
       return
     }
 
-    StorageDirectory
-      .safeParse(parts[0])
-      .error?.issues
-      .forEach(issue => context.addIssue({ ...issue, path: ['directory'] }))
+    StorageDirectory.safeParse(parts[0]).error?.issues.forEach(issue =>
+      context.addIssue({ ...issue, path: ['directory'] }),
+    )
 
-    UuidV7
-      .safeParse(parts[1])
-      .error?.issues
-      .forEach(issue => context.addIssue({ ...issue, path: ['id'] }))
+    UuidV7.safeParse(parts[1]).error?.issues.forEach(issue =>
+      context.addIssue({ ...issue, path: ['id'] }),
+    )
   })
   .brand<'BlobKey'>()
 
@@ -209,7 +205,7 @@ Within that workload, the second rule is as important as the first: **blobs are 
 
 ### Where metadata lives
 
-Object stores let you attach metadata at write time, and that's a fine way to start: stash the original filename and a tenant id on the object, then read them back with a `metadata()` call. It ages badly though. Object metadata isn't queryable; you can't ask the bucket for every blob belonging to tenant X without LISTing and HEADing the world. Reading it costs a network round-trip. And when the client uploads directly (next section), the *client* supplies those metadata values, which makes them exactly as trustworthy as any other user input.
+Object stores let you attach metadata at write time, and that's a fine way to start: stash the original filename and a tenant id on the object, then read them back with a `metadata()` call. It ages badly though. Object metadata isn't queryable; you can't ask the bucket for every blob belonging to tenant X without LISTing and HEADing the world. Reading it costs a network round-trip. And when the client uploads directly (next section), the _client_ supplies those metadata values, which makes them exactly as trustworthy as any other user input.
 
 The graduation path is a **registry table** in the database: one row per blob, holding the filename, content type, size, hash, tenancy, and timestamps (`created_at`, `updated_at`, `committed_at`). It is written by the server, indexed, joinable, and transactional with your domain data. The registry will prove its worth several more times in this essay.
 
@@ -360,7 +356,7 @@ const adopt = async (
   await withTransaction(async () => {
     // Validation + domain FK insert.
     await bind(blobKey, head)
-    
+
     // PENDING → COMMITTED; idempotent.
     await blobRegistry.commit(blobKey, {
       contentType: head.contentType,
@@ -515,7 +511,6 @@ What a single bucket genuinely costs you is at the bucket level: one default enc
 ### Retention is a design decision
 
 Once you see prefixes as the place where policies attach, blob lifetime stops being an afterthought and becomes a **tier you choose per directory**:
-
 - **Permanent** (`AVATARS/`, `ATTACHMENTS/`): lives until something deliberately deletes it.
 - **Day-ephemeral** (`EXPORT_DOWNLOADS/`): anything you're happy to keep for a day gets a one-line lifecycle rule and zero operational machinery. A generated "download your report" file is the poster child. It's fetched within minutes of being requested and expired by the platform within a day, with no cron, no code, and no failure mode to monitor. Know the granularity though: lifecycle expiration is day-level at minimum and asynchronous, so it won't delete something five minutes after creation. And size the window against the slowest consumer, not the typical one. Payloads too large for SQS are the trap here: the message body carries a blob key, not the bytes, and messages normally process in minutes, but one can sit in a dead-letter queue for days before someone redrives it, and a redriven message whose payload has expired is data loss. That's why `LARGE_QUEUE_PAYLOADS/` above expires at 15 days, one day past the queue's maximum retention, rather than 1. (One honest caveat: redriving re-enqueues the message and resets its retention clock, so even 15 days assumes redriven messages are processed promptly.)
 - **Minute-ephemeral** (`EPHEMERAL_PREVIEWS/`): a short-lived preview that should vanish shortly after it's shown. Sub-day TTLs need application help, either deletion on interaction (the next preview deletes the last) or a small scheduled sweeper that reaps the prefix by object age.
@@ -576,11 +571,11 @@ You don't need this on day one. Direct presigned reads are fine while traffic is
 
 ## Collecting garbage without losing data
 
-This is the part of the design that everything else has been setting up. Nobody designs garbage collection on day one, and deferring it is correct because none of the failure modes are urgent at small scale. Deferred isn't the same as unplanned though, and the difference between the two is whether deletion is *safe* when you finally build it. The hard problem was never the deleting; it's **proving that nothing points at a blob anymore**. That's a reachability question, the same one language runtimes answer, and the same two strategies apply: count references, or trace them.
+This is the part of the design that everything else has been setting up. Nobody designs garbage collection on day one, and deferring it is correct because none of the failure modes are urgent at small scale. Deferred isn't the same as unplanned though, and the difference between the two is whether deletion is _safe_ when you finally build it. The hard problem was never the deleting; it's **proving that nothing points at a blob anymore**. That's a reachability question, the same one language runtimes answer, and the same two strategies apply: count references, or trace them.
 
 This is why the registry schema made every reference a real **foreign key**. Every blob has a row from the moment it's conceived, every domain table points at that row, and the database can enforce reachability for you.
 
-Now for my favorite part of the design: **don't maintain a reference count; let the foreign keys be the reference count.** A counter column would be a denormalized, drift-prone cache of something the constraint graph already knows authoritatively. Instead of asking whether the count is zero, *attempt the delete* and let the database answer:
+Now for my favorite part of the design: **don't maintain a reference count; let the foreign keys be the reference count.** A counter column would be a denormalized, drift-prone cache of something the constraint graph already knows authoritatively. Instead of asking whether the count is zero, _attempt the delete_ and let the database answer:
 
 ```ts
 const collectCandidate = async (blobKey: BlobKey) => {
@@ -632,19 +627,18 @@ The collector wraps `store.delete` inside the transaction, which pins a pooled d
 
 For a low-frequency background collector the blast radius is small. It runs off the hot path, concurrency is low, and the row is uncontended precisely because nothing references it, so the correctness win (an S3 failure rolls the row delete back, leaving no orphan) is usually worth it. At high volume it stops being free: connection-pool occupancy and vacuum pressure scale with S3's worst case rather than your database's. The abandoned-upload sweeper below takes the other fork: short database transactions, bulk S3 delete afterward, Inventory reconciliation for anything S3 missed.
 
-The scale-friendly alternative keeps the transaction DB-only: run the same constrained row `DELETE`, commit, then delete the object *outside* the transaction, and let the reconciliation sweep reap the rare orphaned object that a crash or failed delete leaves behind. One warning about a tempting shortcut: flipping the row to `PENDING_DELETE` is not a substitute for the constrained delete. An `UPDATE` isn't checked by foreign keys, and the surviving row can gain a brand-new reference while the object dies. The row `DELETE` stays the liveness gate in both variants. You don't remove the fault, you choose its direction: in-transaction risks a *dangling row* (object gone, row remains) on a mid-commit crash, while commit-first risks an *orphaned object* (row gone, object remains) on a failed delete. Both are reconciliation's job; the second just keeps your transactions short.
+The scale-friendly alternative keeps the transaction DB-only: run the same constrained row `DELETE`, commit, then delete the object _outside_ the transaction, and let the reconciliation sweep reap the rare orphaned object that a crash or failed delete leaves behind. One warning about a tempting shortcut: flipping the row to `PENDING_DELETE` is not a substitute for the constrained delete. An `UPDATE` isn't checked by foreign keys, and the surviving row can gain a brand-new reference while the object dies. The row `DELETE` stays the liveness gate in both variants. You don't remove the fault, you choose its direction: in-transaction risks a _dangling row_ (object gone, row remains) on a mid-commit crash, while commit-first risks an _orphaned object_ (row gone, object remains) on a failed delete. Both are reconciliation's job; the second just keeps your transactions short.
 
 </details>
 
 The schema's `PENDING_DELETE` state is an observability marker for that commit-first variant, never a liveness mechanism: mark the row in one transaction so operators can see in-flight condemnations, run the constrained `DELETE` in the next, and flip the row back if the delete hits a foreign key. The constrained `DELETE` remains the only proof of unreachability, which is why the diagrams show just the two main-loop states.
 
-If any row anywhere still points at the blob, `ON DELETE NO ACTION` rejects the delete, and that rejection *is* the liveness check. If the delete succeeds, you have proof, enforced by the database, that nothing references the key, and the object is safe to remove. Three properties fall out for free:
-
+If any row anywhere still points at the blob, `ON DELETE NO ACTION` rejects the delete, and that rejection _is_ the liveness check. If the delete succeeds, you have proof, enforced by the database, that nothing references the key, and the object is safe to remove. Three properties fall out for free:
 - **The reference set maintains itself.** Add a new table with a `blob_key` foreign key next quarter and the collector doesn't change at all. You **must** attach the GC outbox trigger to that table though, or dereferenced keys will never be nominated. That requirement is enforceable rather than aspirational, as we will see shortly.
 - **The race is handled at the database layer.** Inserting a referencing row takes a key-share lock on the blob row, and the collector's `DELETE` conflicts with it. "A new reference appears while the collector fires" serializes inside the engine, with no application-level grace period to manage.
 - **No drift.** A counter can be wrong. A constraint can't be wrong about whether a referencing row exists.
 
-The collector still needs a feed, and this is where the outbox comes in. Think of it as a **candidate queue** rather than a counter. A trigger on referencing tables notes which key *might* have just become garbage, the collector tries the constrained delete, and the constraint remains the authority:
+The collector still needs a feed, and this is where the outbox comes in. Think of it as a **candidate queue** rather than a counter. A trigger on referencing tables notes which key _might_ have just become garbage, the collector tries the constrained delete, and the constraint remains the authority:
 
 ```sql
 CREATE TABLE blob_gc_candidate (
@@ -680,7 +674,7 @@ The outbox trigger isn't optional infrastructure; it's how dereferenced keys ent
 
 Don't maintain those triggers by hand. A small helper reads your schema definitions, however you declare tables in the codebase, and **creates or drops the triggers** to match: one trigger per `blob_key` FK column, with the same function body everywhere. Run it from migrations or a bootstrap step so the live database always matches the declared schema.
 
-Prove completeness in CI the same way you would prove any other schema invariant: query `pg_catalog`, enumerate every FK *column* that references `blob (id)`, check that each one has its own `AFTER UPDATE OR DELETE` trigger wired to that exact column, and fail with a human-readable list of what's missing. The invariant is per-column, not per-table: a table with two blob FKs needs two triggers, and a test that only asks "does the table have a trigger?" would green-light the second column leaking.
+Prove completeness in CI the same way you would prove any other schema invariant: query `pg_catalog`, enumerate every FK _column_ that references `blob (id)`, check that each one has its own `AFTER UPDATE OR DELETE` trigger wired to that exact column, and fail with a human-readable list of what's missing. The invariant is per-column, not per-table: a table with two blob FKs needs two triggers, and a test that only asks "does the table have a trigger?" would green-light the second column leaking.
 
 ```ts
 // Illustrative: query pg_constraint / pg_trigger, not application memory.
@@ -707,10 +701,7 @@ test('every blob_key foreign key column has a GC outbox trigger', async () => {
   `)
 
   expect(
-    missing
-      .rows
-      .map(r => `${r.table_name}.${r.column_name}`)
-      .join('\n')
+    missing.rows.map(r => `${r.table_name}.${r.column_name}`).join('\n'),
   ).toBe('')
 })
 ```
@@ -766,7 +757,6 @@ When you add `account.avatar_blob_key REFERENCES blob (id)`, the migration runs 
 ### The three kinds of orphans
 
 With the machinery in place, every source of garbage maps onto something we have already built:
-
 1. **Ephemeral blobs** never reach the collector. They're marked `durability = 'EPHEMERAL'`, they live under their own prefixes, and the retention tiers from earlier (lifecycle rules or the minute-sweeper) expire them. The collector explicitly skips them so the two systems never fight: `collectCandidate`'s `DELETE … AND durability = 'DURABLE'` matches zero rows for an ephemeral key, and the worker must treat **zero rows deleted** as a skip, not a success. Without that check, Postgres would happily complete the no-op `DELETE` and the code would still call `store.delete`, destroying an object whose registry row survives. Their registry rows carry `delete_after`, stamped at write or presign time when durability is `EPHEMERAL`, and a row reaper deletes rows past that timestamp, mirroring the lifecycle rule that removed the objects. This way a high-volume prefix like `LARGE_QUEUE_PAYLOADS/` doesn't pile up dangling rows for reconciliation to find.
 2. **Abandoned uploads** are a query, not a mystery, thanks to `PENDING`:
 
@@ -806,7 +796,6 @@ const sweepAbandonedUploads = async () => {
 ```
 
 The sweeper deletes registry rows **one at a time** so a foreign-key violation on any single candidate doesn't abort the whole batch; referenced rows get promoted instead. Only keys whose rows were actually deleted go into `reaped`, and `store.deleteBulk` issues S3 `DeleteObjects` in chunks of 1,000. Database transactions stay short: no S3 round-trip inside a transaction, no connection held across network tail latency. The tradeoff is explicit: if a key's object outlives its row (an entry in the response `Errors` list, a timeout mid-batch, or the runtime crashing before the `deleteBulk` call), you're left with **orphaned objects** that have no registry rows. That's the commit-first fault direction, and it's acceptable here: the Inventory reconciliation sweep runs at lower frequency and deletes those leaks. A key whose bytes were never PUT costs nothing on the way out; bulk delete treats a missing object as already deleted.
-
 3. **Dereferenced blobs**, the profile picture that got replaced for example, flow through trigger, outbox, and constrained delete as described above.
 
 Two residual duties remain, because foreign keys stop at the database boundary. The crash window after `store.delete` but before commit can leave dangling rows (collector path). A periodic **reconciliation sweep** diffs the registry against a bucket listing, catching leaks (objects with no row) in one direction and dangling rows (rows with no object) in the other. The abandoned-upload sweeper's bulk delete can leave the same kind of leak when S3 misses a key; Inventory handles those too. Run it weekly, and make it report before you let it delete.
@@ -858,7 +847,7 @@ If it ever became a real problem, the cheap heuristic is a `last_used_at` column
 
 The FK-as-refcount scheme has one hidden precondition: a foreign key requires the referencing row and the registry row to live in **the same database**; on a sharded deployment, the **same shard**. Shard `user_profile` by country and `blob` by blob identity, and nothing co-locates: the FK column sits on the profile shard, the registry row sits on the blob shard, and **cross-shard foreign keys don't exist** in Postgres. Sharding only the registry by blob id does not pull `user_profile.avatar_blob_key` along with it.
 
-A simple solution to this is to take advantage of the **immutability** of blobs. A copy is only dangerous when the original can change underneath it and the two diverge. A write-once blob can never change, so "sharing" a blob across tenants can simply mean *copying* it: a new key in the recipient's namespace, byte-identical to its source forever, with its own single-shard reference graph. S3's server-side copy keeps the bytes inside S3, so you pay for duplicated storage rather than transfer. And the collaboration objection dissolves once you notice that collaboration was never a blob-layer concern. Two parties watching a document evolve are sharing a *mutable document*, which you model as a sequence of immutable blob versions plus a shared pointer at a higher layer, never as one shared mutable blob.
+A simple solution to this is to take advantage of the **immutability** of blobs. A copy is only dangerous when the original can change underneath it and the two diverge. A write-once blob can never change, so "sharing" a blob across tenants can simply mean _copying_ it: a new key in the recipient's namespace, byte-identical to its source forever, with its own single-shard reference graph. S3's server-side copy keeps the bytes inside S3, so you pay for duplicated storage rather than transfer. And the collaboration objection dissolves once you notice that collaboration was never a blob-layer concern. Two parties watching a document evolve are sharing a _mutable document_, which you model as a sequence of immutable blob versions plus a shared pointer at a higher layer, never as one shared mutable blob.
 
 The honest caveat: a copy is a fork. It is wise to store explicit `copied_from` metadata if you care about lineage, and bear in mind that takedowns don't cascade. If the source must be purged, each tenant's copy is its own problem. For an immutable store that's usually the right trade, but it's not a free lunch.
 
@@ -884,15 +873,14 @@ A handful of golden-path flows go end-to-end through the API: presign via the re
 
 The database gets its own invariant test here: every `blob_key` FK must publish to the GC outbox, or merges ship silent storage leaks.
 
-Everything else mocks the primitive. Once `store.write` is stubbed to return a key, a test about some domain feature is a test about *that domain*, not about S3, and it runs in microseconds. The interface from the first section is what makes this clean: one boundary to mock, everywhere, identically. Local development runs the same emulator container, so "works on my machine" includes the storage layer.
+Everything else mocks the primitive. Once `store.write` is stubbed to return a key, a test about some domain feature is a test about _that domain_, not about S3, and it runs in microseconds. The interface from the first section is what makes this clean: one boundary to mock, everywhere, identically. Local development runs the same emulator container, so "works on my machine" includes the storage layer.
 
 ## The threat model
 
-A presigned URL is a **capability**: whoever holds it has the access it encodes, no questions asked. That's the right mental model for the whole security discussion, because it forces the four questions that matter. Who may *mint* a capability? What *scope* does it carry? How *long* does it live? And what happens when it *leaks*? Here are the pitfalls I'd design against from day one:
-
+A presigned URL is a **capability**: whoever holds it has the access it encodes, no questions asked. That's the right mental model for the whole security discussion, because it forces the four questions that matter. Who may _mint_ a capability? What _scope_ does it carry? How _long_ does it live? And what happens when it _leaks_? Here are the pitfalls I'd design against from day one:
 - **Unscoped read minting:** an endpoint that presigns a GET for any key the caller names is an oracle. Learn someone's key, read their bytes. Key unguessability is a nice property, not an authorization model. The registry is the fix, since it knows the tenancy of every key; the mint endpoint can require that the caller's tenant matches the row's.
 - **Trusting the client at adopt:** with direct uploads your server never saw the bytes, so `adopt` is where verification belongs. Use `metadata()` for the real size, sniff magic bytes for the real type (the declared `Content-Type` is client input), enforce quotas, and record a checksum for end-to-end integrity. The dedup callout at the end shows S3 verifying that checksum for you at upload time.
-- **Client-stamped tenancy:** *unsigned* object metadata on a client-executed PUT is whatever the client typed, so don't treat it as authority. You *can* force a contract by signing the metadata headers into the presigned URL. SigV4 folds their values into the signature (they appear in `X-Amz-SignedHeaders`), so a changed or missing header fails with `SignatureDoesNotMatch` and the server pins server-chosen values the client can't alter. Even then, tenancy's authority belongs in the registry, which is queryable, joinable, and transactional in a way object metadata never is; signed metadata is at most a redundant copy.
+- **Client-stamped tenancy:** _unsigned_ object metadata on a client-executed PUT is whatever the client typed, so don't treat it as authority. You _can_ force a contract by signing the metadata headers into the presigned URL. SigV4 folds their values into the signature (they appear in `X-Amz-SignedHeaders`), so a changed or missing header fails with `SignatureDoesNotMatch` and the server pins server-chosen values the client can't alter. Even then, tenancy's authority belongs in the registry, which is queryable, joinable, and transactional in a way object metadata never is; signed metadata is at most a redundant copy.
 - **No size ceiling:** a presigned write doesn't inherently bind the object length. Client-side limits are advisory; the `metadata()` check inside `adopt` is where a hostile 5 GB upload gets caught and reaped.
 - **One role to read them all:** a single compute role with `s3:*Object` on the whole bucket means one compromised service reaches every tenant's every prefix. Scope IAM by prefix where the deployment allows it.
 
@@ -905,16 +893,16 @@ if (epoch !== (await currentEpoch(blobKey))) {
 }
 ```
 
-One lookup per request buys you bulk revocation. Notice the fine print though: revocation only stops *new* fetches. Bytes already sitting in a browser or CDN cache keep working until the cache expires, so `Cache-Control: immutable` with a long TTL and "we can revoke access" are, to a first approximation, opposing promises. Decide which one each directory of content needs, and don't promise both.
+One lookup per request buys you bulk revocation. Notice the fine print though: revocation only stops _new_ fetches. Bytes already sitting in a browser or CDN cache keep working until the cache expires, so `Cache-Control: immutable` with a long TTL and "we can revoke access" are, to a first approximation, opposing promises. Decide which one each directory of content needs, and don't promise both.
 
 ## What I deferred, and what's next
 
-- **Content-hash deduplication:** keys are UUIDv7s, not content digests, so identical files uploaded twice are stored twice. Immutability keeps dedup available as a safe *future* retrofit, since content that never changes can be collapsed behind an indirection layer with zero correctness risk. That's precisely why I don't need it on day one.
+- **Content-hash deduplication:** keys are UUIDv7s, not content digests, so identical files uploaded twice are stored twice. Immutability keeps dedup available as a safe _future_ retrofit, since content that never changes can be collapsed behind an indirection layer with zero correctness risk. That's precisely why I don't need it on day one.
 - **Multipart and resumable uploads:** a single presigned PUT caps you around what a browser can push in one shot, and incomplete multipart uploads are their own species of invisible orphan with their own lifecycle rule. Big-file handling is a post of its own.
 - **Erasure in a world of copies:** copy-on-share, S3 versions, CDN caches, and backups mean that "delete this user's data" isn't one `DELETE`. The elegant answer involves per-tenant encryption keys and crypto-shredding, and it also deserves its own post.
 - **Operating the thing:** the metrics that matter (orphan rate, egress, etc) are another post.
 - **Agent instructions:** now that coding agents write a growing share of the code, the storage rules deserve a few lines in the repository's agent instructions (`AGENTS.md`, a Cursor rule, a Claude skill, or whatever your tooling reads): always go through the primitive and `<BlobUploader>`, store keys rather than URLs, and make every reference a real foreign key. The one-chokepoint property means the whole discipline fits in a handful of bullets, and an agent that follows them can't invent a sixth upload path for the same reason a new engineer can't.
-- **Deferred knowingly:** virus scanning, per-tenant quotas, and cross-region replication are all real, and all deferred. *Knowingly*, which is the part that counts.
+- **Deferred knowingly:** virus scanning, per-tenant quotas, and cross-region replication are all real, and all deferred. _Knowingly_, which is the part that counts.
 - **Out of scope entirely:** client-side encryption and full cost modeling.
 
 <details class="callout">
@@ -922,7 +910,7 @@ One lookup per request buys you bulk revocation. Notice the fine print though: r
 
 The deferred dedup above has a clean path, and S3 hands you the primitive for it. Require the client to declare a content hash at WRITE presign and sign it into the URL as `x-amz-checksum-sha256`. S3 then verifies the uploaded bytes against that digest server-side and rejects a mismatch, so the server never re-hashes. `adopt` reads the value back via `HeadObject` with `ChecksumMode: ENABLED` and records it in `content_hash`.
 
-Then the optimization: when a later presign arrives for a hash that's already `COMMITTED`, skip the upload entirely and mint an **alias**, a new registry row with its own key, tenancy, and foreign keys, pointing at the existing object instead of a fresh one. Aliasing is genuinely new machinery. Today one key maps to one object, so the collector would need to delete the underlying object only when the *last alias* is gone, not the last row.
+Then the optimization: when a later presign arrives for a hash that's already `COMMITTED`, skip the upload entirely and mint an **alias**, a new registry row with its own key, tenancy, and foreign keys, pointing at the existing object instead of a fresh one. Aliasing is genuinely new machinery. Today one key maps to one object, so the collector would need to delete the underlying object only when the _last alias_ is gone, not the last row.
 
 Two caveats. Multipart uploads report a composite-of-parts SHA-256 rather than a whole-object digest, and S3's full-object multipart checksums are CRC-based, which is fine for integrity but useless as content identity, so for multipart the client has to hash the whole file itself. And immutability is what makes any of this safe, since an object shared across aliases can never change beneath them. (`BlobHead` grows an optional `checksumSha256` field so `adopt` can hand the verified digest to `blobRegistry.commit`.)
 

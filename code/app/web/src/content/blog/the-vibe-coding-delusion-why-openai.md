@@ -1,21 +1,23 @@
 ---
+
 title: "The Vibe Coding Delusion: Why OpenAI Still Pays for Slack"
 description: "In the last 30 days, I've overseen over 105,928 lines of agent-edited code."
 slug: the-vibe-coding-delusion-why-openai
 pubDate: 2026-03-17
 tags:
-  - SOFTWARE_ENGINEERING
-  - SUBSTACK
-  - VIBE_CODING
+- SOFTWARE_ENGINEERING
+- SUBSTACK
+- VIBE_CODING
+
 ---
+
 I am not an AI skeptic. Far from it. I am a power user of agentic coding with Cursor Ultra, MCPs, custom rules, and integrations: you know, the whole shebang. I’ve seen exactly what happens when you push LLMs to their absolute limit in a production environment. It is precisely because of that experience, not in spite of it, that I’m seeing a short-sighted trend in how we talk about the future of this industry.
 
 The disappointments I’m seeing people hit with vibe coding boil down to two fundamental issues:
-
 1.  **Programming is not Software Engineering.**
-    
+
 2.  **A successful and defensible business is far more than just a computer program.**
-    
+
 
 We are currently confusing the act of generating code with the discipline of building and maintaining industrial machinery that serves a business purpose.
 
@@ -23,7 +25,7 @@ We are currently confusing the act of generating code with the discipline of bui
 
 ## 1. Programming vs. Software Engineering (The “Day 2” Problem)
 
-In the book *[Software Engineering at Google](https://abseil.io/resources/swe-book)*, the authors define the discipline as the “tools and processes an organization uses to build and maintain code over time.” Their key insight is simple: **Software engineering is programming integrated over time.**
+In the book _[Software Engineering at Google](https://abseil.io/resources/swe-book)_, the authors define the discipline as the “tools and processes an organization uses to build and maintain code over time.” Their key insight is simple: **Software engineering is programming integrated over time.**
 
 That time component radically changes the craft. Programming is the act of solving a problem once. Software engineering is the discipline of keeping that solution alive, relevant, and improving while the world changes around it.
 
@@ -45,7 +47,7 @@ These products shield you from the operational nightmare of 99.99% uptime, globa
 
 ![](/writing/the-vibe-coding-delusion-why-openai/0-2e5410c8-82b8-4d7d-bd0c-968185f08785_2816x1536.png)
 
-*Credit: Gemini, which also assisted in writing this post.*
+_Credit: Gemini, which also assisted in writing this post._
 
 ---
 

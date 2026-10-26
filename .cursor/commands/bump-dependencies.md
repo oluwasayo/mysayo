@@ -80,7 +80,7 @@ npm run fix
 ### npm rules for this repo
 
 - Keep **exact versions** in every `package.json` — no carets from `ncu` (`--removeRange` handles this).
-- Keep the security overrides in root `package.json` (`miniflare.sharp`, `satori.fflate`) until those packages pin a patched release. Do not reintroduce `vite`, `@vitejs/plugin-react`, or `playwright` overrides; the exact direct dependencies already satisfy every consumer.
+- Keep the security overrides in root `package.json` (`miniflare.undici`, `satori.fflate`) until those packages pin a patched release. Do not reintroduce `vite`, `@vitejs/plugin-react`, `playwright`, or `miniflare.sharp` overrides; the exact direct dependencies already satisfy every consumer. Wrangler `4.149.0` and later pin `sharp@0.35.5`.
 - If **Wrangler** changes in `code/app/web`, sync `wranglerVersion` in `.github/workflows/web-deploy.yml` and `.github/workflows/web-validate.yml` (keep in sync with the web devDependency).
 - After **major** upgrades called out in release notes, explicitly verify:
   1. `npm run build -w web`
