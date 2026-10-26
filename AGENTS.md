@@ -158,12 +158,12 @@ Root overrides that are still required replace an exact vulnerable transitive pi
 
 ```json
 "overrides": {
-  "miniflare": { "sharp": "0.35.5" },
+  "miniflare": { "undici": "7.30.1" },
   "satori": { "fflate": "0.7.5" }
 }
 ```
 
-`miniflare` pins `sharp@0.35.4` (GHSA-wq5f-xc86-pv6w, fixed in 0.35.5). `satori` pins `fflate@0.7.3` (GHSA-px8p-9vwx-vf98, fixed in 0.7.5). Drop each override once the upstream pin is on a patched release.
+`miniflare` pins `undici@7.29.1` (fixed in 7.30.1). `satori` pins `fflate@0.7.3` (GHSA-px8p-9vwx-vf98, fixed in 0.7.5). Wrangler `4.149.0` / miniflare `5.20261019.1-beta` depends on `sharp@0.35.5` directly (GHSA-wq5f-xc86-pv6w), so the `miniflare.sharp` override is no longer needed. Drop each override once the upstream pin is on a patched release.
 
 ---
 

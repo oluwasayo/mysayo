@@ -1,15 +1,18 @@
 ---
+
 title: "You’re Not Meta: Build Fast Teams with Fast Tests"
 description: "A tale of two internet giants and what it teaches us about release confidence and velocity."
 slug: youre-not-meta-build-fast-teams-with
 pubDate: 2025-08-04
 tags:
-  - AGILE
-  - ENGINEERING_EFFECTIVENESS
-  - SOFTWARE_ENGINEERING
-  - SUBSTACK
-  - TESTING
+- AGILE
+- ENGINEERING_EFFECTIVENESS
+- SOFTWARE_ENGINEERING
+- SUBSTACK
+- TESTING
+
 ---
+
 Velocity in software engineering gets romanticized — but speed alone doesn’t deliver the win. True velocity is directional: it’s speed toward the right goal. As conditions shift, your ability to reorient confidently becomes the real differentiator.
 
 Similarly, testing isn't the goal either. We don't write tests to hit arbitrary code coverage targets. We write them to build **confidence in our ability to release**, and to preserve business value as we evolve our products rapidly.
@@ -27,7 +30,7 @@ Testing has one of the strongest loops:
 - The less time engineers spend firefighting, the faster they can iterate.
 - The faster engineers iterate, the more capacity they have to improve infra.
 - The better the infra engineers build, the faster and more reliable the tests become.
-    
+
 
 Each turn of the loop improves confidence. And confidence is the foundation of velocity.
 
@@ -63,7 +66,7 @@ You don’t have Meta’s observability stack. You don’t have hundreds of engi
 
 ![File:Mark Zuckerberg - Move Fast and Break Things.jpg - Wikimedia Commons](/writing/youre-not-meta-build-fast-teams-with/1-d2b440f6-3994-4316-af9a-c084dc408e6e_1664x1248.jpeg)
 
-*[Source](https://commons.wikimedia.org/wiki/File:Mark\_Zuckerberg\_-\_Move\_Fast\_and\_Break\_Things.jpg)*
+_[Source](https://commons.wikimedia.org/wiki/File:Mark\_Zuckerberg\_-\_Move\_Fast\_and\_Break\_Things.jpg)_
 
 That’s why, for most teams, **testing is the most pragmatic path to velocity**.
 
@@ -73,7 +76,7 @@ When testing is fast — fast to write, fast to run, fast to interpret — it be
 
 I’ve worked with teams where running tests took 20 minutes, where runs were flaky, and writing tests felt like grunt work. In those environments, the testing culture decays. Trust decays. Velocity drops.
 
-I’ve also worked with teams where running tests was near-instant. Where failures were rare and meaningful. Where tooling made it *easy* to do the right thing. Those teams moved faster — not because they skipped testing, but because they trusted it.
+I’ve also worked with teams where running tests was near-instant. Where failures were rare and meaningful. Where tooling made it _easy_ to do the right thing. Those teams moved faster — not because they skipped testing, but because they trusted it.
 
 Culture doesn't change because someone writes a memo. It changes when feedback becomes too fast, too useful, and too integrated to ignore.
 
@@ -85,7 +88,7 @@ If you want testing to become part of the culture, you have to invest in the vel
 - **Fix flaky tests aggressively or delete them altogether.** A flaky test is worse than no test — it erodes trust.
 - **Optimize your CI pipeline.** Reducing runtime by even 5 minutes does more than cut costs, it preserves developer momentum.
 - **Structure your test suite with intent.** Don’t over-rely on slow end-to-end tests — aim for a balanced testing pyramid instead.
-    
+
 
 None of this is glamorous. But it's how most high-functioning teams scale with confidence.
 
