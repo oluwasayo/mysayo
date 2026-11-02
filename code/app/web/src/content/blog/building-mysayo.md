@@ -1,15 +1,17 @@
 ---
+
 title: Building mysayo.com
 description: How I built this site. A static Astro front-end, a React island, and a Cloudflare-only stack managed entirely in Terraform, with secrets that never touch the repo.
 slug: building-mysayo
 pubDate: 2026-06-28
 tags:
-  - DESIGN
-  - ARCHITECTURE
-  - ASTRO
-  - CLOUDFLARE
-  - TERRAFORM
-  - CURSOR
+- DESIGN
+- ARCHITECTURE
+- ASTRO
+- CLOUDFLARE
+- TERRAFORM
+- CURSOR
+
 ---
 
 I'd wanted a personal website for years, but the interesting part was never the page itself. It was whether I could treat a small site with the same care I expect from production software: fast validation, typed boundaries, and an editorial surface I could keep living with. So I made an empty directory, ran `git init`, and got to work. The first post had to be the obvious one: how the thing you're reading was made. The initial structure took about two hours, with the England vs Ghana World Cup match on in the background.
@@ -203,14 +205,13 @@ A site nobody can find is just a diary. Discovery is wired in at build time: a g
 Social cards were the one part with a real detour. The obvious choice, a ready-made Astro OG-image integration, didn't support Astro 7 yet, and I wasn't going to force a peer dependency the lockfile would quietly lie about. So the cards are generated directly: [satori](https://github.com/vercel/satori) turns a small HTML and CSS template into SVG, and [resvg](https://github.com/yisibl/resvg-js) rasterizes it to a 1200×630 PNG, one per page, at build:
 
 ```ts
-const svg = await satori(
-  card({ title, description }),
-  { width: 1200, height: 630, fonts },
-)
+const svg = await satori(card({ title, description }), {
+  width: 1200,
+  height: 630,
+  fonts,
+})
 
-const png = new Resvg(svg)
-  .render()
-  .asPng()
+const png = new Resvg(svg).render().asPng()
 ```
 
 Two things bit me, both quietly. A decorative bullet in the footer rendered as a tofu box because the display font has no glyph for it, so it became a plain styled square. And reading the font by a path relative to the module worked in dev but broke in the build, because the endpoint gets bundled elsewhere; resolving from the working directory fixed it. Minor, but the sort of thing you only notice once the finished card is staring back at you.

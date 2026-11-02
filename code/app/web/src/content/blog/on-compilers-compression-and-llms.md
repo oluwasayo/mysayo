@@ -1,20 +1,23 @@
 ---
+
 title: "On Compilers, Compression and LLMs"
 description: "If prompts produced truly reliable outputs, we wouldn't be writing code at all. We would simply have Virtual Machines executing English instead of JavaScript or Bytecode."
 slug: on-compilers-compression-and-llms
 pubDate: 2026-04-07
 tags:
-  - CODE_REVIEW
-  - COMPILERS
-  - INFORMATION_THEORY
-  - LARGE_LANGUAGE_MODELS
-  - SOFTWARE_ENGINEERING
-  - SUBSTACK
-  - VIBE_CODING
+- CODE_REVIEW
+- COMPILERS
+- INFORMATION_THEORY
+- LARGE_LANGUAGE_MODELS
+- SOFTWARE_ENGINEERING
+- SUBSTACK
+- VIBE_CODING
+
 ---
+
 I keep seeing a specific argument used to justify skipping code reviews for AI-generated PRs:
 
-> *“You don’t audit the bytecode from your Java compiler or the assembly from your C++ compiler. Why spend time reviewing LLM-generated code? It’s just another layer of abstraction.”*
+> _“You don’t audit the bytecode from your Java compiler or the assembly from your C++ compiler. Why spend time reviewing LLM-generated code? It’s just another layer of abstraction.”_
 
 Calling this a 'hot take' understates the reality of a dangerous category error. It ignores the fundamental difference between a **Specification** and a **Statistical Guess**.
 

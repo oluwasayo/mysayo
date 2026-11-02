@@ -158,12 +158,11 @@ Root overrides that are still required replace an exact vulnerable transitive pi
 
 ```json
 "overrides": {
-  "miniflare": { "sharp": "0.35.5" },
-  "satori": { "fflate": "0.7.5" }
+ "satori": { "fflate": "0.7.5" }
 }
 ```
 
-`miniflare` pins `sharp@0.35.4` (GHSA-wq5f-xc86-pv6w, fixed in 0.35.5). `satori` pins `fflate@0.7.3` (GHSA-px8p-9vwx-vf98, fixed in 0.7.5). Drop each override once the upstream pin is on a patched release.
+`satori` pins `fflate@0.7.3` (GHSA-px8p-9vwx-vf98, fixed in 0.7.5). Do not blanket-override `fflate`; Vitest UI depends on `fflate@0.8.3`. Wrangler `4.149.0` and later pin `sharp@0.35.5` directly (GHSA-wq5f-xc86-pv6w), and Wrangler `4.154.0` / miniflare `5.20261023.1-beta` pins `undici@7.30.1`, so those overrides are not needed. Drop the `fflate` override once satori pins a patched release.
 
 ---
 
