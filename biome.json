@@ -53,23 +53,23 @@
       },
       "complexity": {
         "noUselessFragments": "off",
-        "recommended": true
+        "preset": "recommended"
       },
       "correctness": {
         "noUnusedImports": "error",
         "noUnusedVariables": "error",
-        "recommended": true,
+        "preset": "recommended",
         "useExhaustiveDependencies": "error"
       },
       "nursery": {
         "noFloatingPromises": "error",
         "noMisusedPromises": "error"
       },
-      "recommended": true,
+      "preset": "recommended",
       "style": {
         "noDefaultExport": "off",
         "noNonNullAssertion": "error",
-        "recommended": true,
+        "preset": "recommended",
         "useArrayLiterals": "error",
         "useBlockStatements": "error",
         "useComponentExportOnlyModules": {
@@ -96,7 +96,7 @@
           "options": { "ignoreNull": false }
         },
         "noShadow": "error",
-        "recommended": true
+        "preset": "recommended"
       }
     }
   },
@@ -123,7 +123,11 @@
       }
     },
     {
-      "includes": ["code/bin/src/**/*.ts", "code/doc/src/cli.ts", "code/app/web/script/**/*.ts"],
+      "includes": [
+        "code/bin/src/**/*.ts",
+        "code/doc/src/cli.ts",
+        "code/app/web/script/**/*.ts"
+      ],
       "linter": {
         "rules": {
           "suspicious": {

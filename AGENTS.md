@@ -152,18 +152,24 @@ Do not reintroduce jsdom without an explicit user request and a documented reaso
 
 ### Vite versions
 
-Keep `@vitejs/plugin-react` on v6 with Astro 7 / Vite 8. Pin `vite`, `@vitejs/plugin-react`, and `playwright` as exact direct dependencies. Those ranges already resolve to the pins, so root overrides for them are unnecessary.
+Keep `@vitejs/plugin-react` on v6 with Astro 7 / Vite 8. Pin `vite`, `@vitejs/plugin-react`, and `playwright` as exact direct dependencies.
 
-Root overrides that are still required replace an exact vulnerable transitive pin:
+Root overrides:
 
 ```json
 "overrides": {
-  "miniflare": { "sharp": "0.35.5" },
-  "satori": { "fflate": "0.7.5" }
+  "postcss-selector-parser": "7.1.7",
+  "rolldown": "1.2.16",
+  "satori": { "fflate": "0.7.5" },
+  "tinyps": "0.5.1",
+  "unbash": "6.0.3",
+  "vite": "8.3.5"
 }
 ```
 
-`miniflare` pins `sharp@0.35.4` (GHSA-wq5f-xc86-pv6w, fixed in 0.35.5). `satori` pins `fflate@0.7.3` (GHSA-px8p-9vwx-vf98, fixed in 0.7.5). Drop each override once the upstream pin is on a patched release.
+`satori` pins `fflate@0.7.3` (GHSA-px8p-9vwx-vf98, fixed in 0.7.5). Drop that override once the pin is on a patched release. Do not blanket-override `fflate`; Vitest UI uses `0.8.3`. `miniflare` now depends on `sharp@0.35.5` directly, so the old `miniflare.sharp` override is gone.
+
+`vite` stays equal to the workspace pin so Astro's `vite@^8.3.5` cannot float past the cooldown. `rolldown`, `tinyps`, `unbash`, and `postcss-selector-parser` are held at the newest release outside the five-day cooldown (`1.2.18`, `0.5.2`, `6.0.4`, and `7.2.0` were still inside it). Advance or drop those four once the newer release is older than five days. `undici@8.12.4` is inside that window and stays, because it is the audit fix.
 
 ---
 
@@ -281,7 +287,7 @@ These are different credentials with different scopes.
 - `R2_ACCESS_KEY_ID`
 - `R2_SECRET_ACCESS_KEY`
 
-Wrangler version in CI: `4.104.0` (keep in sync with `code/app/web` devDependency).
+Wrangler version in CI: `4.157.0` (keep in sync with `code/app/web` devDependency).
 
 ### Clean script CI gate
 
