@@ -14,7 +14,7 @@
     "@astrojs/rss": "4.0.19",
     "@astrojs/sitemap": "3.7.4",
     "@resvg/resvg-js": "2.6.2",
-    "astro": "7.3.6",
+    "astro": "7.4.7",
     "react": "19.3.0",
     "react-compiler-runtime": "1.0.0",
     "react-dom": "19.3.0",
