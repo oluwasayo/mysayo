@@ -154,16 +154,32 @@ Do not reintroduce jsdom without an explicit user request and a documented reaso
 
 Keep `@vitejs/plugin-react` on v6 with Astro 7 / Vite 8. Pin `vite`, `@vitejs/plugin-react`, and `playwright` as exact direct dependencies. Those ranges already resolve to the pins, so root overrides for them are unnecessary.
 
-Root overrides that are still required replace an exact vulnerable transitive pin:
+Root overrides replace a vulnerable transitive pin, or hold a floating range at the newest release outside the five-day cooldown:
 
 ```json
 "overrides": {
-  "miniflare": { "sharp": "0.35.5" },
+  "@babel/core": {
+    "@babel/generator": "8.1.0",
+    "@babel/helper-string-parser": "8.0.8",
+    "@babel/helpers": "8.1.0",
+    "@babel/parser": "8.1.0",
+    "@babel/template": "8.0.0",
+    "@babel/traverse": "8.1.0",
+    "@babel/types": "8.1.0"
+  },
+  "astro": { "es-module-lexer": "3.0.4" },
+  "fast-xml-builder": "1.3.1",
+  "fast-xml-parser": "5.12.0",
+  "mdast-util-to-hast": "13.2.1",
+  "postcss": "8.5.32",
+  "postcss-selector-parser": "7.1.7",
   "satori": { "fflate": "0.7.5" }
 }
 ```
 
-`miniflare` pins `sharp@0.35.4` (GHSA-wq5f-xc86-pv6w, fixed in 0.35.5). `satori` pins `fflate@0.7.3` (GHSA-px8p-9vwx-vf98, fixed in 0.7.5). Drop each override once the upstream pin is on a patched release.
+`satori` pins `fflate@0.7.3` (GHSA-px8p-9vwx-vf98, fixed in 0.7.5). Drop that override once the pin is on a patched release. Do not blanket-override `fflate`; Vitest UI uses `0.8.3`. `miniflare` depends on `sharp@0.35.5` directly, so the old `miniflare.sharp` override is gone.
+
+The Babel overrides are nested under `@babel/core` so Vitest's `magicast` can keep Babel 7. `fast-xml-parser@5.12.0` is the audit fix; `5.12.1` is still inside the cooldown. `es-module-lexer@3.0.5`, `postcss@8.5.33`, `mdast-util-to-hast@13.2.2`, `fast-xml-builder@1.3.2`, and `@babel/*@8.1.2` are inside the cooldown too. `postcss-selector-parser` stays on `7.1.7`: `7.2.0` double-escapes CSS Modules class names, and `7.2.1` is still inside the cooldown. Advance or drop each hold once that newer release is older than five days. `undici@8.12.4` stays; it is the audit fix.
 
 ---
 
@@ -281,7 +297,7 @@ These are different credentials with different scopes.
 - `R2_ACCESS_KEY_ID`
 - `R2_SECRET_ACCESS_KEY`
 
-Wrangler version in CI: `4.104.0` (keep in sync with `code/app/web` devDependency).
+Wrangler version in CI: `4.160.0` (keep in sync with `code/app/web` devDependency).
 
 ### Clean script CI gate
 

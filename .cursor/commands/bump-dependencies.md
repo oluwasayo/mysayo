@@ -80,7 +80,7 @@ npm run fix
 ### npm rules for this repo
 
 - Keep **exact versions** in every `package.json` — no carets from `ncu` (`--removeRange` handles this).
-- Keep the security overrides in root `package.json` (`miniflare.sharp`, `satori.fflate`) until those packages pin a patched release. Do not reintroduce `vite`, `@vitejs/plugin-react`, or `playwright` overrides; the exact direct dependencies already satisfy every consumer.
+- Keep the `satori.fflate` override until satori pins a patched `fflate`. Do not blanket-override `fflate`. Do not reintroduce `miniflare.sharp`, `vite`, `@vitejs/plugin-react`, or `playwright` overrides. The other root overrides are cooldown holds (`@babel/core`'s Babel 8 deps, `astro.es-module-lexer`, `fast-xml-parser`, `fast-xml-builder`, `mdast-util-to-hast`, `postcss`, `postcss-selector-parser`). Advance or drop each once the newer release is older than five days. `fast-xml-parser@5.12.0` and `undici@8.12.4` are audit fixes; do not roll them back.
 - If **Wrangler** changes in `code/app/web`, sync `wranglerVersion` in `.github/workflows/web-deploy.yml` and `.github/workflows/web-validate.yml` (keep in sync with the web devDependency).
 - After **major** upgrades called out in release notes, explicitly verify:
   1. `npm run build -w web`
