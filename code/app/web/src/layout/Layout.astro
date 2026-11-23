@@ -2,7 +2,7 @@
 import BaseHead from '@/layout/BaseHead.astro'
 import SiteFooter from '@/layout/SiteFooter.astro'
 import SiteHeader from '@/layout/SiteHeader.astro'
-import { siteName, siteTagline } from '@shared/lib/site'
+import { siteAuthor, siteName, siteTagline } from '@shared/lib/site'
 
 type Props = {
   title?: string
@@ -16,6 +16,7 @@ type Props = {
 const { title, description, ogType, publishedTime, modifiedTime, styles } =
   Astro.props
 const pageTitle = title ? `${title} · ${siteName}` : `${siteName} · ${siteTagline}`
+const shareTitle = title ? `${title} · ${siteAuthor}` : siteAuthor
 ---
 
 <!doctype html>
@@ -23,6 +24,7 @@ const pageTitle = title ? `${title} · ${siteName}` : `${siteName} · ${siteTagl
   <head>
     <BaseHead
       title={pageTitle}
+      shareTitle={shareTitle}
       headline={title}
       description={description}
       ogType={ogType}

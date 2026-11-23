@@ -160,16 +160,17 @@ Prefer TypeScript that still reads like JavaScript. Lean on inference, structura
 
 ### Vite versions
 
-Root `package.json` overrides:
+Keep `@vitejs/plugin-react` on v6 with Astro 7 / Vite 8. Pin `vite`, `@vitejs/plugin-react`, and `playwright` as exact direct dependencies. Those ranges already resolve to the pins, so root overrides for them are unnecessary.
+
+Root overrides that are still required replace an exact vulnerable transitive pin:
 
 ```json
 "overrides": {
-  "@astrojs/react": { "@vitejs/plugin-react": "6.0.3" },
-  "vite": "8.1.0"
+ "satori": { "fflate": "0.7.5" }
 }
 ```
 
-Keep `@vitejs/plugin-react` on v6 with Astro 7 / Vite 8.
+`satori` pins `fflate@0.7.3` (GHSA-px8p-9vwx-vf98, fixed in 0.7.5). Do not blanket-override `fflate`; Vitest UI uses `0.8.3`. `miniflare` now depends on `sharp@0.35.5` directly (GHSA-wq5f-xc86-pv6w, fixed in 0.35.5), so the nested `sharp` override is gone. Drop the `fflate` override once satori pins a patched release.
 
 ---
 
@@ -287,7 +288,7 @@ These are different credentials with different scopes.
 - `R2_ACCESS_KEY_ID`
 - `R2_SECRET_ACCESS_KEY`
 
-Wrangler version in CI: `4.104.0` (keep in sync with `code/app/web` devDependency).
+Wrangler version in CI: `4.164.0` (keep in sync with `code/app/web` devDependency).
 
 ### Clean script CI gate
 

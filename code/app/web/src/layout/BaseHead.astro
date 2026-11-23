@@ -11,6 +11,7 @@ import '@/style/global.css'
 
 type Props = {
   title: string
+  shareTitle?: string
   description?: string
   ogType?: 'website' | 'article'
   publishedTime?: string
@@ -21,6 +22,7 @@ type Props = {
 
 const {
   title,
+  shareTitle = title,
   description = siteDescription,
   ogType = 'website',
   publishedTime,
@@ -96,8 +98,8 @@ const jsonLdScript = JSON.stringify(jsonLd).replace(/</g, '\\u003c')
 <meta name="description" content={description} />
 
 <meta property="og:type" content={ogType} />
-<meta property="og:site_name" content={siteName} />
-<meta property="og:title" content={title} />
+<meta property="og:site_name" content={siteAuthor} />
+<meta property="og:title" content={shareTitle} />
 <meta property="og:description" content={description} />
 <meta property="og:url" content={canonical} />
 <meta property="og:locale" content="en_US" />
@@ -123,7 +125,7 @@ const jsonLdScript = JSON.stringify(jsonLd).replace(/</g, '\\u003c')
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:site" content={`@${siteXHandle}`} />
 <meta name="twitter:creator" content={`@${siteXHandle}`} />
-<meta name="twitter:title" content={title} />
+<meta name="twitter:title" content={shareTitle} />
 <meta name="twitter:description" content={description} />
 <meta name="twitter:image" content={ogImage} />
 

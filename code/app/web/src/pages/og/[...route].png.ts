@@ -2,7 +2,7 @@ import { readFile } from 'node:fs/promises'
 import { join } from 'node:path'
 
 import { Resvg } from '@resvg/resvg-js'
-import { siteAuthor, siteName, siteTagline } from '@shared/lib/site'
+import { siteAuthor, siteTagline } from '@shared/lib/site'
 import type { APIContext, GetStaticPaths } from 'astro'
 import satori from 'satori'
 import { html } from 'satori-html'
@@ -51,7 +51,7 @@ export const getStaticPaths = (async () => {
   return [
     {
       params: { route: 'index' },
-      props: { description: siteTagline, title: siteName },
+      props: { description: siteTagline, title: siteAuthor },
     },
     {
       params: { route: 'about' },
@@ -99,9 +99,22 @@ export const getStaticPaths = (async () => {
   ]
 }) satisfies GetStaticPaths
 
-const card = ({ title, description }: OgCard) =>
-  html(`
-    <div style="height:100%;width:100%;display:flex;align-items:center;justify-content:center;gap:64px;background-color:#0d0d0f;color:#ededee;padding:96px 88px;font-family:'Source Serif 4';">
+const card = ({ title, description }: OgCard) => {
+  const author =
+    title === siteAuthor
+      ? ''
+      : `<div style="display:flex;align-items:center;gap:14px;margin-top:36px;font-size:24px;color:#9a9aa2;">
+          <span style="display:flex;width:16px;height:16px;background-color:#ff6f4d;"></span>
+          <span style="display:flex;">${escapeHtml(siteAuthor)}</span>
+        </div>`
+
+  // satori 0.36+ sizes a flex item to its text and treats width as a content
+  // box. The column is the space left beside the portrait (1200 - 88 - 88 -
+  // 64 - 320). border-box keeps the accent rule and padding inside that
+  // 640px, and the lines use the remaining 582px so they wrap instead of
+  // painting off the card.
+  return html(`
+    <div style="height:100%;width:100%;display:flex;align-items:center;justify-content:center;gap:64px;background-color:#0d0d0f;color:#ededee;padding:96px 88px;font-family:'Source Serif 4';box-sizing:border-box;">
       <div style="display:flex;width:320px;height:320px;flex-shrink:0;border:1px solid #303036;background-color:#17171b;">
         <img
           src="${portrait}"
@@ -111,17 +124,15 @@ const card = ({ title, description }: OgCard) =>
           alt="personal portrait"
         />
       </div>
-      <div style="display:flex;flex-direction:column;flex:1;justify-content:center;border-left:10px solid #ff6f4d;padding-left:48px;">
-        <div style="display:flex;font-size:26px;font-weight:400;letter-spacing:8px;text-transform:uppercase;color:#9a9aa2;margin-bottom:28px;">mysayo.com</div>
-        <div style="display:flex;font-size:60px;font-weight:600;line-height:1.08;letter-spacing:-2px;">${escapeHtml(title)}</div>
-        <div style="display:flex;font-size:30px;font-weight:400;color:#9a9aa2;line-height:1.35;margin-top:26px;">${escapeHtml(truncate(description, 105))}</div>
-        <div style="display:flex;align-items:center;gap:14px;margin-top:36px;font-size:24px;color:#9a9aa2;">
-          <span style="display:flex;width:16px;height:16px;background-color:#ff6f4d;"></span>
-          <span style="display:flex;">${escapeHtml(siteAuthor)}</span>
-        </div>
+      <div style="display:flex;flex-direction:column;box-sizing:border-box;width:640px;flex-shrink:0;justify-content:center;border-left:10px solid #ff6f4d;padding-left:48px;">
+        <div style="display:flex;width:582px;font-size:26px;font-weight:400;letter-spacing:8px;text-transform:uppercase;color:#9a9aa2;margin-bottom:28px;">mysayo.com</div>
+        <div style="display:flex;width:582px;font-size:60px;font-weight:600;line-height:1.08;letter-spacing:-2px;">${escapeHtml(title)}</div>
+        <div style="display:flex;width:582px;font-size:30px;font-weight:400;color:#9a9aa2;line-height:1.35;margin-top:26px;">${escapeHtml(truncate(description, 105))}</div>
+        ${author}
       </div>
     </div>
   `)
+}
 
 export async function GET({ props }: APIContext) {
   const { title, description } = props as OgCard
