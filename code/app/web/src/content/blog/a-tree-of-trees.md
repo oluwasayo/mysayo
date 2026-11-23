@@ -4,7 +4,7 @@ title: 'Task Orchestration: A Tree of Trees'
 description: 'Why durable task orchestration exists: when the thinking loop moves from the human to the server, request/response stops being enough.'
 slug: a-tree-of-trees
 pubDate: 2026-07-27
-draft: true
+draft: false
 tags:
 
 - ARCHITECTURE
