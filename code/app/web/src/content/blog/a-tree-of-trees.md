@@ -3,7 +3,7 @@ title: 'Task Orchestration: A Tree of Trees'
 description: 'Why durable task orchestration exists: when the thinking loop moves from the human to the server, request/response stops being enough.'
 slug: a-tree-of-trees
 pubDate: 2026-07-27
-draft: false
+draft: true
 tags:
   - ARCHITECTURE
   - BACKEND
@@ -457,7 +457,7 @@ Every serious queue tutorial ends with "make your handlers idempotent." Most cod
 
 The handler declares the key; the framework prefixes it with the message type so namespaces do not collide; the claim carries a lease that covers the worker timeout. Concurrent deliveries either skip (already done), wait (conflict), or proceed (won the claim), and every completion or release must present the claim token, so a worker that lost its lease cannot clobber the new owner. Key granularity is a product decision with failure modes on both sides: too coarse (one key for a whole brief) and unrelated work blocks on a false conflict; too fine (a new key every attempt) and you lose protection and double-apply side effects.
 
-Message-level claims stop accidental re-entry of the whole handler. They do not, by themselves, make every side effect safe: a charge that succeeds remotely and then dies before `markIdempotencyDone` will run again on retry. The fix is not a broad `unsafeToRetry` flag on the handler (too coarse: one email and one DB upsert should not share fate). It is a **record per side effect**. Write the intent (or completion) under a stable key in the same Postgres transaction you care about; run the external call; if the call throws, the transaction rolls back and the record never stuck; if a retry finds the record already committed, skip the call. Provider keys (`Idempotency-Key` headers, upserts by natural key) still help when the remote side has its own dedupe. The framework support is a small helper rather than a handler-wide marker:
+Message-level claims stop accidental re-entry of the whole handler. They do not, by themselves, make every side effect safe: a charge that succeeds remotely and then dies before `markIdempotencyDone` will run again on retry. The fix is not a broad `unsafeToRetry` flag on the handler (too coarse: one email and one DB upsert should not share fate). It is a **record per side effect**. Write the intent (or completion) under a stable key in the same Postgres transaction you care about; run the external call; if the call throws, the transaction rolls back and the record never sticks; if a retry finds the record already committed, skip the call. Provider keys (`Idempotency-Key` headers, upserts by natural key) still help when the remote side has its own dedupe. The framework support is a small helper rather than a handler-wide marker:
 
 ```ts
 await withIdempotency(`brief:${briefId}:notify-email`, async () => {
@@ -507,7 +507,7 @@ await promiseMap(
       },
       { tracked: true },
     ),
-  { concurrency: X },
+  { concurrency: inProcessParallelConcurrency() },
 )
 
 await publishMessage(
