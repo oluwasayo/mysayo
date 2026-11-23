@@ -13,7 +13,7 @@ const blogPost = (
   data: Partial<CollectionEntry<'blog'>['data']> &
     Pick<CollectionEntry<'blog'>['data'], 'slug' | 'pubDate'>,
   id = `${data.slug}.md`,
-): CollectionEntry<'blog'> =>
+) =>
   ({
     collection: 'blog',
     data: {

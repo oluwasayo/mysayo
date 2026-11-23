@@ -7,7 +7,7 @@ import {
 type ThemeDocument = Pick<Document, 'documentElement'>
 type ThemeStorage = Pick<Storage, 'setItem'>
 
-const getDocument = (): ThemeDocument | undefined =>
+const getDocument = () =>
   typeof document === 'undefined' ? undefined : document
 
 const getStorage = (): ThemeStorage | undefined =>
@@ -15,7 +15,7 @@ const getStorage = (): ThemeStorage | undefined =>
 
 export const readDocumentThemePreference = (
   themeDocument: ThemeDocument | null | undefined = getDocument(),
-): ThemePreference => {
+) => {
   if (!themeDocument) {
     return 'system'
   }
@@ -27,7 +27,7 @@ export const readDocumentThemePreference = (
 export const applyThemePreference = (
   preference: ThemePreference,
   themeDocument: ThemeDocument | null | undefined = getDocument(),
-  themeStorage = getStorage(),
+  themeStorage: ThemeStorage | null | undefined = getStorage(),
 ) => {
   if (!themeDocument) {
     return

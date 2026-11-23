@@ -1,0 +1,103 @@
+/*
+ * Post-specific styles for a-tree-of-trees, colocated with the markdown.
+ * Linked automatically by [slug].astro because the basename matches post.id.
+ *
+ * Hand-drawn whiteboard diagrams as inline SVG. Inlining (rather than <img>)
+ * lets the site's [data-theme] tokens reach the strokes and lettering, so the
+ * diagrams flip with the light/dark toggle instead of only prefers-color-scheme.
+ * Line wobble comes from an feTurbulence/feDisplacementMap filter in each SVG;
+ * lettering uses Excalifont (OFL-1.1, self-hosted; see public/fonts/).
+ */
+
+@font-face {
+  font-family: Excalifont;
+  src: url("/fonts/Excalifont-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+.work-diagram {
+  margin: 2.25em 0;
+}
+
+.work-diagram svg {
+  display: block;
+  width: 100%;
+  max-width: 44rem;
+  height: auto;
+  margin-inline: auto;
+  overflow: visible;
+  font-family: Excalifont, "Comic Sans MS", cursive;
+  font-size: 19px;
+}
+
+.work-diagram .d-ink {
+  fill: none;
+  stroke: var(--text);
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.work-diagram .d-fill {
+  fill: var(--bg-subtle);
+  stroke: var(--text);
+  stroke-width: 1.8;
+}
+
+.work-diagram .d-dash {
+  stroke-dasharray: 7 6;
+}
+
+.work-diagram .d-muted-ink {
+  stroke: var(--text-muted);
+}
+
+.work-diagram .d-accent {
+  stroke: var(--accent);
+}
+
+.work-diagram .d-thick {
+  stroke-width: 2.6;
+}
+
+.work-diagram text {
+  fill: var(--text);
+  stroke: none;
+}
+
+.work-diagram .d-t-muted {
+  fill: var(--text-muted);
+  font-size: 16px;
+}
+
+.work-diagram .d-t-accent {
+  fill: var(--accent);
+}
+
+.work-diagram .d-t-label {
+  fill: var(--text-muted);
+  font-size: 14px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.work-diagram figcaption {
+  max-width: 40rem;
+  margin-inline: auto;
+}
+
+@media (width < 34rem) {
+  .work-diagram svg {
+    font-size: 22px;
+  }
+
+  .work-diagram .d-t-muted {
+    font-size: 19px;
+  }
+
+  .work-diagram .d-t-label {
+    font-size: 16px;
+  }
+}

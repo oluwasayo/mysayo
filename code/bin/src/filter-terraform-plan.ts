@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync } from 'node:fs'
+import { readFile, writeFile } from 'node:fs/promises'
 
 import { resolveWorkspacePath } from '@/lib/repoRoot'
 import {
@@ -86,10 +86,10 @@ async function main() {
 
   const inputPath = resolveWorkspacePath(String(args.input))
   const outputPath = resolveWorkspacePath(String(args.output))
-  const planOutput = readFileSync(inputPath, 'utf8')
+  const planOutput = await readFile(inputPath, 'utf8')
   const filtered = filterPlan(planOutput)
 
-  writeFileSync(outputPath, filtered)
+  await writeFile(outputPath, filtered)
   printStatus(`Filtered plan written to ${outputPath}`)
 
   if (args.ci && hasOnlyBenignPagesPlanDiff(filtered)) {

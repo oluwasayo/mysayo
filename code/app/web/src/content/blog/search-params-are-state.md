@@ -18,7 +18,11 @@ Every filtered list page already has the state it needs. It lives in `useState`,
 
 I think about URL state the way [TanStack argues](https://tanstack.com/blog/search-params-are-state) it should be thought about: search params are state. They deserve the same rigor as server state or component state. Where I diverge is narrower: **who should own the schema**. I've shipped one answer, a component-level hook stack, in multiple production apps; the other is the route-first model TanStack Router presents. This essay names the tradeoffs between them.
 
+<aside class="callout">
+
 One note before we start: the examples use React Router, Vitest browser mode with Playwright, and Zod for validation. None of those choices are essential. Any router with reactive access to the browser search params can back the hook stack; any validation library can sit in `validateSearch`; any test harness that mounts a real router and asserts on `location.search` will do. The ownership question is the point; the packages are examples.
+
+</aside>
 
 Put the schema in the hooks, and each call site owns its own `parse`, `format`, and cross-param rules. Put it on the route with `validateSearch`, and typed navigation inherits from there. The URL bar looks the same either way.
 

@@ -5,6 +5,6 @@ const dateFormatter = new Intl.DateTimeFormat('en-US', {
   year: 'numeric',
 })
 
-export const formatDate = (date: Date): string => dateFormatter.format(date)
+export const formatDate = (date: Date) => dateFormatter.format(date)
 
-export const toISODate = (date: Date): string => date.toISOString().slice(0, 10)
+export const toISODate = (date: Date) => date.toISOString().slice(0, 10)

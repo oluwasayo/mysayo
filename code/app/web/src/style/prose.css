@@ -152,8 +152,9 @@
   margin-bottom: 0;
 }
 
-/* Collapsible callouts (<details class="callout">): optional forks, design notes, caveats.
-   Native <details>/<summary> — no JavaScript. Collapsed by default; add `open` to expand. */
+/* Callouts (.callout): shared box for asides.
+   - Collapsible: <details class="callout"> with <summary> (collapsed by default).
+   - Always-visible: <aside class="callout"> with body content only (no summary). */
 .prose .callout {
   margin: 2em 0;
   padding: 0 1.3rem;
@@ -195,6 +196,7 @@
   transform: rotate(90deg);
 }
 
+.prose .callout > :first-child:not(summary),
 .prose .callout > summary + * {
   margin-top: 1.15rem;
 }

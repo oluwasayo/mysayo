@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs'
+import { readFile } from 'node:fs/promises'
 import { join } from 'node:path'
 
 import { Resvg } from '@resvg/resvg-js'
@@ -14,21 +14,21 @@ type OgCard = { title: string; description: string }
 // Astro always builds with the cwd set to this workspace root (CI uses
 // working-directory: code/app/web), so resolve the vendored fonts from there.
 const readFont = (file: string) =>
-  readFileSync(join(process.cwd(), 'src/asset/og', file))
+  readFile(join(process.cwd(), 'src/asset/og', file))
 
-const portrait = `data:image/jpeg;base64,${readFileSync(
-  join(process.cwd(), 'src/asset/sayo.jpg'),
+const portrait = `data:image/jpeg;base64,${(
+  await readFile(join(process.cwd(), 'src/asset/sayo.jpg'))
 ).toString('base64')}`
 
 const fonts = [
   {
-    data: readFont('SourceSerif4-Regular.ttf'),
+    data: await readFont('SourceSerif4-Regular.ttf'),
     name: 'Source Serif 4',
     style: 'normal' as const,
     weight: 400 as const,
   },
   {
-    data: readFont('SourceSerif4-SemiBold.ttf'),
+    data: await readFont('SourceSerif4-SemiBold.ttf'),
     name: 'Source Serif 4',
     style: 'normal' as const,
     weight: 600 as const,
@@ -151,7 +151,7 @@ export async function GET({ props }: APIContext) {
         return ''
       }
 
-      const uri = loadEmojiDataUri(segment)
+      const uri = await loadEmojiDataUri(segment)
       if (!uri) {
         const code = emojiCodePoint(segment)
         throw new Error(

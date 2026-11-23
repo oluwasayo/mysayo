@@ -13,9 +13,7 @@ export const isThemePreference = (
   typeof value === 'string' &&
   (themePreferenceOrder as readonly string[]).includes(value)
 
-export const nextThemePreference = (
-  current: ThemePreference,
-): ThemePreference => {
+export const nextThemePreference = (current: ThemePreference) => {
   const index = themePreferenceOrder.indexOf(current)
   return assertNotNil(
     themePreferenceOrder[(index + 1) % themePreferenceOrder.length],

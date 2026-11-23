@@ -1,4 +1,4 @@
-import { existsSync, readFileSync } from 'node:fs'
+import { readFile } from 'node:fs/promises'
 import { join } from 'node:path'
 
 /**
@@ -12,8 +12,14 @@ import { join } from 'node:path'
 const zwj = String.fromCharCode(0x200d)
 const variationSelector = /\uFE0F/g
 
+const isEnoent = (error: unknown) =>
+  typeof error === 'object' &&
+  error !== null &&
+  'code' in error &&
+  error.code === 'ENOENT'
+
 /** Unicode code point path segment used by Twemoji filenames. */
-export const emojiCodePoint = (char: string): string => {
+export const emojiCodePoint = (char: string) => {
   const normalized =
     char.indexOf(zwj) < 0 ? char.replace(variationSelector, '') : char
   const points: string[] = []
@@ -36,13 +42,17 @@ export const emojiCodePoint = (char: string): string => {
   return points.join('-')
 }
 
-export const loadEmojiDataUri = (segment: string): string | undefined => {
+export const loadEmojiDataUri = async (segment: string) => {
   const code = emojiCodePoint(segment)
   const path = join(process.cwd(), 'src/asset/og/emoji', `${code}.svg`)
-  if (!existsSync(path)) {
-    return undefined
-  }
 
-  const svg = readFileSync(path, 'utf8')
-  return `data:image/svg+xml;base64,${Buffer.from(svg).toString('base64')}`
+  try {
+    const svg = await readFile(path, 'utf8')
+    return `data:image/svg+xml;base64,${Buffer.from(svg).toString('base64')}`
+  } catch (error) {
+    if (isEnoent(error)) {
+      return
+    }
+    throw error
+  }
 }

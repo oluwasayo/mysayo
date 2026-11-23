@@ -18,6 +18,7 @@ describe('tag', () => {
   it('derives display labels and archive slugs from tag values', () => {
     expect(getTagLabel(Tag.VibeCoding)).toBe('Vibe coding')
     expect(getTagLabel(Tag.Design)).toBe('Design')
+    expect(getTagLabel(Tag.SQS)).toBe('SQS')
     expect(tagSlugs[Tag.Terraform]).toBe('terraform')
     expect(tagSlugs[Tag.VibeCoding]).toBe('vibe-coding')
   })
@@ -32,7 +33,10 @@ describe('tag', () => {
 
   it('covers every tag with a derived label and slug', () => {
     for (const tag of tagValues) {
-      expect(tagLabels[tag]).toBe(enumValueToText(tag))
+      // Acronym labels override casing only; the words still derive from the value.
+      expect(tagLabels[tag].toLowerCase()).toBe(
+        enumValueToText(tag).toLowerCase(),
+      )
       expect(tagSlugs[tag]).toBe(enumValueToSlug(tag))
     }
   })

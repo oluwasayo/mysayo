@@ -1,4 +1,4 @@
-import { mkdirSync, readFileSync } from 'node:fs'
+import { mkdir, readFile } from 'node:fs/promises'
 import { join } from 'node:path'
 
 import { chromium } from 'playwright'
@@ -36,11 +36,6 @@ const rasterizeLayoutCss = `
   }
 `
 
-const themeTokensCss = readFileSync(
-  join(webWorkspaceRoot, 'src/style/tokens.css'),
-  'utf8',
-)
-
 const slugify = (value: string) =>
   value
     .toLowerCase()
@@ -77,10 +72,14 @@ async function main() {
     process.exit(1)
   }
 
-  const post = findBlogPostBySlug(slug)
-  const postCss = loadColocatedPostCss(post.id)
+  const themeTokensCss = await readFile(
+    join(webWorkspaceRoot, 'src/style/tokens.css'),
+    'utf8',
+  )
+  const post = await findBlogPostBySlug(slug)
+  const postCss = await loadColocatedPostCss(post.id)
   const outputDir = join(repoRoot, '.out', 'rasterize', post.slug)
-  const markdown = readFileSync(post.markdownPath, 'utf8')
+  const markdown = await readFile(post.markdownPath, 'utf8')
   const figures = (markdown.match(figurePattern) ?? []).filter(figure =>
     /<svg[\s>]/i.test(figure),
   )
@@ -89,7 +88,7 @@ async function main() {
     throw new Error(`No inline SVG figures found in ${post.markdownPath}`)
   }
 
-  mkdirSync(outputDir, { recursive: true })
+  await mkdir(outputDir, { recursive: true })
 
   const browser = await launchBrowser()
   const page = await browser.newPage({ deviceScaleFactor: 2 })

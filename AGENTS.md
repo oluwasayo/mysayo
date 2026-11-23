@@ -142,6 +142,14 @@ Do not reintroduce jsdom without an explicit user request and a documented reaso
 - Use **`tsc`** in all workspaces — not `tsgo` / `@typescript/native-preview`
 - Root and workspaces pin exact versions
 
+#### Style: inference-first, JS-shaped TS
+
+Prefer TypeScript that still reads like JavaScript. Lean on inference, structural typing, `satisfies`, type predicates, and generics — not redundant annotations.
+
+- **Omit return types** when the body already infers the right type (including literal unions via control flow / predicates).
+- **Keep annotations that buy correctness**: parameter types on exported functions, type predicates (`value is T`), assertion signatures, empty-array/object seeds that would otherwise be `never[]`, and intentional widenings (`as const`, `satisfies`, casts after `Object.fromEntries`).
+- **Async I/O everywhere** in Node paths — `node:fs/promises`, not `*Sync`. Prefer try/`ENOENT` over `existsSync` + read. Module-scope asset loads may use top-level `await`.
+
 ### Linting
 
 - **Biome** at repo root (`biome.json`) — formatter + linter
@@ -312,7 +320,7 @@ import { siteName } from '@shared/lib/site'
 - **Hand-rolled design system** — no component/UI library. Flat (no border radius), editorial, mobile-first.
 - **Typography** — Source Serif 4 for display headings (hero, article titles, essay h2/h3); system sans for body and UI; mono for meta/dates/code
 - Design tokens + base/layout/components: `code/app/web/src/style/global.css`
-- Long-form article typography: `code/app/web/src/style/prose.css` (includes collapsible `.callout` disclosures for blog posts; its `@media print` block expands callouts, unboxes inline code, and wraps code blocks)
+- Long-form article typography: `code/app/web/src/style/prose.css` (includes `.callout` asides for blog posts: always-visible `<aside>` and collapsible `<details>`; its `@media print` block expands collapsible callouts, unboxes inline code, and wraps code blocks)
 - Print: `code/app/web/src/style/print.css` (imported **last** in `global.css` so its high-contrast light tokens beat `[data-theme]`; hides site chrome)
 - Theming: light/dark driven by `data-theme` on `<html>`, set before paint by an inline script in `BaseHead.astro`, with a `prefers-color-scheme` fallback for no-JS visitors
 - No PostCSS config; Astro/Vite handle CSS. Stylelint uses **modern color notation** (`rgb(... / ..%)`), kebab-case classes
@@ -350,11 +358,21 @@ Vendored emoji SVGs are excluded from Biome (`biome.json`); do not “fix” the
 
 #### Callouts (`.callout`)
 
-Blog-wide callout styling lives in `code/app/web/src/style/prose.css` (`.prose .callout`). Use it for **optional design forks, caveats, and tangents** — material that is useful but not part of the main narrative. Callouts are **collapsible** via native `<details>`/`<summary>` (no JavaScript) and render **collapsed by default**. Do **not** use post-specific CSS for callouts.
+Blog-wide callout styling lives in `code/app/web/src/style/prose.css` (`.prose .callout`). Shared box for asides; two shapes. Do **not** use post-specific CSS for callouts.
 
 **Not** for pull quotes — use Markdown `blockquote` for those (italic, accent left rule).
 
-**Markup** — raw HTML inside `.md` posts (Astro content layer renders it inside `.prose`):
+**Always-visible** — `<aside class="callout">` with body content only (no `<summary>`). Use for notes that belong in the main reading path, such as the "One note before we start" tooling disclaimer:
+
+```html
+<aside class="callout">
+
+One note before we start: the examples use …
+
+</aside>
+```
+
+**Collapsible** — `<details class="callout">` with a `<summary>` as its first child. Use for **optional design forks, caveats, and tangents**. Collapsed by default; add `open` only if it should start expanded:
 
 ```html
 <details class="callout">
@@ -367,12 +385,10 @@ Second paragraph if needed.
 </details>
 ```
 
-**Conventions:**
+**Conventions (collapsible):**
 
-- Use `<details class="callout">` with a `<summary>` as its first child. The summary is the always-visible, clickable label; it renders as a muted uppercase heading with a disclosure caret.
 - Put the label as **plain text** in `<summary>` (no Markdown bold, no backticks) — e.g. `Alternative: the commit outbox`. Keep it short.
 - Leave a **blank line after `</summary>`** so the body renders as Markdown; follow with normal Markdown paragraphs.
-- Collapsed by default. Add the `open` attribute (`<details class="callout" open>`) only if the callout should start expanded.
 - No post-specific class names — always `callout`.
 
 **Example** (from `everything-is-a-blob.md`):
