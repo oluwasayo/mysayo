@@ -1,17 +1,20 @@
 ---
+
 title: 'Task Orchestration: A Tree of Trees'
 description: 'Why durable task orchestration exists: when the thinking loop moves from the human to the server, request/response stops being enough.'
 slug: a-tree-of-trees
 pubDate: 2026-07-27
 draft: true
 tags:
-  - ARCHITECTURE
-  - BACKEND
-  - LAMBDA
-  - POSTGRES
-  - SQS
-  - TERRAFORM
-  - TESTING
+
+- ARCHITECTURE
+- BACKEND
+- LAMBDA
+- POSTGRES
+- SQS
+- TERRAFORM
+- TESTING
+
 ---
 
 For most of the history of the web, a request was a conversation turn and a response was the end of the thought. The browser sent a form. The server wrote a row, maybe sent an email, and returned HTML or JSON. If anything took longer than a few seconds, we pretended it didn't: a spinner, a "we'll email you," a cron that ran overnight. The interesting loop (decide, act, observe, decide again) lived in a person's head: the user filled the next field, clicked the next button, supplied the next prompt. The server was a clerk; the person was the agent.
@@ -74,7 +77,7 @@ That scope gives the design its goals:
 
 ## The human was the orchestrator
 
-Picture a person operating a SaaS app. They open a topic, click "compile brief," skim the sources, reject a bad PDF, re-fetch two URLs, approve the draft, and schedule the share. Each click is a short request. Between clicks, *they* hold the plan: which step failed, what to retry, whether every source is ready, when to move on. The server never has to remember that a tree of work exists, because the tree lives in working memory and a browser tab.
+Picture a person operating a SaaS app. They open a topic, click "compile brief," skim the sources, reject a bad PDF, re-fetch two URLs, approve the draft, and schedule the share. Each click is a short request. Between clicks, _they_ hold the plan: which step failed, what to retry, whether every source is ready, when to move on. The server never has to remember that a tree of work exists, because the tree lives in working memory and a browser tab.
 
 <figure class="work-diagram">
 <svg viewBox="0 0 720 280" role="img" aria-labelledby="d1-title d1-desc">
@@ -113,28 +116,28 @@ Request/response is still the right pattern for "read this row" and "save this f
 
 Six months into a product that "just uses SQS," you usually have: five slightly different retry helpers, three notions of a dead letter, payloads that are `Record<string, unknown>`, no parent pointers when a child fails, and a Slack thread titled _"did synthesize ever run?"_
 
-A task orchestration framework is the standard that stops that drift. Publish goes through one function. Consume goes through one processor. Message types are Zod schemas registered in one place. Idempotency, dependencies, delays, and DLQ writes are options on that path rather than separate code paths. Features compose the primitive the way they compose a database pool: they declare *what* work is, and the framework owns *how* work survives.
+A task orchestration framework is the standard that stops that drift. Publish goes through one function. Consume goes through one processor. Message types are Zod schemas registered in one place. Idempotency, dependencies, delays, and DLQ writes are options on that path rather than separate code paths. Features compose the primitive the way they compose a database pool: they declare _what_ work is, and the framework owns _how_ work survives.
 
 Let's briefly consider a few alternatives:
 
-| Approach | What you get | What you take on |
-| --- | --- | --- |
-| **Inline in the request** | Simplicity | Timeouts, deploys, and user retries become your orchestrator |
-| **Postgres-only jobs** (`SKIP LOCKED`, pg-boss, etc.) | One system to operate; transactional enqueue with business data; natural `ORDER BY priority` | DB becomes your broker; polling workers; burst load shares fate with OLTP |
-| **Temporal / Cadence / Restate** | Durable workflows, timers, signals, history replay, task-queue rate limits | Another runtime and worker fleets; deterministic workflow code; patching discipline for code changes |
-| **AWS Step Functions** | Managed state machines, native AWS integrations, visual runs; Map `MaxConcurrency` | ASL/state-machine model; Retry/Catch in ASL; local fidelity differs from plain TypeScript handlers |
-| **Vercel Workflows** | Durable async TypeScript (`"use workflow"` / `"use step"`); immediate `Promise.all` fan-in; deployment pinning | Platform-coupled; step retries / FatalError; DB backpressure still mostly yours today |
-| **Raw SQS + Lambda** | Managed scale-out, visibility timeouts, cheap fan-out | You still must invent typing, idempotency, fan-in, DLQ ops, and testing |
-| **A small framework on SQS + Postgres** | Queue for delivery; database for control plane; typed handlers | You own the orchestration semantics; no free workflow history UI |
+| Approach                                              | What you get                                                                                                   | What you take on                                                                                     |
+| ----------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| **Inline in the request**                             | Simplicity                                                                                                     | Timeouts, deploys, and user retries become your orchestrator                                         |
+| **Postgres-only jobs** (`SKIP LOCKED`, pg-boss, etc.) | One system to operate; transactional enqueue with business data; natural `ORDER BY priority`                   | DB becomes your broker; polling workers; burst load shares fate with OLTP                            |
+| **Temporal / Cadence / Restate**                      | Durable workflows, timers, signals, history replay, task-queue rate limits                                     | Another runtime and worker fleets; deterministic workflow code; patching discipline for code changes |
+| **AWS Step Functions**                                | Managed state machines, native AWS integrations, visual runs; Map `MaxConcurrency`                             | ASL/state-machine model; Retry/Catch in ASL; local fidelity differs from plain TypeScript handlers   |
+| **Vercel Workflows**                                  | Durable async TypeScript (`"use workflow"` / `"use step"`); immediate `Promise.all` fan-in; deployment pinning | Platform-coupled; step retries / FatalError; DB backpressure still mostly yours today                |
+| **Raw SQS + Lambda**                                  | Managed scale-out, visibility timeouts, cheap fan-out                                                          | You still must invent typing, idempotency, fan-in, DLQ ops, and testing                              |
+| **A small framework on SQS + Postgres**               | Queue for delivery; database for control plane; typed handlers                                                 | You own the orchestration semantics; no free workflow history UI                                     |
 
-I'm not anti-Temporal, Step Functions, or Vercel Workflows. If your product *is* long-lived business processes with signals, versioning, and human approvals, or you want a managed orchestrator that already speaks your cloud, buy that. I'm not anti-Postgres queues either. If your scale fits and you want enqueue atomic with the business transaction, that's a coherent design. The hybrid I describe exists for teams that already live in AWS, already have Postgres as the system of record, already think in TypeScript, and want **durable trees of handlers** without standing up a second orchestration product. The tradeoff is that you don't get Temporal's workflow history, Step Functions' execution diagram, or Vercel's directive-level durable async; you get messages, claims, and SQL join barriers, and you own what they mean.
+I'm not anti-Temporal, Step Functions, or Vercel Workflows. If your product _is_ long-lived business processes with signals, versioning, and human approvals, or you want a managed orchestrator that already speaks your cloud, buy that. I'm not anti-Postgres queues either. If your scale fits and you want enqueue atomic with the business transaction, that's a coherent design. The hybrid I describe exists for teams that already live in AWS, already have Postgres as the system of record, already think in TypeScript, and want **durable trees of handlers** without standing up a second orchestration product. The tradeoff is that you don't get Temporal's workflow history, Step Functions' execution diagram, or Vercel's directive-level durable async; you get messages, claims, and SQL join barriers, and you own what they mean.
 
 <details class="callout">
 <summary>Alternative: keep the queue in Postgres</summary>
 
 A `jobs` table with `SKIP LOCKED` is a legitimate broker. Enqueue can share a transaction with "create the brief," which eliminates a whole class of "row committed, message lost" bugs. For many products that is enough.
 
-What pushed me off a pure Postgres queue at the workloads I care about: worker fleets that poll, visibility semantics you end up reimplementing, and the way a burst of fetch jobs turns into a connection and lock storm next to OLTP traffic. A managed queue absorbs the delivery spikes. Postgres still holds the *control plane* (idempotency claims, tracked trees, delayed waiters, application DLQ), which is the part that needs queries and transactions. The hybrid puts each concern where it is strong.
+What pushed me off a pure Postgres queue at the workloads I care about: worker fleets that poll, visibility semantics you end up reimplementing, and the way a burst of fetch jobs turns into a connection and lock storm next to OLTP traffic. A managed queue absorbs the delivery spikes. Postgres still holds the _control plane_ (idempotency claims, tracked trees, delayed waiters, application DLQ), which is the part that needs queries and transactions. The hybrid puts each concern where it is strong.
 
 </details>
 
@@ -149,7 +152,7 @@ All of these make orchestration a first-class runtime concern; they differ on wh
 
 **[Vercel Workflows](https://vercel.com/docs/workflows)** make durability feel like ordinary async TypeScript via `"use workflow"` and `"use step"`, with queues and persistence on the platform. Fan-in is immediate: `await Promise.all` over steps suspends the run until those steps settle, with no cron join. On errors ([docs](https://workflow-sdk.dev/docs/foundations/errors-and-retries)): an ordinary throw inside a step is retried (default `maxRetries = 3`, so four attempts); `RetryableError` sets the delay (`retryAfter`); `FatalError` skips retries and bubbles to the workflow function, where you can catch it or let the run end `failed` (a terminal state in the [event log](https://workflow-sdk.dev/docs/how-it-works/event-sourcing)). Retried steps re-execute from the start, so side effects need to be idempotent.
 
-Compensating "rollback" steps are an application pattern, not a built-in DLQ table. [Versioning](https://workflow-sdk.dev/docs/foundations/versioning) pins each run to the deployment that started it (skew protection): deploys do not rewrite in-flight code. To apply a fix, the documented path is cancel (if still running) and **Rerun on latest** / `start(..., { deploymentId: "latest" })` with the same inputs, which starts a *new* run rather than mutating the old one's history mid-flight. Long-lived work that should pick up new code is modeled as a sequence of runs that pass serializable state forward (similar in spirit to Continue-As-New).
+Compensating "rollback" steps are an application pattern, not a built-in DLQ table. [Versioning](https://workflow-sdk.dev/docs/foundations/versioning) pins each run to the deployment that started it (skew protection): deploys do not rewrite in-flight code. To apply a fix, the documented path is cancel (if still running) and **Rerun on latest** / `start(..., { deploymentId: "latest" })` with the same inputs, which starts a _new_ run rather than mutating the old one's history mid-flight. Long-lived work that should pick up new code is modeled as a sequence of runs that pass serializable state forward (similar in spirit to Continue-As-New).
 
 On backpressure: platform rate limits protect Workflows/Queues infrastructure and slow starts under load; they are not an RDS governor. A first-class concurrency `lock` / max-concurrency API for steps is [proposed](https://github.com/vercel/workflow/discussions/301) and not the stable "throttle when the DB is hot" story yet, so today you bound fan-out, throw `RetryableError` on overload, or bring your own semaphore. Compelling when the app already ships on Vercel. Less of a fit when workers, VPC data stores, and ops already center on SQS + Postgres elsewhere.
 
@@ -166,8 +169,8 @@ Start with the failure mode everyone ships first:
 ```ts
 app.post('/briefs', async (req, res) => {
   const brief = await createBrief(req.body)
-  await fetchAllSources(brief)      // Minutes.
-  await synthesizeBrief(brief)      // More minutes.
+  await fetchAllSources(brief) // Minutes.
+  await synthesizeBrief(brief) // More minutes.
   await notifyStakeholders(brief)
   res.json({ ok: true })
 })
@@ -184,8 +187,7 @@ app.post('/briefs', async (req, res) => {
   const brief = await createBrief(req.body)
 
   // No queue, no await: respond now, work "later".
-  void compileBrief(brief)
-    .catch(error => log.error('compile failed', error))
+  void compileBrief(brief).catch(error => log.error('compile failed', error))
 
   res.status(202).json({ briefId: brief.id })
 })
@@ -209,10 +211,7 @@ app.post('/briefs', async (req, res) => {
     payload: { briefId: brief.id },
   })
 
-  res
-    .status(202)
-    .location(`/briefs/${brief.id}`)
-    .json({ briefId: brief.id })
+  res.status(202).location(`/briefs/${brief.id}`).json({ briefId: brief.id })
 })
 ```
 
@@ -318,7 +317,7 @@ resource "aws_cloudwatch_metric_alarm" "main_queue_age" {
 }
 ```
 
-At this point you have distributed delivery, but not yet a system. The failure modes show up immediately. Visibility timeouts misaligned with handler timeouts double-execute work. Partial batch failures need `ReportBatchItemFailures` enabled on the mapping *and* an explicit `batchItemFailures` response keyed by the SQS record's `messageId`, or one bad record retries the whole batch. Hit the reserved-concurrency or account concurrency ceiling and messages age in the queue while looking "stuck" even though nothing is poisoned. Leave a message longer than retention and SQS deletes it with no handler ever seeing it; that is silent loss, not a DLQ entry. Allowing recursion without a depth guard turns a bug into a self-amplifying publish loop until you hit cost or throttling. Fairness between tenants is something you must opt into, and priority does not exist at all. And every producer is still inventing its own JSON structure.
+At this point you have distributed delivery, but not yet a system. The failure modes show up immediately. Visibility timeouts misaligned with handler timeouts double-execute work. Partial batch failures need `ReportBatchItemFailures` enabled on the mapping _and_ an explicit `batchItemFailures` response keyed by the SQS record's `messageId`, or one bad record retries the whole batch. Hit the reserved-concurrency or account concurrency ceiling and messages age in the queue while looking "stuck" even though nothing is poisoned. Leave a message longer than retention and SQS deletes it with no handler ever seeing it; that is silent loss, not a DLQ entry. Allowing recursion without a depth guard turns a bug into a self-amplifying publish loop until you hit cost or throttling. Fairness between tenants is something you must opt into, and priority does not exist at all. And every producer is still inventing its own JSON structure.
 
 <figure class="work-diagram">
 <svg viewBox="0 0 720 220" role="img" aria-labelledby="d3-title d3-desc">
@@ -409,13 +408,13 @@ export const spec = defineMessageSpec({
 
 Two conventions carry most of the weight. First, **path equals type**: `brief/fetchSource` lives in `queue/message/brief/fetchSource.ts`, asserted at boot outside the Lambda bundle. Second, a codegen step builds a discriminated union of every publishable message so `publishMessage({ type: 'brief/compile', payload: { … } })` is checked at compile time. Wrong payload fields become compile errors instead of poison messages discovered in the DLQ.
 
-Typing does not remove schema evolution. A payload schema you tighten today will Zod-fail messages already on the queue that were published under yesterday's schema; those become application DLQ entries you must decide to migrate, replay with a shim, or drop. That is also the first place a quiet failure mode shows up: the processor writes the row, deletes from SQS, and moves on, so the Act III CloudWatch alarm on the *AWS* DLQ never fires. Without a separate signal on application-DLQ inserts (Act XI), a bad deploy can park a whole class of work in Postgres while every SQS graph stays green. Remove or rename a type while old bodies still sit in SQS or the delayed table and consumers get "unknown type" at runtime; same sink, same silence. Treat in-flight messages as part of the deploy: expand schemas before you tighten them, and keep handlers for retired types until retention and delayed rows drain.
+Typing does not remove schema evolution. A payload schema you tighten today will Zod-fail messages already on the queue that were published under yesterday's schema; those become application DLQ entries you must decide to migrate, replay with a shim, or drop. That is also the first place a quiet failure mode shows up: the processor writes the row, deletes from SQS, and moves on, so the Act III CloudWatch alarm on the _AWS_ DLQ never fires. Without a separate signal on application-DLQ inserts (Act XI), a bad deploy can park a whole class of work in Postgres while every SQS graph stays green. Remove or rename a type while old bodies still sit in SQS or the delayed table and consumers get "unknown type" at runtime; same sink, same silence. Treat in-flight messages as part of the deploy: expand schemas before you tighten them, and keep handlers for retired types until retention and delayed rows drain.
 
 That is the entire producer surface for most features: one typed publish. The framework owns enrichment.
 
 ## Act V: retry policies
 
-At-least-once delivery is the contract. The framework's job is to make the *kinds* of failure explicit when the thrower knows them:
+At-least-once delivery is the contract. The framework's job is to make the _kinds_ of failure explicit when the thrower knows them:
 
 ```ts
 class FatalError extends QueueError {}
@@ -425,18 +424,18 @@ class IdempotencyConflictError extends QueueError {}
 
 Queue-aware handlers can throw those directly. Shared domain code should not: a service reachable from both a worker and a web request has no business importing `FatalError`, and forcing every call site to wrap throws in framework types just leaks the queue into the wrong layer. So the processor owns a **default classification** for everything that is not a `QueueError` subclass:
 
-| Outcome | Behavior |
-| --- | --- |
-| Success | Delete from SQS; mark tracked message completed |
-| `FatalError` | Application DLQ immediately |
-| `TransientError` with delay | Retry with that delay + jitter; budget of N attempts |
-| `IdempotencyConflictError` | Wait for the in-flight claim; **do not** burn the retry budget |
-| Known non-retryable (`ZodError`, obvious poison, selected DB errors, …) | Same as `FatalError` |
-| Everything else | Same as `TransientError`: exponential backoff + jitter up to a cap; then application DLQ |
+| Outcome                                                                 | Behavior                                                                                 |
+| ----------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| Success                                                                 | Delete from SQS; mark tracked message completed                                          |
+| `FatalError`                                                            | Application DLQ immediately                                                              |
+| `TransientError` with delay                                             | Retry with that delay + jitter; budget of N attempts                                     |
+| `IdempotencyConflictError`                                              | Wait for the in-flight claim; **do not** burn the retry budget                           |
+| Known non-retryable (`ZodError`, obvious poison, selected DB errors, …) | Same as `FatalError`                                                                     |
+| Everything else                                                         | Same as `TransientError`: exponential backoff + jitter up to a cap; then application DLQ |
 
 The allowlist of "known non-retryable" is a product decision you keep short and simple: schema failures and constraint violations that will not heal on retry are good examples. The distinction between "this work is impossible" and "try again in 30 seconds" sounds pedantic until you have watched a misconfigured API key generate five exponential retries and a DLQ entry that should have been fatal on the first throw. The opposite mistake is as bad: classifying an overloaded dependency as fatal and DLQ-ing work that would have succeeded ten seconds later. Prefer explicit `QueueError` subclasses at the worker boundary when you know; otherwise throw ordinary domain errors and let the processor map them.
 
-Error *messages* stay fixed strings: `"Source fetch returned 404"`, not `` `Source ${url} returned ${status}` ``. Variable detail belongs in structured fields on the error (and then in `error_thrown` on the DLQ row). Act XI's alerting fingerprints on message type plus that fixed text; interpolate into the message and every URL becomes its own Sentry issue.
+Error _messages_ stay fixed strings: `"Source fetch returned 404"`, not `` `Source ${url} returned ${status}` ``. Variable detail belongs in structured fields on the error (and then in `error_thrown` on the DLQ row). Act XI's alerting fingerprints on message type plus that fixed text; interpolate into the message and every URL becomes its own Sentry issue.
 
 Retry budgets also come in pairs. The envelope's `retryCount` is the framework's budget; SQS separately counts every receive that ends without a delete toward `maxReceiveCount`. Retries in this design are republish-then-delete rather than throw-and-let-SQS-redeliver, which keeps the AWS counter at one and leaves redrive as a true backstop rather than a competing policy. Without that discipline, a transient outage burns `maxReceiveCount`, the AWS DLQ fills, and you lose the structured error payload the application DLQ would have stored. Retries also amplify load: a dependency that is already failing gets N times the traffic from every in-flight tree, which is why backoff and concurrency caps belong in the same design.
 
@@ -482,8 +481,8 @@ Once handlers publish children while handling a parent, the framework can propag
 // Publishing from inside a handler; a publish from a web request
 // has no parent and becomes its own root.
 parentMessageId = messageBeingHandled.metadata.messageId
-rootMessageId   = messageBeingHandled.metadata.rootMessageId ?? messageId
-publishChain    = [
+rootMessageId = messageBeingHandled.metadata.rootMessageId ?? messageId
+publishChain = [
   ...messageBeingHandled.metadata.publishChain,
   'src/brief/compile.ts:204',
 ]
@@ -605,7 +604,7 @@ That is back pressure, which is not the same thing as fairness or priority. Caps
 
 Fairness on a single standard queue you can now get almost for free: stamp a `MessageGroupId` (tenant id, or message type) on every publish and [SQS fair queues](https://aws.amazon.com/blogs/compute/building-resilient-multi-tenant-systems-with-amazon-sqs-fair-queues/) kick in automatically. When one group hogs consumer capacity, SQS deprioritizes its delivery so quiet groups keep flowing instead of aging behind it, with no consumer changes and no throughput limits. That single attribute blunts most noisy-neighbor incidents before you touch the architecture, provided the group id matches your actual contention axis. Pick the wrong axis (type when the bully is a tenant, or the reverse) and fair queues politely balance the wrong thing while the real victim still starves.
 
-So a single shared standard queue with a global concurrency cap and group-tagged messages is a coherent **v1**: one URL to publish to, one DLQ story, one set of alarms, one LocalStack path in tests, and every message type shares fate. Stamp the `MessageGroupId` from day one; it costs one line at the publish chokepoint. Most products should start there. The hard question arrives the week interactive work (`auth/sendMagicLink`, `brief/notify`) needs to *preempt* a multi-hour `brief/fetchSource` backlog, not just keep flowing beside it. Fairness gives every group a share; it cannot say some work matters more.
+So a single shared standard queue with a global concurrency cap and group-tagged messages is a coherent **v1**: one URL to publish to, one DLQ story, one set of alarms, one LocalStack path in tests, and every message type shares fate. Stamp the `MessageGroupId` from day one; it costs one line at the publish chokepoint. Most products should start there. The hard question arrives the week interactive work (`auth/sendMagicLink`, `brief/notify`) needs to _preempt_ a multi-hour `brief/fetchSource` backlog, not just keep flowing beside it. Fairness gives every group a share; it cannot say some work matters more.
 
 Standard SQS has **no priority field that affects dequeue order**: `priority: 'high'` in the JSON body does nothing, sorting a received batch reorders only one invoke's ten messages, and with Lambda event source mappings **you do not own the poll loop** ([documented pain](https://lucvandonkersgoed.com/2022/04/25/implement-the-priority-queue-pattern-with-sqs-and-lambda/), still true). `MessageGroupId` does not change that: on a standard queue it buys fairness, convergence toward "nobody gets starved," not priority, which is "this class always wins under contention" (on a FIFO queue the same field means strict per-group ordering with serialized groups; same attribute, two unrelated contracts). If your broker were Postgres, `ORDER BY priority` with `SKIP LOCKED` would make single-table priority natural; it is one reason some teams stay on a DB broker until they cannot. On SQS, priority means more queues, and that is a design fork to take deliberately, not a default.
 
@@ -711,17 +710,17 @@ create table dlq_message (
 
 Beside it: `tracked_queue_message`, `delayed_message`, `idempotency`. Together they are the control plane. A small CLI (`queue-messages dlq list|summarize|get|replay`, `tracked tree`, `delayed list`) covers the 3am cases with plain SQL. Replay uses `republishFromDlq`: same `messageId`, reset `retryCount`, no duplicate tracked row, and the DLQ row is removed only after the resend succeeds, so a replay that fails again simply re-inserts it. Summarize by type before you replay a thousand poison payloads into another outage. Replay is itself a failure mode: replay while a confused operator also "fixes" data under the handler, or replay a whole type whose bug is still in production, and you turn a DLQ into a self-inflicted retry storm. Prefer fixing forward, then replaying a sampled slice, then the rest.
 
-That closes the Act IV gap: CloudWatch on SQS DLQ depth answers "did Lambda fail to handle something cleanly?"; it does not see rows that landed in Postgres after a deliberate DLQ write and SQS delete. On insert into `dlq_message`, report to Sentry (or equivalent) with a fingerprint of `message.type` plus the error's fixed message string. Emit only the first offender for that class; later rows for the same fingerprint stay in Postgres for `summarize` and replay, but do not page again. Attach the payload, scope, publish chain, and structured error fields as context on that one event so the issue is enough to debug without opening a thousand notifications. That is why Act V insists on stable error text: clustering collapses when every brief id or URL invents a new issue title. Depth alarms still matter for volume and for the AWS-side DLQ; Sentry is for *new* failure classes, not for counting them.
+That closes the Act IV gap: CloudWatch on SQS DLQ depth answers "did Lambda fail to handle something cleanly?"; it does not see rows that landed in Postgres after a deliberate DLQ write and SQS delete. On insert into `dlq_message`, report to Sentry (or equivalent) with a fingerprint of `message.type` plus the error's fixed message string. Emit only the first offender for that class; later rows for the same fingerprint stay in Postgres for `summarize` and replay, but do not page again. Attach the payload, scope, publish chain, and structured error fields as context on that one event so the issue is enough to debug without opening a thousand notifications. That is why Act V insists on stable error text: clustering collapses when every brief id or URL invents a new issue title. Depth alarms still matter for volume and for the AWS-side DLQ; Sentry is for _new_ failure classes, not for counting them.
 
 Environments should share code and diverge in plumbing:
 
-| Concern | Test | Development | Production |
-| --- | --- | --- | --- |
-| Broker | LocalStack queue, often ephemeral per test | LocalStack named queue | AWS SQS (one queue at first; tiers later) |
-| DB | Test Postgres | Dev Postgres | RDS + Proxy |
-| Retry delays | Multiplier ≈ 1 (fast) | Real-ish | Full backoff |
-| Priority / isolation | Usually off | Off or mirrored tiers | Concurrency caps; optional tiered queues |
-| Secrets | None / dummy | Local URLs | Secrets Manager |
+| Concern              | Test                                       | Development            | Production                                |
+| -------------------- | ------------------------------------------ | ---------------------- | ----------------------------------------- |
+| Broker               | LocalStack queue, often ephemeral per test | LocalStack named queue | AWS SQS (one queue at first; tiers later) |
+| DB                   | Test Postgres                              | Dev Postgres           | RDS + Proxy                               |
+| Retry delays         | Multiplier ≈ 1 (fast)                      | Real-ish               | Full backoff                              |
+| Priority / isolation | Usually off                                | Off or mirrored tiers  | Concurrency caps; optional tiered queues  |
+| Secrets              | None / dummy                               | Local URLs             | Secrets Manager                           |
 
 ## Act XII: testing like you mean it
 
